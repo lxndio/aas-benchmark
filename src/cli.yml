@@ -1,0 +1,14 @@
+name: AaS Benchmark
+version: "0.1.0"
+about: A tool to benchmark pattern matching algorithms.
+args:
+    - ALGORITHM:
+        help: Set the algorithm to be benchmarked
+        required: true
+        index: 1
+    - executions:
+        help: Set how often the algorithm is being executed (default 1)
+        short: n
+        long: executions
+        takes_value: true
+        value_name: executions
