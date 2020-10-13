@@ -33,8 +33,8 @@ fn main() {
     }
 
     let algorithm_fn = match algorithm.to_lowercase().as_str() {
-        "naive" => Some(naive_all),
-        "kmp-classic" => Some(kmp_classic_all),
+        "naive" => Some(naive_all as fn(&[u8], &[u8]) -> Vec<usize>),
+        "kmp-classic" => Some(kmp_classic_all as fn(&[u8], &[u8]) -> Vec<usize>),
         _ => {
             println!("Unknown algorithm given.");
             failure = true;
