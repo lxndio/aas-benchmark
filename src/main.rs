@@ -7,6 +7,7 @@ mod measure;
 
 use clap::App;
 
+use algorithms::single_pattern::kmp::kmp_classic_all;
 use algorithms::single_pattern::naive::naive_all;
 use generate::gen_rand_bytes;
 use measure::{calculate_avg_duration, measure_multiple};
@@ -33,6 +34,7 @@ fn main() {
 
     let algorithm_fn = match algorithm.to_lowercase().as_str() {
         "naive" => Some(naive_all),
+        "kmp-classic" => Some(kmp_classic_all),
         _ => {
             println!("Unknown algorithm given.");
             failure = true;
