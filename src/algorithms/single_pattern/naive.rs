@@ -7,7 +7,7 @@
 ///
 /// After an occurrence has been found, the algorithm returns the index
 /// marking the first character of the occurrence and therefore terminates.
-/// If the pattern could not be found in the text, `None` is returned.
+/// If the pattern could not be found in the `text`, `None` is returned.
 pub fn naive(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let m = pattern.len();
     let n = text.len();
@@ -19,17 +19,4 @@ pub fn naive(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     }
 
     None
-}
-
-pub fn naive_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
-    let mut res = Vec::new();
-    let mut i0 = 0;
-
-    while let Some(occ) = naive(pattern, text, i0) {
-        res.push(occ);
-
-        i0 = occ + 1;
-    }
-
-    res
 }
