@@ -20,3 +20,16 @@ pub fn naive(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
 
     None
 }
+
+pub fn naive_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+    let mut res = Vec::new();
+    let mut i0 = 0;
+
+    while let Some(occ) = naive(pattern, text, i0) {
+        res.push(occ);
+
+        i0 = occ + 1;
+    }
+
+    res
+}
