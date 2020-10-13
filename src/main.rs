@@ -11,8 +11,6 @@ use algorithms::single_pattern::naive::naive_all;
 use generate::gen_rand_bytes;
 use measure::{calculate_avg_duration, measure_multiple};
 
-pub const ALGORITHMS: [&str; 1] = ["Naive"]; // TODO necessary?
-
 fn main() {
     let clap_yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(clap_yaml).get_matches();
