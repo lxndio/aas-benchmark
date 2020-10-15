@@ -1,3 +1,4 @@
+#[allow(unused)]
 pub fn all(
     pattern: &[u8],
     text: &[u8],
