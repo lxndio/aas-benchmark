@@ -1,3 +1,5 @@
+pub mod measure_result;
+
 use std::time::{Duration, SystemTime};
 
 /// A function to measure the runtime of an algorithm.
@@ -46,7 +48,11 @@ pub fn measure_multiple(
 /// It takes a `Vec<Duration>` of multiple `Duration`s.
 ///
 /// It returns the average duration in milliseconds as an `f64`.
-pub fn calculate_avg_duration(durations: Vec<Duration>) -> f64 {
+pub fn calculate_avg_duration(durations: &Vec<Duration>) -> f64 {
+    if durations.len() == 0 {
+        return 0f64;
+    }
+
     let sum: Duration = durations.iter().sum();
     let sum_nanos = sum.as_nanos() as f64;
 

@@ -3,13 +3,14 @@ extern crate clap;
 
 mod algorithms;
 mod generate;
+mod match_algorithm;
 mod measure;
 
 use clap::App;
 
-use algorithms::single_pattern::kmp::kmp_classic_all;
-use algorithms::single_pattern::naive::naive_all;
 use generate::gen_rand_bytes;
+use match_algorithm::match_algorithm;
+use measure::measure_result::MeasureResult;
 use measure::{calculate_avg_duration, measure_multiple};
 
 fn main() {
@@ -21,9 +22,13 @@ fn main() {
         .unwrap_or("NonexistentAlgorithm");
     let executions: usize = matches
         .value_of("executions")
-        .unwrap_or("1")
+        .unwrap_or("1") // 1 so that if parameter is not given, the default of one execution is used
         .parse()
-        .unwrap_or(0);
+        .unwrap_or(0); // 0 so that if invalid parameter is given, failure is set to true below
+    let compare: bool = matches.is_present("compare");
+    let compare_algorithm = matches
+        .value_of("compare")
+        .unwrap_or("NonexistentAlgorithm");
 
     let mut failure = false;
 
@@ -32,16 +37,20 @@ fn main() {
         failure = true;
     }
 
-    let algorithm_fn = match algorithm.to_lowercase().as_str() {
-        "naive" => Some(naive_all as fn(&[u8], &[u8]) -> Vec<usize>),
-        "kmp-classic" => Some(kmp_classic_all as fn(&[u8], &[u8]) -> Vec<usize>),
-        _ => {
-            println!("Unknown algorithm given.");
-            failure = true;
+    let algorithm_fn = match_algorithm(algorithm);
+    let compare_algorithm_fn = match_algorithm(compare_algorithm);
 
-            None
-        }
-    };
+    // Check if given algorithm exists
+    if algorithm_fn.is_none() {
+        println!("Unknown algorithm given.");
+        failure = true;
+    }
+
+    // Check if given compare algorithm exists
+    if compare && compare_algorithm_fn.is_none() {
+        println!("Unknown compare algorithm given.");
+        failure = true;
+    }
 
     if !failure {
         let text = gen_rand_bytes(1_000_000);
@@ -50,9 +59,21 @@ fn main() {
         // Unwrap is safe here because of the failure variable
         let durations = measure_multiple(pattern, &text, algorithm_fn.unwrap(), executions);
 
-        if durations.len() != 0 {
-            println!("Duration: {:?}", durations);
-            println!("Average: {:?}", calculate_avg_duration(durations));
+        MeasureResult::from(durations)
+            .set_algorithm(algorithm)
+            .print(false);
+
+        if compare {
+            let text = gen_rand_bytes(1_000_000);
+            let pattern = &text[20..25];
+
+            // Unwrap is safe here because of the failure variable
+            let durations =
+                measure_multiple(pattern, &text, compare_algorithm_fn.unwrap(), executions);
+
+            MeasureResult::from(durations)
+                .set_algorithm(compare_algorithm)
+                .print(false);
         }
     }
 }

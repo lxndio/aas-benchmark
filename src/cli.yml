@@ -12,3 +12,9 @@ args:
         long: executions
         takes_value: true
         value_name: executions
+    - compare:
+        help: Compare runtime of ALGORITHM with another algorithm
+        short: c
+        long: compare
+        takes_value: true
+        value_name: compare_algorithm
