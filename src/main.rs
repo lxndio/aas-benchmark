@@ -10,8 +10,8 @@ use clap::App;
 
 use generate::gen_rand_bytes;
 use match_algorithm::match_algorithm;
+use measure::measure_multiple;
 use measure::measure_result::MeasureResult;
-use measure::{calculate_avg_duration, measure_multiple};
 
 fn main() {
     let clap_yaml = load_yaml!("cli.yml");

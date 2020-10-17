@@ -1,5 +1,6 @@
 use rand::Rng;
 
+/// Generates a `Vec<u8>` containing `n` random bytes.
 pub fn gen_rand_bytes(n: usize) -> Vec<u8> {
     let mut rng = rand::thread_rng();
 

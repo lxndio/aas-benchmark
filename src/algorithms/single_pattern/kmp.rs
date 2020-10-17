@@ -1,5 +1,13 @@
 //use crate::algorithms::dfa::dfa_with_delta;
 
+/// Computes the lps function used by the KMP algorithm.
+///
+/// The lps function is defined as `lps(q)` being the length of the **l**ongest
+/// **p**refix of the `pattern` that is a proper **s**uffix of `pattern[0..q]`
+/// (or empty).
+///
+/// Returns a `Vec<isize>` containing the lps function values corresponding to
+/// the indices.
 pub fn kmp_compute_lps(pattern: &[u8]) -> Vec<isize> {
     let m = pattern.len();
 
@@ -21,6 +29,13 @@ pub fn kmp_compute_lps(pattern: &[u8]) -> Vec<isize> {
     lps
 }
 
+/// Simulates a DFA delta function using a given lps function.
+///
+/// It takes a state `q`, a character `c`, a `pattern` and a `Vec<isize>`
+/// containing the values of an lps function.
+///
+/// Returns the new active state after transitioning by simulating a delta
+/// function using the given lps function.
 pub fn dfa_delta_lps(q: isize, c: u8, pattern: &[u8], lps: Vec<isize>) -> isize {
     let m = pattern.len();
 
@@ -46,6 +61,14 @@ pub fn kmp(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
                       //dfa_with_delta(pattern.len(), text, delta, i0);
 }
 
+/// The classic implementation of the Knuth-Morris-Pratt algorithm (KMP).
+///
+/// It searches for the first occurrence of `pattern` in `text` starting at
+/// index `i0` of the text.
+///
+/// After an occurrence has been found, the algorithm returns the index
+/// marking the first character of the occurrence and therefore terminates.
+/// If the pattern could not be found in the `text`, `None` is returned.
 pub fn kmp_classic(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let m = pattern.len();
     let n = text.len();
