@@ -1,5 +1,6 @@
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
 use crate::algorithms::single_pattern::naive::naive_all;
+use crate::algorithms::single_pattern::shift_and::shift_and;
 
 /// Returns the algorithm function matching the given name.
 ///
@@ -13,6 +14,7 @@ pub fn match_algorithm(algorithm: &str) -> Option<fn(&[u8], &[u8]) -> Vec<usize>
         "naive" => Some(naive_all as fn(&[u8], &[u8]) -> Vec<usize>),
         "kmp" => Some(kmp_all as fn(&[u8], &[u8]) -> Vec<usize>),
         "kmp-classic" => Some(kmp_classic_all as fn(&[u8], &[u8]) -> Vec<usize>),
+        "shift-and" => Some(shift_and as fn(&[u8], &[u8]) -> Vec<usize>),
         _ => None,
     }
 }
