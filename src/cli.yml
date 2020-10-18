@@ -20,7 +20,13 @@ args:
         value_name: compare_algorithm
     - random_text:
         help: Generates a random text with the given length
-        short: r
+        short: t
         long: randomtext
+        takes_value: true
+        value_name: length
+    - random_pattern_from_text:
+        help: Takes a random part from the text with given length as a pattern
+        short: p
+        long: randompattern
         takes_value: true
         value_name: length

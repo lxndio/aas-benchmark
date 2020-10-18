@@ -13,3 +13,11 @@ pub fn gen_rand_bytes(n: usize) -> Vec<u8> {
 pub fn gen_rand_bytes_seed(n: usize, seed: usize) -> Vec<u8> {
     unimplemented!();
 }
+
+pub fn rand_pattern_from_bytes(bytes: &[u8], length: usize) -> &[u8] {
+    let mut rng = rand::thread_rng();
+
+    let left = rng.gen_range(0, bytes.len() - length);
+
+    &bytes[left..left + length]
+}
