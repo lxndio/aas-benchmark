@@ -8,6 +8,8 @@ use crate::measure::calculate_avg_duration;
 pub struct MeasureResult {
     algorithm_name: String,
 
+    matches: usize,
+
     durations: Vec<Duration>,
     avg_duration: f64,
 }
@@ -19,9 +21,11 @@ impl MeasureResult {
     ///
     /// It takes the CLI paramter name of an algorithm and the durations of
     /// the measured executions.
-    pub fn new(algorithm: &str, durations: Vec<Duration>) -> Self {
+    pub fn new(algorithm: &str, matches: usize, durations: Vec<Duration>) -> Self {
         let mut new = Self {
             algorithm_name: String::from(algorithm_name(algorithm)),
+
+            matches,
 
             durations,
             avg_duration: 0f64,
@@ -50,6 +54,8 @@ impl MeasureResult {
         // Print algorithm name
         println!("===== {} =====", self.algorithm_name);
 
+        println!("Matches: {}", self.matches);
+
         // Print average runtime
         let average = self.avg_duration;
         if average != 0f64 {
@@ -70,10 +76,15 @@ impl MeasureResult {
     }
 }
 
-impl From<Vec<Duration>> for MeasureResult {
-    fn from(durations: Vec<Duration>) -> Self {
+impl From<(Vec<Duration>, usize)> for MeasureResult {
+    fn from(from_params: (Vec<Duration>, usize)) -> Self {
+        let durations = from_params.0;
+        let matches = from_params.1;
+
         let mut from = MeasureResult {
             algorithm_name: String::new(),
+
+            matches,
 
             durations,
             avg_duration: 0f64,

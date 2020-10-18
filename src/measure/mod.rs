@@ -9,14 +9,18 @@ use std::time::{Duration, SystemTime};
 /// `(&[u8], &[u8]) -> Vec<usize>`.
 ///
 /// It returns a `Duration`, the runtime of the execution given function.
-pub fn measure(pattern: &[u8], text: &[u8], f: fn(&[u8], &[u8]) -> Vec<usize>) -> Duration {
+pub fn measure(
+    pattern: &[u8],
+    text: &[u8],
+    f: fn(&[u8], &[u8]) -> Vec<usize>,
+) -> (Duration, usize) {
     let before = SystemTime::now();
 
-    f(pattern, text);
+    let matches = f(pattern, text).len();
 
     let duration = before.elapsed();
 
-    duration.expect("Could not measure time.")
+    (duration.expect("Could not measure time."), matches)
 }
 
 /// A function to measure the runtimes of multiple executions of an algorithm.
@@ -32,14 +36,17 @@ pub fn measure_multiple(
     text: &[u8],
     f: fn(&[u8], &[u8]) -> Vec<usize>,
     n: usize,
-) -> Vec<Duration> {
+) -> (Vec<Duration>, usize) {
     let mut durations: Vec<Duration> = Vec::new();
 
     for _ in 0..n {
-        durations.push(measure(pattern, text, f));
+        durations.push(measure(pattern, text, f).0);
     }
 
-    durations
+    // Measure once again to get number of matches
+    let matches = measure(pattern, text, f).1;
+
+    (durations, matches)
 }
 
 /// A function to calculate the average duration of a `Vec<Duration>`
