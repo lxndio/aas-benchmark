@@ -18,3 +18,9 @@ args:
         long: compare
         takes_value: true
         value_name: compare_algorithm
+    - random_text:
+        help: Generates a random text with the given length
+        short: r
+        long: randomtext
+        takes_value: true
+        value_name: length

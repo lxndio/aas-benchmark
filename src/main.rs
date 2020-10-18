@@ -17,33 +17,15 @@ fn main() {
     // Get CLI parameters using Clap
     let cli_params = CLIParams::new();
 
-    let mut failure = false;
+    // Only continue if all given parameters are valid, all unwraps are safe
+    // here because of the checks done in cli_params.valid()
+    if cli_params.valid() {
+        let algorithm_fn = match_algorithm(&cli_params.algorithm);
+        let compare_algorithm_fn = match_algorithm(&cli_params.compare_algorithm);
 
-    if cli_params.executions == 0 {
-        println!("The -n argument needs to be a positive integer greater than 0.");
-        failure = true;
-    }
-
-    let algorithm_fn = match_algorithm(&cli_params.algorithm);
-    let compare_algorithm_fn = match_algorithm(&cli_params.compare_algorithm);
-
-    // Check if given algorithm exists
-    if algorithm_fn.is_none() {
-        println!("Unknown algorithm given.");
-        failure = true;
-    }
-
-    // Check if given compare algorithm exists
-    if cli_params.compare && compare_algorithm_fn.is_none() {
-        println!("Unknown compare algorithm given.");
-        failure = true;
-    }
-
-    if !failure {
-        let text = &gen_rand_bytes(1_000_000);
+        let text = &gen_rand_bytes(cli_params.random_text_length);
         let pattern = &text[20..25];
 
-        // Unwrap is safe here because of the failure variable
         let durations =
             measure_multiple(pattern, text, algorithm_fn.unwrap(), cli_params.executions);
 
@@ -52,7 +34,6 @@ fn main() {
             .print(false);
 
         if cli_params.compare {
-            // Unwrap is safe here because of the failure variable
             let durations = measure_multiple(
                 pattern,
                 text,
