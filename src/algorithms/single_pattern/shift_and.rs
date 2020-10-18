@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
-fn shift_and_single_masks(pattern: &[u8]) -> (HashMap<&u8, usize>, usize, usize) {
+fn shift_and_single_masks(pattern: &[u8]) -> (HashMap<u8, usize>, usize, usize) {
     let mut masks = HashMap::new();
     let mut bit = 1;
 
     for c in pattern {
-        let entry = masks.entry(c).or_insert(0);
+        let entry = masks.entry(*c).or_insert(0);
         *entry |= bit;
 
         bit *= 2;
@@ -16,7 +16,7 @@ fn shift_and_single_masks(pattern: &[u8]) -> (HashMap<&u8, usize>, usize, usize)
 
 fn shift_and_with_masks(
     text: &[u8],
-    masks: HashMap<&u8, usize>,
+    masks: HashMap<u8, usize>,
     ones: usize,
     accept: usize,
 ) -> Vec<(usize, usize)> {
