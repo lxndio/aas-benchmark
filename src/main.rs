@@ -53,23 +53,20 @@ fn main() {
     }
 
     if !failure {
-        let text = gen_rand_bytes(1_000_000);
+        let text = &gen_rand_bytes(1_000_000);
         let pattern = &text[20..25];
 
         // Unwrap is safe here because of the failure variable
-        let durations = measure_multiple(pattern, &text, algorithm_fn.unwrap(), executions);
+        let durations = measure_multiple(pattern, text, algorithm_fn.unwrap(), executions);
 
         MeasureResult::from(durations)
             .set_algorithm(algorithm)
             .print(false);
 
         if compare {
-            let text = gen_rand_bytes(1_000_000);
-            let pattern = &text[20..25];
-
             // Unwrap is safe here because of the failure variable
             let durations =
-                measure_multiple(pattern, &text, compare_algorithm_fn.unwrap(), executions);
+                measure_multiple(pattern, text, compare_algorithm_fn.unwrap(), executions);
 
             MeasureResult::from(durations)
                 .set_algorithm(compare_algorithm)
