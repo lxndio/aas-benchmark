@@ -32,6 +32,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "naive" => "Naive",
         "kmp" => "KMP",
         "kmp-classic" => "Classic KMP",
+        "shift-and" => "Shift-And",
         _ => "Unknown Algorithm",
     }
 }
