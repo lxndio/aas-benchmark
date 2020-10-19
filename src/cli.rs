@@ -3,10 +3,8 @@ use clap::App;
 use crate::match_algorithm::match_algorithm;
 
 pub struct CLIParams {
-    pub algorithm: String,
-    pub compare_algorithm: String,
+    pub algorithms: Vec<String>,
 
-    pub compare: bool,
     pub random_text: bool,
     pub random_pattern_from_text: bool,
 
@@ -21,19 +19,18 @@ impl CLIParams {
         let matches = App::from_yaml(clap_yaml).get_matches();
 
         // String value parameters
-        let algorithm = String::from(
+        let algorithms: Vec<String> = String::from(
             matches
-                .value_of("ALGORITHM")
+                .value_of("ALGORITHMS")
                 .unwrap_or("NonexistentAlgorithm"),
-        );
-        let compare_algorithm = String::from(
-            matches
-                .value_of("compare")
-                .unwrap_or("NonexistentAlgorithm"),
-        );
+        )
+        .split(',')
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|algorithm| String::from(*algorithm))
+        .collect();
 
         // Bool value parameters
-        let compare: bool = matches.is_present("compare");
         let random_text: bool = matches.is_present("random_text");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
 
@@ -55,10 +52,8 @@ impl CLIParams {
             .unwrap_or(0); // 0 so that if invalid parameter is given, validation fails
 
         Self {
-            algorithm,
-            compare_algorithm,
+            algorithms,
 
-            compare,
             random_text,
             random_pattern_from_text,
 
@@ -71,13 +66,11 @@ impl CLIParams {
     pub fn valid(&self) -> bool {
         let mut valid = true;
 
-        if match_algorithm(&self.algorithm).is_none() {
-            println!("Unknown algorithm given.\n");
-            valid = false;
-        }
-        if self.compare && match_algorithm(&self.compare_algorithm).is_none() {
-            println!("Unknown compare algorithm given.\n");
-            valid = false;
+        for algorithm in &self.algorithms {
+            if match_algorithm(&algorithm).is_none() {
+                println!("Unknown algorithm given: {}.\n", algorithm);
+                valid = false;
+            }
         }
 
         if !self.random_text {

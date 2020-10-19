@@ -20,9 +20,6 @@ fn main() {
     // Only continue if all given parameters are valid, all unwraps are safe
     // here because of the checks done in cli_params.valid()
     if cli_params.valid() {
-        let algorithm_fn = match_algorithm(&cli_params.algorithm);
-        let compare_algorithm_fn = match_algorithm(&cli_params.compare_algorithm);
-
         let text = &gen_rand_bytes(cli_params.random_text_length);
         let pattern;
 
@@ -32,23 +29,14 @@ fn main() {
             pattern = &[];
         }
 
-        let durations =
-            measure_multiple(pattern, text, algorithm_fn.unwrap(), cli_params.executions);
+        for algorithm in cli_params.algorithms {
+            let algorithm_fn = match_algorithm(&algorithm);
 
-        MeasureResult::from(durations)
-            .set_algorithm(&cli_params.algorithm)
-            .print(false);
-
-        if cli_params.compare {
-            let durations = measure_multiple(
-                pattern,
-                text,
-                compare_algorithm_fn.unwrap(),
-                cli_params.executions,
-            );
+            let durations =
+                measure_multiple(pattern, text, algorithm_fn.unwrap(), cli_params.executions);
 
             MeasureResult::from(durations)
-                .set_algorithm(&cli_params.compare_algorithm)
+                .set_algorithm(&algorithm)
                 .print(false);
         }
     }

@@ -2,8 +2,8 @@ name: AaS Benchmark
 version: "0.1.1"
 about: A tool to benchmark pattern matching algorithms.
 args:
-    - ALGORITHM:
-        help: Set the algorithm to be benchmarked
+    - ALGORITHMS:
+        help: Set the algorithm(s) to be benchmarked, set multiple algorithms comma-seperated
         required: true
         index: 1
     - executions:
@@ -12,12 +12,6 @@ args:
         long: executions
         takes_value: true
         value_name: executions
-    - compare:
-        help: Compare runtime of ALGORITHM with another algorithm
-        short: c
-        long: compare
-        takes_value: true
-        value_name: compare_algorithm
     - random_text:
         help: Generates a random text with the given length
         short: t
