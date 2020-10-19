@@ -1,3 +1,4 @@
+pub mod csv_record;
 pub mod measure_result;
 
 use std::time::{Duration, SystemTime};

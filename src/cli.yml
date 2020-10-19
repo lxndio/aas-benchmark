@@ -24,3 +24,8 @@ args:
         long: randompattern
         takes_value: true
         value_name: length
+    - print_csv:
+        help: Print a comma-seperated values summary to be used in other applications
+        short: c
+        long: csv
+        takes_value: false

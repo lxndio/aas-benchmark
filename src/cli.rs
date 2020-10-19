@@ -5,6 +5,7 @@ use crate::match_algorithm::match_algorithm;
 pub struct CLIParams {
     pub algorithms: Vec<String>,
 
+    pub print_csv: bool,
     pub random_text: bool,
     pub random_pattern_from_text: bool,
 
@@ -31,6 +32,7 @@ impl CLIParams {
         .collect();
 
         // Bool value parameters
+        let print_csv: bool = matches.is_present("print_csv");
         let random_text: bool = matches.is_present("random_text");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
 
@@ -54,6 +56,7 @@ impl CLIParams {
         Self {
             algorithms,
 
+            print_csv,
             random_text,
             random_pattern_from_text,
 
