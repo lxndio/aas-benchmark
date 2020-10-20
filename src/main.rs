@@ -6,11 +6,12 @@ mod cli;
 mod generate;
 mod match_algorithm;
 mod measure;
+mod range;
 
 use std::error::Error;
 
 use cli::CLIParams;
-use generate::{gen_rand_bytes, rand_pattern_from_bytes};
+use generate::{gen_pattern, gen_rand_bytes};
 use match_algorithm::match_algorithm;
 use measure::measure_multiple;
 use measure::measure_result::MeasureResult;
@@ -23,15 +24,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     // here because of the checks done in cli_params.valid()
     if cli_params.valid() {
         let text = &gen_rand_bytes(cli_params.random_text_length);
-        let pattern;
+        let pattern = gen_pattern(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
 
         let mut csv_header_printed = false;
-
-        if cli_params.random_pattern_from_text {
-            pattern = rand_pattern_from_bytes(text, cli_params.random_pattern_from_text_length);
-        } else {
-            pattern = &[];
-        }
 
         for algorithm in cli_params.algorithms {
             let algorithm_fn = match_algorithm(&algorithm);

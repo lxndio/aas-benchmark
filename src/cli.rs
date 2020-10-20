@@ -1,10 +1,12 @@
 use clap::App;
 
 use crate::match_algorithm::match_algorithm;
+use crate::range::Range;
 
 pub struct CLIParams {
     pub algorithms: Vec<String>,
 
+    pub pattern_from_text: bool,
     pub print_csv: bool,
     pub random_text: bool,
     pub random_pattern_from_text: bool,
@@ -12,6 +14,8 @@ pub struct CLIParams {
     pub executions: usize,
     pub random_text_length: usize,
     pub random_pattern_from_text_length: usize,
+
+    pub pattern_from_text_range: Range,
 }
 
 impl CLIParams {
@@ -32,6 +36,7 @@ impl CLIParams {
         .collect();
 
         // Bool value parameters
+        let pattern_from_text: bool = matches.is_present("pattern_from_text");
         let print_csv: bool = matches.is_present("print_csv");
         let random_text: bool = matches.is_present("random_text");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
@@ -53,9 +58,17 @@ impl CLIParams {
             .parse()
             .unwrap_or(0); // 0 so that if invalid parameter is given, validation fails
 
+        // Other type paramters
+        let pattern_from_text_range: Range = matches
+            .value_of("pattern_from_text")
+            .unwrap_or("0..0")
+            .parse()
+            .unwrap_or(Range::new(0, 0));
+
         Self {
             algorithms,
 
+            pattern_from_text,
             print_csv,
             random_text,
             random_pattern_from_text,
@@ -63,6 +76,8 @@ impl CLIParams {
             executions,
             random_text_length,
             random_pattern_from_text_length,
+
+            pattern_from_text_range,
         }
     }
 
@@ -81,9 +96,13 @@ impl CLIParams {
                 You could for example set `-t 1000000` to generate a random text with a length of 1_000_000 characters.\n");
             valid = false;
         }
-        if !self.random_pattern_from_text {
+        if !(self.random_pattern_from_text || self.pattern_from_text) {
             println!("At least one pattern source has to be set. \
                 You could for example set `-p 5` to take a random pattern of length 5 from the text.\n");
+            valid = false;
+        }
+        if self.random_pattern_from_text && self.pattern_from_text {
+            println!("You can only set one pattern source at a time.\n");
             valid = false;
         }
 
@@ -97,6 +116,11 @@ impl CLIParams {
         }
         if self.random_pattern_from_text && self.random_pattern_from_text_length == 0 {
             println!("The -p argument needs to be a positive integer greater than 0.\n");
+            valid = false;
+        }
+
+        if self.pattern_from_text && self.pattern_from_text_range.is_empty() {
+            println!("The --patternfromtext argument needs a valid, non-empty range.\n");
             valid = false;
         }
 

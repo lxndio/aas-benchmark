@@ -21,9 +21,14 @@ args:
     - random_pattern_from_text:
         help: Takes a random part from the text with given length as a pattern
         short: p
-        long: randompattern
+        long: randompatternfromtext
         takes_value: true
         value_name: length
+    - pattern_from_text:
+        help: Takes a part from the text as a pattern using a given range (e.g. 0..10 for characters 0 to 9)
+        long: patternfromtext
+        takes_value: true
+        value_name: range
     - print_csv:
         help: Print a comma-seperated values summary to be used in other applications
         short: c
