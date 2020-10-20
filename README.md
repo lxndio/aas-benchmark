@@ -35,7 +35,7 @@ This command will benchmark the algorithm `naive`. You can find a complete [list
 
 It is required to always give a text source and a pattern source as argument. Here we are using the `-t 1000000` argument to generate a random text with a length of 1 000 000 bytes. The `-p 5` argument specifies that the pattern should be a substring of the text with a length of 5 bytes.
 
-#### Benchmark multiple executions
+#### Benchmarking multiple executions
 
 You can simply benchmark multiple executions using the same text and pattern to smooth out deviations in time:
 
@@ -47,7 +47,7 @@ This is the same example as [above](#Simple-example) but with the `-n 10` argume
 
 #### Benchmarking multiple algorithms
 
-It is possible to benchmark multiple algorithms at the same time. Let's expand the example from [above](#Benchmark-multiple-executions) to do so:
+It is possible to benchmark multiple algorithms at the same time. Let's expand the example from [above](#Benchmarking-multiple-executions) to do so:
 
 ```
 aas-benchmark naive,horspool -t 1000000 -p 5 -n 10
