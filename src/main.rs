@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let durations =
                 measure_multiple(pattern, text, algorithm_fn.unwrap(), cli_params.executions);
 
-            if cli_params.print_csv {
+            if !cli_params.human_readble {
                 MeasureResult::new(
                     &algorithm,
                     text.len(),

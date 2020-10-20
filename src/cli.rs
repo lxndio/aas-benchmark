@@ -6,8 +6,8 @@ use crate::range::Range;
 pub struct CLIParams {
     pub algorithms: Vec<String>,
 
+    pub human_readble: bool,
     pub pattern_from_text: bool,
-    pub print_csv: bool,
     pub random_text: bool,
     pub random_pattern_from_text: bool,
 
@@ -36,8 +36,8 @@ impl CLIParams {
         .collect();
 
         // Bool value parameters
+        let human_readble: bool = matches.is_present("human_readble");
         let pattern_from_text: bool = matches.is_present("pattern_from_text");
-        let print_csv: bool = matches.is_present("print_csv");
         let random_text: bool = matches.is_present("random_text");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
 
@@ -68,8 +68,8 @@ impl CLIParams {
         Self {
             algorithms,
 
+            human_readble,
             pattern_from_text,
-            print_csv,
             random_text,
             random_pattern_from_text,
 

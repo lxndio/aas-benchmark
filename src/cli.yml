@@ -29,8 +29,8 @@ args:
         long: patternfromtext
         takes_value: true
         value_name: range
-    - print_csv:
-        help: Print a comma-seperated values summary to be used in other applications
-        short: c
-        long: csv
+    - human_readble:
+        help: Print a human-readble summary instead of a comma-seperated values summary
+        short: h
+        long: human-readble
         takes_value: false
