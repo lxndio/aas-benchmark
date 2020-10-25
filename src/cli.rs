@@ -63,7 +63,7 @@ impl CLIParams {
             .value_of("pattern_from_text")
             .unwrap_or("0..0")
             .parse()
-            .unwrap_or(Range::new(0, 0));
+            .unwrap_or(Range::new(0, 0, 0));
 
         Self {
             algorithms,
@@ -121,6 +121,9 @@ impl CLIParams {
 
         if self.pattern_from_text && self.pattern_from_text_range.is_empty() {
             println!("The --patternfromtext argument needs a valid, non-empty range.\n");
+            valid = false;
+        } else if self.pattern_from_text && self.pattern_from_text_range.step_size != 1 {
+            println!("The --patternfromtext argument does not take a step size.\n");
             valid = false;
         }
 

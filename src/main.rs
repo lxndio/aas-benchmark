@@ -1,5 +1,8 @@
 #[macro_use]
 extern crate clap;
+#[macro_use]
+extern crate lazy_static;
+extern crate regex;
 
 mod algorithms;
 mod cli;
