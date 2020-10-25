@@ -3,6 +3,13 @@ use std::str::FromStr;
 
 use regex::Regex;
 
+/// A struct to represent a range starting and ending at specific values
+/// and increasing by a given step size.
+///
+/// The `end` value is exclusive.
+///
+/// Can be represented as a string `start..end,step_size` with the `,step_size`
+/// part being option and can be parsed from a `Str` using `FromStr`.
 pub struct Range {
     pub start: usize,
     pub end: usize,
@@ -20,6 +27,18 @@ impl Range {
 
     pub fn is_empty(&self) -> bool {
         self.start >= self.end
+    }
+
+    /// Returns `start` if it is the only value in the `Range`.
+    ///
+    /// A `Range` contains only one value if the `end` value is one greater
+    /// than the `start` value because the `end` value is exclusive.
+    pub fn single(&self) -> Option<usize> {
+        if self.end == self.start + 1 {
+            Some(self.start)
+        } else {
+            None
+        }
     }
 }
 
