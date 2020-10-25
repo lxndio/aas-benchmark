@@ -30,8 +30,8 @@ pub fn measure(
 /// the standard signature of the pattern matching algorithms
 /// `(&[u8], &[u8]) -> Vec<usize>`.
 ///
-/// It returns a `Vec<Duration>`, the runtimes of the exeuctions
-/// of the given functions.
+/// It returns a `(Vec<Duration>, usize)`, the runtimes of the exeuctions
+/// of the given functions and the number of matches.
 pub fn measure_multiple(
     pattern: &[u8],
     text: &[u8],
@@ -48,6 +48,28 @@ pub fn measure_multiple(
     let matches = measure(pattern, text, f).1;
 
     (durations, matches)
+}
+
+/// A function to measure the runtimes of multiple executions of an algorithm
+/// using a different patterns.
+///
+/// It measures the algorithm `n` times using each of the `patterns`.
+///
+/// It returns a `Vec<(Vec<Duration>, usize)` containing tuples of the runtimes
+/// of the exeuctions and the number of matches for each pattern used.
+pub fn measure_multiple_different_patterns(
+    patterns: Vec<&[u8]>,
+    text: &[u8],
+    f: fn(&[u8], &[u8]) -> Vec<usize>,
+    n: usize,
+) -> Vec<(Vec<Duration>, usize)> {
+    let mut measurements: Vec<(Vec<Duration>, usize)> = Vec::new();
+
+    for pattern in patterns {
+        measurements.push(measure_multiple(pattern, text, f, n));
+    }
+
+    measurements
 }
 
 /// A function to calculate the average duration of a `Vec<Duration>`
