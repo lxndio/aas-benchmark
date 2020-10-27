@@ -14,10 +14,9 @@ mod range;
 use std::error::Error;
 
 use cli::CLIParams;
-use generate::{gen_pattern, gen_rand_bytes};
+use generate::{gen_patterns, gen_rand_bytes};
 use match_algorithm::match_algorithm;
-use measure::measure_multiple;
-use measure::measure_result::MeasureResult;
+use measure::measure_multiple_different_patterns;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Get CLI parameters using Clap
@@ -27,38 +26,33 @@ fn main() -> Result<(), Box<dyn Error>> {
     // here because of the checks done in cli_params.valid()
     if cli_params.valid() {
         let text = &gen_rand_bytes(cli_params.random_text_length);
-        let pattern = gen_pattern(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
+        let patterns = gen_patterns(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
 
         let mut csv_header_printed = false;
 
         for algorithm in cli_params.algorithms {
             let algorithm_fn = match_algorithm(&algorithm);
 
-            let durations =
-                measure_multiple(pattern, text, algorithm_fn.unwrap(), cli_params.executions);
+            let measure_results = measure_multiple_different_patterns(
+                &algorithm,
+                &patterns,
+                text,
+                algorithm_fn.unwrap(),
+                cli_params.executions,
+            );
 
             if !cli_params.human_readble {
-                MeasureResult::new(
-                    &algorithm,
-                    text.len(),
-                    pattern.len(),
-                    durations.1,
-                    durations.0,
-                )
-                .print_csv(!csv_header_printed)?;
+                for measure_result in measure_results {
+                    measure_result.print_csv(!csv_header_printed);
 
-                if !csv_header_printed {
-                    csv_header_printed = true;
+                    if !csv_header_printed {
+                        csv_header_printed = true;
+                    }
                 }
             } else {
-                MeasureResult::new(
-                    &algorithm,
-                    text.len(),
-                    pattern.len(),
-                    durations.1,
-                    durations.0,
-                )
-                .print(false);
+                for measure_result in measure_results {
+                    measure_result.print(false);
+                }
             }
         }
     }

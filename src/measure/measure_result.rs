@@ -57,7 +57,7 @@ impl MeasureResult {
     ///
     /// If `print_durations` is `true`, it also prints a list containing
     /// the durations of each execution.
-    pub fn print(&mut self, print_durations: bool) -> &mut Self {
+    pub fn print(&self, print_durations: bool) {
         // Print algorithm name
         println!("===== {} =====", self.algorithm_name);
 
@@ -78,8 +78,6 @@ impl MeasureResult {
         if print_durations {
             println!("{:?}\n", self.durations);
         }
-
-        self
     }
 
     pub fn print_csv(&self, print_header: bool) -> Result<(), Box<dyn Error>> {

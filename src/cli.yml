@@ -19,7 +19,7 @@ args:
         takes_value: true
         value_name: length
     - random_pattern_from_text:
-        help: Takes a random part from the text with given length as a pattern
+        help: Takes a random part from the text with given length as a pattern (e.g. 10 for length 10 or 1..10 for lengths 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
         short: p
         long: randompatternfromtext
         takes_value: true

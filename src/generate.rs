@@ -24,14 +24,18 @@ fn rand_pattern_from_bytes(bytes: &[u8], length: usize) -> &[u8] {
     &bytes[left..left + length]
 }
 
-pub fn gen_pattern<'a>(text: &'a [u8], cli_params: &CLIParams) -> Option<&'a [u8]> {
-    let pattern;
+pub fn gen_patterns<'a>(text: &'a [u8], cli_params: &CLIParams) -> Option<Vec<&'a [u8]>> {
+    let mut patterns = Vec::new();
 
     if cli_params.random_pattern_from_text {
-        pattern = Some(rand_pattern_from_bytes(
-            text,
-            cli_params.random_pattern_from_text_length,
-        ));
+        // Check if one or multiple pattern should be generated
+        if let Some(length) = cli_params.random_pattern_from_text_length.single() {
+            patterns.push(rand_pattern_from_bytes(text, length));
+        } else {
+            for length in cli_params.random_pattern_from_text_length.iter() {
+                patterns.push(rand_pattern_from_bytes(text, length));
+            }
+        }
     } else if cli_params.pattern_from_text {
         let start = cli_params.pattern_from_text_range.start;
         let end = cli_params.pattern_from_text_range.end;
@@ -40,13 +44,13 @@ pub fn gen_pattern<'a>(text: &'a [u8], cli_params: &CLIParams) -> Option<&'a [u8
         // requires pattern_from_text_range to be a non-empty range,
         // i.e. start is less than end
         if end < text.len() {
-            pattern = Some(&text[start..end]);
-        } else {
-            pattern = None;
+            patterns.push(&text[start..end]);
         }
-    } else {
-        pattern = None;
     }
 
-    pattern
+    if !patterns.is_empty() {
+        Some(patterns)
+    } else {
+        None
+    }
 }

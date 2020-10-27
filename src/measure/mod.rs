@@ -3,6 +3,8 @@ pub mod measure_result;
 
 use std::time::{Duration, SystemTime};
 
+use crate::measure::measure_result::MeasureResult;
+
 /// A function to measure the runtime of an algorithm.
 ///
 /// It takes a `pattern` and a `text` and executes a function `f` using
@@ -50,26 +52,34 @@ pub fn measure_multiple(
     (durations, matches)
 }
 
-/// A function to measure the runtimes of multiple executions of an algorithm
+/// Measures the runtimes of multiple executions of an algorithm
 /// using a different patterns.
 ///
 /// It measures the algorithm `n` times using each of the `patterns`.
 ///
-/// It returns a `Vec<(Vec<Duration>, usize)` containing tuples of the runtimes
-/// of the exeuctions and the number of matches for each pattern used.
+/// It returns a `Vec<MeasureResult>` containing the results of this measurement.
 pub fn measure_multiple_different_patterns(
-    patterns: Vec<&[u8]>,
+    algorithm: &str,
+    patterns: &Vec<&[u8]>,
     text: &[u8],
     f: fn(&[u8], &[u8]) -> Vec<usize>,
     n: usize,
-) -> Vec<(Vec<Duration>, usize)> {
-    let mut measurements: Vec<(Vec<Duration>, usize)> = Vec::new();
+) -> Vec<MeasureResult> {
+    let mut measure_results: Vec<MeasureResult> = Vec::new();
 
     for pattern in patterns {
-        measurements.push(measure_multiple(pattern, text, f, n));
+        let (durations, matches) = measure_multiple(pattern, text, f, n);
+
+        measure_results.push(MeasureResult::new(
+            &algorithm,
+            text.len(),
+            pattern.len(),
+            matches,
+            durations,
+        ));
     }
 
-    measurements
+    measure_results
 }
 
 /// A function to calculate the average duration of a `Vec<Duration>`

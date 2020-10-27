@@ -14,6 +14,7 @@ pub struct Range {
     pub start: usize,
     pub end: usize,
     pub step_size: usize,
+    pub values: Vec<usize>,
 }
 
 impl Range {
@@ -22,6 +23,7 @@ impl Range {
             start,
             end,
             step_size,
+            values: Vec::new(), // Only generated when needed
         }
     }
 
@@ -39,6 +41,10 @@ impl Range {
         } else {
             None
         }
+    }
+
+    pub fn iter(&self) -> RangeIterator {
+        RangeIterator::from_range(&self)
     }
 }
 
@@ -84,6 +90,41 @@ impl FromStr for Range {
             Ok(Range::new(start, end, step_size))
         } else {
             return Err(ParseRangeError);
+        }
+    }
+}
+
+pub struct RangeIterator {
+    curr: usize,
+    next: usize,
+    step_size: usize,
+    end: usize,
+}
+
+impl RangeIterator {
+    pub fn from_range(range: &Range) -> Self {
+        RangeIterator {
+            curr: range.start,
+            next: range.start,
+            step_size: range.step_size,
+            end: range.end,
+        }
+    }
+}
+
+impl Iterator for RangeIterator {
+    type Item = usize;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let new_next = self.next + self.step_size;
+
+        self.curr = self.next;
+        self.next = new_next;
+
+        if self.curr < self.end {
+            Some(self.curr)
+        } else {
+            None
         }
     }
 }
