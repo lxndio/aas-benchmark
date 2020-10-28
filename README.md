@@ -4,11 +4,17 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
 ## Table of Contents
 
 1. [Build Instructions](#Build-Instructions)
-  1. [Steps](#Steps)
+  - [Steps](#Steps)
 2. [Usage Instructions](#Usage-Instructions)
-  1. [Examples](#Examples)
-  2. [List of Algorithms](#List-of-Algorithms)
-  3. [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
+  - [Specifying Algorithms](#Specifying-Algorithms)
+  - [Specifying a Number of Executions](#Specifying-a-Number-of-Executions)
+  - [Specifying a Text Source](#Specifying-a-Text-Source)
+    - [Random Generated Text](#Random-Generated-Text)
+  - [Specifying a Pattern Source](#Specifying-a-Pattern-Source)
+    - [Pattern From Fixed Position in Text](#Pattern-From-Fixed-Position-in-Text)
+    - [Pattern(s) From Random Position in Text](#Patterns-From-Random-Position-in-Text)
+  - [List of Algorithms](#List-of-Algorithms)
+  - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
 
 ## Build Instructions
 
@@ -28,41 +34,64 @@ How can follow these steps to compile aas-benchmark yourself:
 
 ## Usage Instructions
 
-This part of the README will explain in further detail how to use aas-benchmark using some examples. Make sure you've read the chapter [Build instructions](#Build-instructions).
+This part of the README will explain in further detail how to use aas-benchmark using some examples. Make sure you've read the chapter [Build instructions](#Build-Instructions).
 
-### Examples
+### Specifying Algorithms
 
-#### Simple example
-
-Let's have a look at the most simple way to benchmark an algorithm:
+The tool requires one parameter which specifies the algorithm or algorithms that you want to benchmark. You can either set a single algorithm or multiple algorithms by giving a comma-seperated list. Notice that there mustn't be spaces around the commas.
 
 ```
-aas-benchmark naive -t 1000000 -p 5
+aas-benchmark naive ...
+aas-benchmark naive,horspool,kmp ...
 ```
 
-This command will benchmark the algorithm `naive`. You can find a complete [list of supported algorithms](#List-of-Algorithms) below.
+### Specifying a Number of Executions
 
-It is required to always give a text source and a pattern source as argument. Here we are using the `-t 1000000` argument to generate a random text with a length of 1 000 000 bytes. The `-p 5` argument specifies that the pattern should be a substring of the text with a length of 5 bytes.
-
-#### Benchmarking multiple executions
-
-You can simply benchmark multiple executions using the same text and pattern to smooth out deviations in time:
+If you like, you can specify a number of executions for each algorithm. You could for example use
 
 ```
-aas-benchmark naive -t 1000000 -p 5 -n 10
+aas-benchmark naive,horspool -n 10 ...
 ```
 
-This is the same example as [above](#Simple-example) but with the `-n 10` argument added. This argument specifies that the given algorithm(s) should be executed 10 times each using the same text and pattern.
+to run both the `naive` and `horspool` algorithm 10 times to smooth out deviations in runtime. If you set different [pattern lengths](#Specifying-a-Pattern-Source), the tool will run the set number of executions for each algorithm and pattern length.
 
-#### Benchmarking multiple algorithms
+### Specifying a Text Source
 
-It is possible to benchmark multiple algorithms at the same time. Let's expand the example from [above](#Benchmarking-multiple-executions) to do so:
+#### Random Generated Text
+
+You can generate a random text with a length of `m` bytes by using the `-t` or `--randomtext` argument:
 
 ```
-aas-benchmark naive,horspool -t 1000000 -p 5 -n 10
+aas-benchmark naive -t m ...
 ```
 
-This command will benchmark the naive algorithm 10 times using a randomly generated text and pattern and then benchmark the Horspool algorithm 10 times using the same text and pattern.
+### Specifying a Pattern Source
+
+#### Pattern From Fixed Position in Text
+
+To use a pattern from a fixed position in the given text, set the `--patternfromtext` argument:
+
+```
+aas-benchmark naive ... --patternfromtext 10..15
+```
+
+This would take as the pattern the characters at positions 10 to 14 from the given text. Notice that the upper bound is exclusive.
+
+#### Pattern(s) From Random Position in Text
+
+To use a pattern from a random position in the given text, set the `-p` or `--randompatternfromtext` argument:
+
+```
+aas-benchmark naive ... -p 10
+aas-benchmark naive ... -p 1..11
+aas-benchmark naive ... -p 1..101,10
+```
+
+The first line would take a string of length 10 from a random position in the given text and set is a the pattern.
+
+The second line determines a random position in the given text and takes strings of length 1, length 2 up to length 10 (upper bound is exclusive) as patterns.
+
+The third line does the same as the second line with the difference that it has a step size of 10, so it would the strings of length 1, 11, 21, 31 and so on.
 
 ### List of Algorithms
 
