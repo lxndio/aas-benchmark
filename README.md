@@ -3,9 +3,9 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
 
 ## Table of Contents
 
-1. [Build Instructions](#Build-Instructions)
+- [Build Instructions](#Build-Instructions)
   - [Steps](#Steps)
-2. [Usage Instructions](#Usage-Instructions)
+- [Usage Instructions](#Usage-Instructions)
   - [Specifying Algorithms](#Specifying-Algorithms)
   - [Specifying a Number of Executions](#Specifying-a-Number-of-Executions)
   - [Specifying a Text Source](#Specifying-a-Text-Source)
