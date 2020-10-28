@@ -18,6 +18,16 @@ args:
         long: randomtext
         takes_value: true
         value_name: length
+    - text_from_file:
+        help: Load a text from a file
+        long: textfromfile
+        takes_value: true
+        value_name: file_name
+    - text_from_file_binary:
+        help: Load a binary text from a file
+        long: textfromfilebin
+        takes_value: true
+        value_name: file_name
     - random_pattern_from_text:
         help: Takes a random part from the text with given length as a pattern (e.g. 10 for length 10 or 1..10 for lengths 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
         short: p

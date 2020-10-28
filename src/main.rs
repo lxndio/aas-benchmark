@@ -10,6 +10,7 @@ mod generate;
 mod match_algorithm;
 mod measure;
 mod range;
+mod text;
 
 use std::error::Error;
 
@@ -17,6 +18,7 @@ use cli::CLIParams;
 use generate::{gen_patterns, gen_rand_bytes};
 use match_algorithm::match_algorithm;
 use measure::measure_multiple_different_patterns;
+use text::generate_text;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Get CLI parameters using Clap
@@ -25,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Only continue if all given parameters are valid, all unwraps are safe
     // here because of the checks done in cli_params.valid()
     if cli_params.valid() {
-        let text = &gen_rand_bytes(cli_params.random_text_length);
+        let text = &generate_text(&cli_params);
         let patterns = gen_patterns(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
 
         let mut csv_header_printed = false;
@@ -43,7 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             if !cli_params.human_readble {
                 for measure_result in measure_results {
-                    measure_result.print_csv(!csv_header_printed);
+                    measure_result.print_csv(!csv_header_printed)?;
 
                     if !csv_header_printed {
                         csv_header_printed = true;

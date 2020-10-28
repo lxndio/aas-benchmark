@@ -1,21 +1,22 @@
-use clap::App;
+use clap::{App, ArgMatches};
 
 use crate::match_algorithm::match_algorithm;
 use crate::range::Range;
+use crate::text::TextSource;
 
 pub struct CLIParams {
     pub algorithms: Vec<String>,
 
     pub human_readble: bool,
     pub pattern_from_text: bool,
-    pub random_text: bool,
     pub random_pattern_from_text: bool,
 
     pub executions: usize,
-    pub random_text_length: usize,
     pub random_pattern_from_text_length: Range,
 
     pub pattern_from_text_range: Range,
+
+    pub text_source: Result<TextSource, &'static str>,
 }
 
 impl CLIParams {
@@ -49,11 +50,6 @@ impl CLIParams {
             .unwrap_or("1") // 1 so that if parameter is not given, the default of one execution is used
             .parse()
             .unwrap_or(0); // 0 so that if invalid parameter is given, validation fails
-        let random_text_length: usize = matches
-            .value_of("random_text")
-            .unwrap_or("0") // 0 so that if no text source is set, validation fails
-            .parse()
-            .unwrap_or(0); // 0 so that if invalid parameter is given, validation fails
 
         // Other type paramters
         let pattern_from_text_range: Range = matches
@@ -84,14 +80,14 @@ impl CLIParams {
 
             human_readble,
             pattern_from_text,
-            random_text,
             random_pattern_from_text,
 
             executions,
-            random_text_length,
             random_pattern_from_text_length,
 
             pattern_from_text_range,
+
+            text_source: Self::set_text_source(&matches),
         }
     }
 
@@ -108,11 +104,6 @@ impl CLIParams {
         }
 
         // Bool value parameters
-        if !self.random_text {
-            println!("At least one text source has to be set. \
-                You could for example set `-t 1000000` to generate a random text with a length of 1_000_000 characters.\n");
-            valid = false;
-        }
         if !(self.random_pattern_from_text || self.pattern_from_text) {
             println!("At least one pattern source has to be set. \
                 You could for example set `-p 5` to take a random pattern of length 5 from the text.\n");
@@ -128,7 +119,7 @@ impl CLIParams {
             println!("The -n argument needs to be a positive integer greater than 0.\n");
             valid = false;
         }
-        if self.random_text && self.random_text_length == 0 {
+        if self.text_source == Ok(TextSource::RandomText) && self.random_text_length == 0 {
             println!("The -t argument needs to be a positive integer greater than 0.\n");
             valid = false;
         }
@@ -153,6 +144,72 @@ impl CLIParams {
             }
         }
 
+        if self.text_source.is_err() {
+            // TODO SPECIFIC ERROR MESSAGE HERE
+            println!("At least one text source has to be set. \
+                You could for example set `-t 1000000` to generate a random text with a length of 1_000_000 characters.\n");
+            valid = false;
+        }
+
         valid
+    }
+
+    fn set_text_source(matches: &ArgMatches) -> Result<TextSource, &str> {
+        let random_text: bool = matches.is_present("random_text");
+        let text_from_file: bool = matches.is_present("text_from_file");
+        let text_from_file_binary: bool = matches.is_present("text_from_file_binary");
+
+        let sources = vec![random_text, text_from_file, text_from_file_binary];
+
+        match only(&sources) {
+            Some(0) => {
+                let random_text_length: usize = matches
+                    .value_of("random_text")
+                    .unwrap_or("0") // 0 so that if no text source is set, validation fails
+                    .parse()
+                    .unwrap_or(0); // 0 so that if invalid parameter is given, validation fails
+
+                // TODO better error handling, probably using ok_or() above
+                if random_text_length > 0 {
+                    Ok(TextSource::RandomText(random_text_length))
+                } else {
+                    Err("The -t argument needs to be a positive integer greater than 0.")
+                }
+            }
+            Some(1) => {
+                let file_name = String::from(matches.value_of("text_from_file").unwrap_or(""));
+
+                // TODO better error handling, probably using ok_or() above
+                if file_name != "" {
+                    Ok(TextSource::FromFile(file_name))
+                } else {
+                    Err("The --textfromfile argument needs a valid parameter.")
+                }
+            }
+            Some(2) => {
+                let file_name = String::from(matches.value_of("text_from_file_binary").unwrap_or(""));
+
+                // TODO better error handling, probably using ok_or() above
+                if file_name != "" {
+                    Ok(TextSource::FromFileBinary(file_name))
+                } else {
+                    Err("The --textfromfilebin argument needs a valid parameter.")
+                }
+            }
+            None => Err("You can only set one text source."),
+            _ => Err("Internal error while processing the text source."),
+        }
+    }
+}
+
+fn only_one(bools: &Vec<bool>) -> bool {
+    bools.iter().filter(|x| **x).count() == 1
+}
+
+fn only(bools: &Vec<bool>) -> Option<usize> {
+    if only_one(bools) {
+        Some(bools.iter().enumerate().find(|(i, x)| **x).unwrap().0)
+    } else {
+        None
     }
 }
