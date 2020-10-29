@@ -16,7 +16,7 @@ pub struct CLIParams {
 
     pub pattern_from_text_range: Range,
 
-    pub text_source: Result<TextSource, &'static str>,
+    pub text_source: TextSource,
 }
 
 impl CLIParams {
@@ -119,10 +119,6 @@ impl CLIParams {
             println!("The -n argument needs to be a positive integer greater than 0.\n");
             valid = false;
         }
-        if self.text_source == Ok(TextSource::RandomText) && self.random_text_length == 0 {
-            println!("The -t argument needs to be a positive integer greater than 0.\n");
-            valid = false;
-        }
 
         // Other type paramters
         if self.pattern_from_text && self.pattern_from_text_range.is_empty() {
@@ -144,22 +140,25 @@ impl CLIParams {
             }
         }
 
-        if self.text_source.is_err() {
+        if let TextSource::Error(err) = self.text_source {
             // TODO SPECIFIC ERROR MESSAGE HERE
-            println!("At least one text source has to be set. \
-                You could for example set `-t 1000000` to generate a random text with a length of 1_000_000 characters.\n");
+            println!("Error while parsing text source: {}", err);
             valid = false;
         }
 
         valid
     }
 
-    fn set_text_source(matches: &ArgMatches) -> Result<TextSource, &str> {
+    fn set_text_source(matches: &ArgMatches) -> TextSource {
         let random_text: bool = matches.is_present("random_text");
         let text_from_file: bool = matches.is_present("text_from_file");
         let text_from_file_binary: bool = matches.is_present("text_from_file_binary");
 
         let sources = vec![random_text, text_from_file, text_from_file_binary];
+
+        if none(&sources) {
+            return TextSource::Error("At least one text source has to be set.");
+        }
 
         match only(&sources) {
             Some(0) => {
@@ -171,9 +170,9 @@ impl CLIParams {
 
                 // TODO better error handling, probably using ok_or() above
                 if random_text_length > 0 {
-                    Ok(TextSource::RandomText(random_text_length))
+                    TextSource::RandomText(random_text_length)
                 } else {
-                    Err("The -t argument needs to be a positive integer greater than 0.")
+                    TextSource::Error("The -t argument needs to be a positive integer greater than 0.")
                 }
             }
             Some(1) => {
@@ -181,9 +180,9 @@ impl CLIParams {
 
                 // TODO better error handling, probably using ok_or() above
                 if file_name != "" {
-                    Ok(TextSource::FromFile(file_name))
+                    TextSource::FromFile(file_name)
                 } else {
-                    Err("The --textfromfile argument needs a valid parameter.")
+                    TextSource::Error("The --textfromfile argument needs a valid parameter.")
                 }
             }
             Some(2) => {
@@ -191,19 +190,23 @@ impl CLIParams {
 
                 // TODO better error handling, probably using ok_or() above
                 if file_name != "" {
-                    Ok(TextSource::FromFileBinary(file_name))
+                    TextSource::FromFileBinary(file_name)
                 } else {
-                    Err("The --textfromfilebin argument needs a valid parameter.")
+                    TextSource::Error("The --textfromfilebin argument needs a valid parameter.")
                 }
             }
-            None => Err("You can only set one text source."),
-            _ => Err("Internal error while processing the text source."),
+            None => TextSource::Error("You can only set one text source."),
+            _ => TextSource::Error("Internal error while processing the text source."),
         }
     }
 }
 
 fn only_one(bools: &Vec<bool>) -> bool {
     bools.iter().filter(|x| **x).count() == 1
+}
+
+fn none(bools: &Vec<bool>) -> bool {
+    bools.iter().filter(|x| **x).count() == 0
 }
 
 fn only(bools: &Vec<bool>) -> Option<usize> {

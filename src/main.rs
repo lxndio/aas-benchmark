@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Only continue if all given parameters are valid, all unwraps are safe
     // here because of the checks done in cli_params.valid()
     if cli_params.valid() {
-        let text = &generate_text(&cli_params);
+        let text = &generate_text(&cli_params).unwrap();
         let patterns = gen_patterns(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
 
         let mut csv_header_printed = false;
