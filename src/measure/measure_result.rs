@@ -93,6 +93,7 @@ impl MeasureResult {
                 self.text_length,
                 self.pattern_length,
                 execution,
+                self.matches,
                 time_ms,
             ))?;
         }
