@@ -172,7 +172,9 @@ impl CLIParams {
                 if random_text_length > 0 {
                     TextSource::RandomText(random_text_length)
                 } else {
-                    TextSource::Error("The -t argument needs to be a positive integer greater than 0.")
+                    TextSource::Error(
+                        "The -t argument needs to be a positive integer greater than 0.",
+                    )
                 }
             }
             Some(1) => {
@@ -186,7 +188,8 @@ impl CLIParams {
                 }
             }
             Some(2) => {
-                let file_name = String::from(matches.value_of("text_from_file_binary").unwrap_or(""));
+                let file_name =
+                    String::from(matches.value_of("text_from_file_binary").unwrap_or(""));
 
                 // TODO better error handling, probably using ok_or() above
                 if file_name != "" {
