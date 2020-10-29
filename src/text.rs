@@ -5,7 +5,7 @@ use std::io::BufReader;
 use crate::cli::CLIParams;
 use crate::generate::gen_rand_bytes;
 
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum TextSource {
     RandomText(usize),
     FromFile(String),

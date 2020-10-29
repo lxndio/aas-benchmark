@@ -16,9 +16,9 @@ mod text;
 use std::error::Error;
 
 use cli::CLIParams;
-use generate::gen_patterns;
 use match_algorithm::match_algorithm;
 use measure::measure_multiple_different_patterns;
+use pattern::generate_patterns;
 use text::generate_text;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -33,38 +33,46 @@ fn main() -> Result<(), Box<dyn Error>> {
         if text.is_ok() {
             let text = &text.unwrap();
 
-            let patterns = gen_patterns(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
+            let patterns = generate_patterns(&cli_params, text);
 
-            let mut csv_header_printed = false;
+            if patterns.is_ok() {
+                let patterns = patterns.unwrap();
 
-            for algorithm in cli_params.algorithms {
-                let algorithm_fn = match_algorithm(&algorithm);
+                let mut csv_header_printed = false;
 
-                let measure_results = measure_multiple_different_patterns(
-                    &algorithm,
-                    &patterns,
-                    text,
-                    algorithm_fn.unwrap(),
-                    cli_params.executions,
-                );
+                for algorithm in cli_params.algorithms {
+                    let algorithm_fn = match_algorithm(&algorithm);
 
-                if !cli_params.human_readble {
-                    for measure_result in measure_results {
-                        measure_result.print_csv(!csv_header_printed)?;
+                    let measure_results = measure_multiple_different_patterns(
+                        &algorithm,
+                        &patterns,
+                        text,
+                        algorithm_fn.unwrap(),
+                        cli_params.executions,
+                    );
 
-                        if !csv_header_printed {
-                            csv_header_printed = true;
+                    if !cli_params.human_readble {
+                        for measure_result in measure_results {
+                            measure_result.print_csv(!csv_header_printed)?;
+
+                            if !csv_header_printed {
+                                csv_header_printed = true;
+                            }
+                        }
+                    } else {
+                        for measure_result in measure_results {
+                            measure_result.print(false);
                         }
                     }
-                } else {
-                    for measure_result in measure_results {
-                        measure_result.print(false);
-                    }
+                }
+            } else {
+                if let Err(err) = patterns {
+                    println!("Error while generating pattern source: {}", err);
                 }
             }
         } else {
             if let Err(err) = text {
-                println!("Error while reading text file: {}", err);
+                println!("Error while generating text source: {}", err);
             }
         }
     }

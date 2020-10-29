@@ -10,6 +10,7 @@ use regex::Regex;
 ///
 /// Can be represented as a string `start..end,step_size` with the `,step_size`
 /// part being option and can be parsed from a `Str` using `FromStr`.
+#[derive(Debug)]
 pub struct Range {
     pub start: usize,
     pub end: usize,
