@@ -14,7 +14,6 @@ pub struct Range {
     pub start: usize,
     pub end: usize,
     pub step_size: usize,
-    pub values: Vec<usize>,
 }
 
 impl Range {
@@ -23,7 +22,6 @@ impl Range {
             start,
             end,
             step_size,
-            values: Vec::new(), // Only generated when needed
         }
     }
 
@@ -45,6 +43,12 @@ impl Range {
 
     pub fn iter(&self) -> RangeIterator {
         RangeIterator::from_range(&self)
+    }
+}
+
+impl PartialEq for Range {
+    fn eq(&self, other: &Self) -> bool {
+        self.start == other.start && self.end == other.end && self.step_size == other.step_size
     }
 }
 

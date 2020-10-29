@@ -13,7 +13,7 @@ pub enum TextSource {
     Error(&'static str),
 }
 
-/// Decides how text should be generated based on the given CLI arguments
+/// Decides how a text should be generated based on the given CLI arguments
 /// and calls the appropriate function.
 pub fn generate_text(cli_params: &CLIParams) -> Result<Vec<u8>, String> {
     match &cli_params.text_source {

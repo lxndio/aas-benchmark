@@ -9,6 +9,7 @@ mod cli;
 mod generate;
 mod match_algorithm;
 mod measure;
+mod pattern;
 mod range;
 mod text;
 
