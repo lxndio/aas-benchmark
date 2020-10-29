@@ -15,7 +15,7 @@ mod text;
 use std::error::Error;
 
 use cli::CLIParams;
-use generate::{gen_patterns, gen_rand_bytes};
+use generate::gen_patterns;
 use match_algorithm::match_algorithm;
 use measure::measure_multiple_different_patterns;
 use text::generate_text;
@@ -27,34 +27,43 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Only continue if all given parameters are valid, all unwraps are safe
     // here because of the checks done in cli_params.valid()
     if cli_params.valid() {
-        let text = &generate_text(&cli_params).unwrap();
-        let patterns = gen_patterns(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
+        let text = generate_text(&cli_params);
 
-        let mut csv_header_printed = false;
+        if text.is_ok() {
+            let text = &text.unwrap();
 
-        for algorithm in cli_params.algorithms {
-            let algorithm_fn = match_algorithm(&algorithm);
+            let patterns = gen_patterns(text, &cli_params).expect("Could not generate pattern."); // TODO better error handling
 
-            let measure_results = measure_multiple_different_patterns(
-                &algorithm,
-                &patterns,
-                text,
-                algorithm_fn.unwrap(),
-                cli_params.executions,
-            );
+            let mut csv_header_printed = false;
 
-            if !cli_params.human_readble {
-                for measure_result in measure_results {
-                    measure_result.print_csv(!csv_header_printed)?;
+            for algorithm in cli_params.algorithms {
+                let algorithm_fn = match_algorithm(&algorithm);
 
-                    if !csv_header_printed {
-                        csv_header_printed = true;
+                let measure_results = measure_multiple_different_patterns(
+                    &algorithm,
+                    &patterns,
+                    text,
+                    algorithm_fn.unwrap(),
+                    cli_params.executions,
+                );
+
+                if !cli_params.human_readble {
+                    for measure_result in measure_results {
+                        measure_result.print_csv(!csv_header_printed)?;
+
+                        if !csv_header_printed {
+                            csv_header_printed = true;
+                        }
+                    }
+                } else {
+                    for measure_result in measure_results {
+                        measure_result.print(false);
                     }
                 }
-            } else {
-                for measure_result in measure_results {
-                    measure_result.print(false);
-                }
+            }
+        } else {
+            if let Err(err) = text {
+                println!("Error while reading text file: {}", err);
             }
         }
     }

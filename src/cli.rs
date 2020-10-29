@@ -41,7 +41,6 @@ impl CLIParams {
         // Bool value parameters
         let human_readble: bool = matches.is_present("human_readble");
         let pattern_from_text: bool = matches.is_present("pattern_from_text");
-        let random_text: bool = matches.is_present("random_text");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
 
         // Number value parameters
@@ -214,7 +213,7 @@ fn none(bools: &Vec<bool>) -> bool {
 
 fn only(bools: &Vec<bool>) -> Option<usize> {
     if only_one(bools) {
-        Some(bools.iter().enumerate().find(|(i, x)| **x).unwrap().0)
+        Some(bools.iter().enumerate().find(|(_, x)| **x).unwrap().0)
     } else {
         None
     }
