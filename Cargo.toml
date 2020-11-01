@@ -13,3 +13,8 @@ lazy_static = "1.4.0"
 rand = "0.7"
 regex = "1"
 serde = {version = "1.0.117", features = ["derive"]}
+
+[dependencies.cargo-husky]
+version = "1"
+default-features = false
+features = ["user-hooks"]
