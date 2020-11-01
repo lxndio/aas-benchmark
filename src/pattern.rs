@@ -1,3 +1,7 @@
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::BufReader;
+
 use crate::cli::CLIParams;
 use crate::generate::rand_pattern_from_bytes;
 use crate::range::Range;
@@ -5,6 +9,7 @@ use crate::range::Range;
 #[derive(Debug, PartialEq)]
 pub enum PatternSource {
     FromArgument(String),
+    FromFile(String),
     FromText(Range),
     FromTextRandom(Range),
     Error(&'static str),
@@ -14,10 +19,14 @@ pub enum PatternSource {
 /// and calls the appropriate function.
 pub fn generate_patterns<'a>(
     cli_params: &'a CLIParams,
-    text: &'a [u8],
-) -> Result<Vec<&'a [u8]>, String> {
+    text: &[u8],
+) -> Result<Vec<Vec<u8>>, String> {
     match &cli_params.pattern_source {
-        PatternSource::FromArgument(pattern) => Ok(vec![pattern.as_bytes()]),
+        PatternSource::FromArgument(pattern) => Ok(vec![pattern.as_bytes().to_vec()]),
+        PatternSource::FromFile(file_name) => match load_pattern_from_file(file_name) {
+            Ok(pattern) => Ok(vec![pattern]),
+            Err(err) => Err(err.to_string()),
+        },
         PatternSource::FromText(range) => {
             let start = range.start;
             let end = range.end;
@@ -26,7 +35,7 @@ pub fn generate_patterns<'a>(
             // requires pattern_from_text_range to be a non-empty range,
             // i.e. start is less than end
             if end < text.len() {
-                Ok(vec![&text[start..end]])
+                Ok(vec![(&text[start..end]).to_vec()])
             } else {
                 // TODO This should be checked in set_pattern_source()
                 Err(String::from("Pattern range end is out of text bounds."))
@@ -36,11 +45,23 @@ pub fn generate_patterns<'a>(
             let mut patterns = Vec::new();
 
             for length in range.iter() {
-                patterns.push(rand_pattern_from_bytes(text, length));
+                patterns.push(rand_pattern_from_bytes(text, length).to_vec());
             }
 
             Ok(patterns)
         }
         PatternSource::Error(err) => Err(String::from(*err)),
     }
+}
+
+/// Loads pattern from a file
+fn load_pattern_from_file(file_name: &str) -> std::io::Result<Vec<u8>> {
+    let file = File::open(file_name)?;
+    let mut reader = BufReader::new(file);
+
+    let mut pattern: Vec<u8> = Vec::new();
+
+    reader.read_to_end(&mut pattern)?;
+
+    Ok(pattern)
 }

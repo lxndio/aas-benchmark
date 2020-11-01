@@ -34,7 +34,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             let text = &text.unwrap();
 
             let patterns = generate_patterns(&cli_params, text);
-            println!("Patterns: {:?}", patterns);
 
             if patterns.is_ok() {
                 let patterns = patterns.unwrap();

@@ -60,7 +60,7 @@ pub fn measure_multiple(
 /// It returns a `Vec<MeasureResult>` containing the results of this measurement.
 pub fn measure_multiple_different_patterns(
     algorithm: &str,
-    patterns: &Vec<&[u8]>,
+    patterns: &Vec<Vec<u8>>,
     text: &[u8],
     f: fn(&[u8], &[u8]) -> Vec<usize>,
     n: usize,

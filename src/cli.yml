@@ -44,6 +44,11 @@ args:
         long: patternfromarg
         takes_value: true
         value_name: pattern
+    - pattern_from_file:
+        help: Load a pattern from a file
+        long: patternfromfile
+        takes_value: true
+        value_name: file_name
     - human_readble:
         help: Print a human-readble summary instead of a comma-seperated values summary
         short: h
