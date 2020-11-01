@@ -34,13 +34,14 @@ fn main() -> Result<(), Box<dyn Error>> {
             let text = &text.unwrap();
 
             let patterns = generate_patterns(&cli_params, text);
+            println!("Patterns: {:?}", patterns);
 
             if patterns.is_ok() {
                 let patterns = patterns.unwrap();
 
                 let mut csv_header_printed = false;
 
-                for algorithm in cli_params.algorithms {
+                for algorithm in cli_params.algorithms.iter() {
                     let algorithm_fn = match_algorithm(&algorithm);
 
                     let measure_results = measure_multiple_different_patterns(

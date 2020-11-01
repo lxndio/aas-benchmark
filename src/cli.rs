@@ -91,17 +91,36 @@ impl CLIParams {
     }
 
     fn set_pattern_source(matches: &ArgMatches) -> PatternSource {
+        let pattern_from_argument: bool = matches.is_present("pattern_from_argument");
         let pattern_from_text: bool = matches.is_present("pattern_from_text");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
 
-        let sources = vec![pattern_from_text, random_pattern_from_text];
+        let sources = vec![
+            pattern_from_argument,
+            pattern_from_text,
+            random_pattern_from_text,
+        ];
 
         if none(&sources) {
             return PatternSource::Error("At least one pattern source has to be set.");
         }
 
         match only(&sources) {
+            // Pattern from argument
             Some(0) => {
+                let pattern = String::from(matches.value_of("pattern_from_argument").unwrap_or(""));
+
+                // TODO better error handling, probably using ok_or() above
+                if pattern != "" {
+                    PatternSource::FromArgument(pattern)
+                } else {
+                    PatternSource::Error(
+                        "The --patternfromarg argument requires a valid, non-empty pattern.",
+                    )
+                }
+            }
+            // Pattern from text
+            Some(1) => {
                 let pattern_from_text_range: Range = matches
                     .value_of("pattern_from_text")
                     .unwrap_or("0..0")
@@ -121,7 +140,8 @@ impl CLIParams {
                     PatternSource::FromText(pattern_from_text_range)
                 }
             }
-            Some(1) => {
+            // Random pattern from text
+            Some(2) => {
                 let random_pattern_from_text_arg =
                     matches.value_of("random_pattern_from_text").unwrap_or("-1");
                 let random_pattern_from_text_length: Range = random_pattern_from_text_arg

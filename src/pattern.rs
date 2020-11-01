@@ -4,6 +4,7 @@ use crate::range::Range;
 
 #[derive(Debug, PartialEq)]
 pub enum PatternSource {
+    FromArgument(String),
     FromText(Range),
     FromTextRandom(Range),
     Error(&'static str),
@@ -12,10 +13,11 @@ pub enum PatternSource {
 /// Decides how a pattern should be generated based on the given CLI arguments
 /// and calls the appropriate function.
 pub fn generate_patterns<'a>(
-    cli_params: &CLIParams,
+    cli_params: &'a CLIParams,
     text: &'a [u8],
 ) -> Result<Vec<&'a [u8]>, String> {
     match &cli_params.pattern_source {
+        PatternSource::FromArgument(pattern) => Ok(vec![pattern.as_bytes()]),
         PatternSource::FromText(range) => {
             let start = range.start;
             let end = range.end;

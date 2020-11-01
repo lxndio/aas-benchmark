@@ -39,6 +39,11 @@ args:
         long: patternfromtext
         takes_value: true
         value_name: range
+    - pattern_from_argument:
+        help: Set a UTF-8 string as a pattern
+        long: patternfromarg
+        takes_value: true
+        value_name: pattern
     - human_readble:
         help: Print a human-readble summary instead of a comma-seperated values summary
         short: h
