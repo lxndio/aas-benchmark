@@ -10,9 +10,12 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
   - [Specifying a Number of Executions](#Specifying-a-Number-of-Executions)
   - [Specifying a Text Source](#Specifying-a-Text-Source)
     - [Random Generated Text](#Random-Generated-Text)
+    - [Text From File](#Text-From-File)
   - [Specifying a Pattern Source](#Specifying-a-Pattern-Source)
     - [Pattern From Fixed Position in Text](#Pattern-From-Fixed-Position-in-Text)
     - [Pattern(s) From Random Position in Text](#Patterns-From-Random-Position-in-Text)
+    - [Pattern From Argument](#Pattern-From-Argument)
+    - [Pattern From File](#Pattern-From-File)
   - [List of Algorithms](#List-of-Algorithms)
   - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
 
@@ -65,6 +68,16 @@ You can generate a random text with a length of `m` bytes by using the `-t` or `
 aas-benchmark naive -t m ...
 ```
 
+#### Text From File
+
+It is possible to load a text as a UTF-8 string from a file by using `--textfromfile`:
+
+```
+aas-benchmark naive ... --textfromfile text.txt
+```
+
+This would load the content of the file `text.txt` as the text.
+
 ### Specifying a Pattern Source
 
 #### Pattern From Fixed Position in Text
@@ -92,6 +105,26 @@ The first line would take a string of length 10 from a random position in the gi
 The second line determines a random position in the given text and takes strings of length 1, length 2 up to length 10 (upper bound is exclusive) as patterns.
 
 The third line does the same as the second line with the difference that it has a step size of 10, so it would the strings of length 1, 11, 21, 31 and so on.
+
+#### Pattern From Argument
+
+You can also specify a pattern as a UTF-8 string by using the `--patternfromarg` argument:
+
+```
+aas-benchmark naive ... --patternfromarg abc
+```
+
+This command would set the pattern as `abc`.
+
+#### Pattern From File
+
+It is possible to load a pattern as a UTF-8 string from a file by using `--patternfromfile`:
+
+```
+aas-benchmark naive ... --patternfromfile pattern.txt
+```
+
+This would load the content of the file `pattern.txt` as the pattern.
 
 ### List of Algorithms
 
