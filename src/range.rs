@@ -112,15 +112,15 @@ impl FromStr for Range {
 
             Ok(Range::new(start, end, step_size))
         } else if RE_SINGLE.is_match(s) {
-            let caps = RE.captures(s).unwrap();
+            let caps = RE_SINGLE.captures(s).unwrap();
 
             let single = caps
                 .name("single")
                 .map_or("0", |c| c.as_str())
                 .parse::<usize>()
                 .map_err(|_| ParseRangeError)?;
-            
-            Ok(Range::new(single, single+1, 1))
+
+            Ok(Range::new(single, single + 1, 1))
         } else {
             return Err(ParseRangeError);
         }

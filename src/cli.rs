@@ -144,7 +144,7 @@ impl CLIParams {
             }
             // Random pattern
             Some(2) => {
-                match matches.value_of("random_pattern_from_text").unwrap_or("-1").parse::<Range>() {
+                match matches.value_of("random_pattern").unwrap_or("-1").parse::<Range>() {
                     Ok(range) => {
                         if range.is_valid() {
                             PatternSource::Random(range)
