@@ -126,6 +126,14 @@ aas-benchmark naive ... --patternfromfile pattern.txt
 
 This would load the content of the file `pattern.txt` as the pattern.
 
+#### Random Pattern
+
+You can also use the `--randompattern` argument to generate a random pattern with a length of `m` bytes:
+
+```
+aas-benchmark naive ... --randompattern m
+```
+
 ### List of Algorithms
 
 Currently, these algorithms are supported:
