@@ -45,6 +45,20 @@ impl Range {
     pub fn iter(&self) -> RangeIterator {
         RangeIterator::from_range(&self)
     }
+
+    pub fn is_valid(&self) -> bool {
+        if self.is_empty() {
+            return false;
+        }
+
+        if let Some(length) = self.single() {
+            if length == 0 {
+                return false;
+            }
+        }
+
+        true
+    }
 }
 
 impl PartialEq for Range {
@@ -71,8 +85,12 @@ impl FromStr for Range {
             static ref RE: Regex =
                 Regex::new(r"^(?P<start>[0-9]+)\.\.(?P<end>[0-9]+)(?:,(?P<step_size>[0-9]+))?$")
                     .unwrap();
+            static ref RE_SINGLE: Regex = Regex::new(r"^(?P<single>[0-9]+)?$").unwrap();
         }
 
+        // Try parsing the input as a Range, if that failed try parsing it
+        // as a positive integer to make a single value range,
+        // otherwise return an error
         if RE.is_match(s) {
             let caps = RE.captures(s).unwrap();
 
@@ -93,6 +111,16 @@ impl FromStr for Range {
                 .map_err(|_| ParseRangeError)?;
 
             Ok(Range::new(start, end, step_size))
+        } else if RE_SINGLE.is_match(s) {
+            let caps = RE_SINGLE.captures(s).unwrap();
+
+            let single = caps
+                .name("single")
+                .map_or("0", |c| c.as_str())
+                .parse::<usize>()
+                .map_err(|_| ParseRangeError)?;
+
+            Ok(Range::new(single, single + 1, 1))
         } else {
             return Err(ParseRangeError);
         }

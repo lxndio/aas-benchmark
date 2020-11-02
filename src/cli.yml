@@ -29,11 +29,11 @@ args:
     #    takes_value: true
     #    value_name: file_name
     - random_pattern_from_text:
-        help: Takes a random part from the text with given length as a pattern (e.g. 10 for length 10 or 1..10 for lengths 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
+        help: Take one or multiple random parts from the text with given length(s) as patterns  (e.g. 10 for length 10 or 1..10 for lengths 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
         short: p
         long: randompatternfromtext
         takes_value: true
-        value_name: length
+        value_name: lengths
     - pattern_from_text:
         help: Takes a part from the text as a pattern using a given range (e.g. 0..10 for characters 0 to 9)
         long: patternfromtext
@@ -49,6 +49,11 @@ args:
         long: patternfromfile
         takes_value: true
         value_name: file_name
+    - random_pattern:
+        help: Generate one or multiple random patterns with given length(s) (e.g. 10 for length 10 or 1..10 for length 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
+        long: randompattern
+        takes_value: true
+        value_name: lengths
     - human_readble:
         help: Print a human-readble summary instead of a comma-seperated values summary
         short: h

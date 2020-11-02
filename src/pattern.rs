@@ -3,7 +3,7 @@ use std::io::prelude::*;
 use std::io::BufReader;
 
 use crate::cli::CLIParams;
-use crate::generate::rand_pattern_from_bytes;
+use crate::generate::{gen_rand_bytes, rand_pattern_from_bytes};
 use crate::range::Range;
 
 #[derive(Debug, PartialEq)]
@@ -12,6 +12,7 @@ pub enum PatternSource {
     FromFile(String),
     FromText(Range),
     FromTextRandom(Range),
+    Random(Range),
     Error(&'static str),
 }
 
@@ -46,6 +47,15 @@ pub fn generate_patterns<'a>(
 
             for length in range.iter() {
                 patterns.push(rand_pattern_from_bytes(text, length).to_vec());
+            }
+
+            Ok(patterns)
+        }
+        PatternSource::Random(range) => {
+            let mut patterns = Vec::new();
+
+            for length in range.iter() {
+                patterns.push(gen_rand_bytes(length));
             }
 
             Ok(patterns)
