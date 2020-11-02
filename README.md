@@ -16,6 +16,7 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
     - [Pattern(s) From Random Position in Text](#Patterns-From-Random-Position-in-Text)
     - [Pattern From Argument](#Pattern-From-Argument)
     - [Pattern From File](#Pattern-From-File)
+    - [Random Pattern](#Random-Pattern)
   - [List of Algorithms](#List-of-Algorithms)
   - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
 
