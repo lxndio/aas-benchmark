@@ -92,12 +92,14 @@ impl CLIParams {
 
     fn set_pattern_source(matches: &ArgMatches) -> PatternSource {
         let pattern_from_argument: bool = matches.is_present("pattern_from_argument");
+        let pattern_from_file: bool = matches.is_present("pattern_from_file");
         let pattern_from_text: bool = matches.is_present("pattern_from_text");
         let random_pattern: bool = matches.is_present("random_pattern");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
 
         let sources = vec![
             pattern_from_argument,
+            pattern_from_file,
             pattern_from_text,
             random_pattern,
             random_pattern_from_text,
@@ -121,8 +123,19 @@ impl CLIParams {
                     )
                 }
             }
-            // Pattern from text
+            // Pattern from file
             Some(1) => {
+                let file_name = String::from(matches.value_of("pattern_from_file").unwrap_or(""));
+
+                // TODO better error handling, probably using ok_or() above
+                if file_name != "" {
+                    PatternSource::FromFile(file_name)
+                } else {
+                    PatternSource::Error("The --patternfromfile argument needs a valid parameter.")
+                }
+            }
+            // Pattern from text
+            Some(2) => {
                 let pattern_from_text_range: Range = matches
                     .value_of("pattern_from_text")
                     .unwrap_or("0..0")
@@ -143,7 +156,7 @@ impl CLIParams {
                 }
             }
             // Random pattern
-            Some(2) => {
+            Some(3) => {
                 match matches.value_of("random_pattern").unwrap_or("-1").parse::<Range>() {
                     Ok(range) => {
                         if range.is_valid() {
@@ -156,7 +169,7 @@ impl CLIParams {
                 }
             }
             // Random pattern from text
-            Some(3) => {
+            Some(4) => {
                 let random_pattern_from_text_arg =
                     matches.value_of("random_pattern_from_text").unwrap_or("-1");
                 let random_pattern_from_text_length: Range = random_pattern_from_text_arg
