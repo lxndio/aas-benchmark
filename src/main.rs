@@ -2,6 +2,8 @@
 extern crate clap;
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate maplit;
 extern crate regex;
 
 mod algorithms;
@@ -16,7 +18,7 @@ mod text;
 use std::error::Error;
 
 use cli::CLIParams;
-use match_algorithm::match_algorithm;
+use match_algorithm::match_algorithms;
 use measure::measure_multiple_different_patterns;
 use pattern::generate_patterns;
 use text::generate_text;
@@ -40,14 +42,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 let mut csv_header_printed = false;
 
-                for algorithm in cli_params.algorithms.iter() {
-                    let algorithm_fn = match_algorithm(&algorithm);
+                let algorithm_functions = match_algorithms(&cli_params.algorithms);
 
+                for (algorithm, algorithm_fn) in algorithm_functions.iter() {
                     let measure_results = measure_multiple_different_patterns(
                         &algorithm,
                         &patterns,
                         text,
-                        algorithm_fn.unwrap(),
+                        *algorithm_fn,
                         cli_params.executions,
                     );
 

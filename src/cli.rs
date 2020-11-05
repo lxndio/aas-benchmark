@@ -1,6 +1,6 @@
 use clap::{App, ArgMatches};
 
-use crate::match_algorithm::match_algorithm;
+use crate::match_algorithm::match_algorithms;
 use crate::pattern::PatternSource;
 use crate::range::Range;
 use crate::text::TextSource;
@@ -63,11 +63,14 @@ impl CLIParams {
         let mut valid = true;
 
         // String value parameters
-        for algorithm in &self.algorithms {
-            if match_algorithm(&algorithm).is_none() {
-                println!("Unknown algorithm given: {}.\n", algorithm);
-                valid = false;
-            }
+        if match_algorithms(&self.algorithms).is_empty() {
+            println!("Unknown algorithm given.\n");
+            valid = false;
+        }
+
+        if self.algorithms.contains(&String::from("all")) && self.algorithms.len() != 1 {
+            println!("You cannot specify multiple algorithms if you specify \"all\".");
+            valid = false;
         }
 
         // Number value parameters

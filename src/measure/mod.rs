@@ -3,6 +3,7 @@ pub mod measure_result;
 
 use std::time::{Duration, SystemTime};
 
+use crate::match_algorithm::Algorithm;
 use crate::measure::measure_result::MeasureResult;
 
 /// A function to measure the runtime of an algorithm.
@@ -12,11 +13,7 @@ use crate::measure::measure_result::MeasureResult;
 /// `(&[u8], &[u8]) -> Vec<usize>`.
 ///
 /// It returns a `Duration`, the runtime of the execution given function.
-pub fn measure(
-    pattern: &[u8],
-    text: &[u8],
-    f: fn(&[u8], &[u8]) -> Vec<usize>,
-) -> (Duration, usize) {
+pub fn measure(pattern: &[u8], text: &[u8], f: Algorithm) -> (Duration, usize) {
     let before = SystemTime::now();
 
     let matches = f(pattern, text).len();
@@ -37,7 +34,7 @@ pub fn measure(
 pub fn measure_multiple(
     pattern: &[u8],
     text: &[u8],
-    f: fn(&[u8], &[u8]) -> Vec<usize>,
+    f: Algorithm,
     n: usize,
 ) -> (Vec<Duration>, usize) {
     let mut durations: Vec<Duration> = Vec::new();
@@ -62,7 +59,7 @@ pub fn measure_multiple_different_patterns(
     algorithm: &str,
     patterns: &Vec<Vec<u8>>,
     text: &[u8],
-    f: fn(&[u8], &[u8]) -> Vec<usize>,
+    f: Algorithm,
     n: usize,
 ) -> Vec<MeasureResult> {
     let mut measure_results: Vec<MeasureResult> = Vec::new();
