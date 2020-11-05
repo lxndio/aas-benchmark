@@ -35,10 +35,10 @@ pub fn match_algorithm(algorithm: &str) -> Option<Algorithm> {
 }
 
 /// Returns the algorithm functions and names matching the given names.
-/// 
+///
 /// The functions takes a `&Vec<String>` containing algorithm names given by
 /// the user as a CLI parameter.
-/// 
+///
 /// It returns a Vec of tuples containing the names and algorithm functions
 /// of the algorithms matched by the given `algorithm_names`.
 pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, Algorithm)> {
