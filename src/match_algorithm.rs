@@ -9,6 +9,7 @@ use crate::algorithms::single_pattern::shift_and::shift_and;
 pub type Algorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 
 lazy_static! {
+    /// List of existing algorithms and their names
     static ref ALGORITHMS: HashMap<&'static str, Algorithm> = hashmap! {
         "horspool" => horspool_all as Algorithm,
         "naive" => naive_all as Algorithm,
@@ -33,6 +34,13 @@ pub fn match_algorithm(algorithm: &str) -> Option<Algorithm> {
     }
 }
 
+/// Returns the algorithm functions and names matching the given names.
+/// 
+/// The functions takes a `&Vec<String>` containing algorithm names given by
+/// the user as a CLI parameter.
+/// 
+/// It returns a Vec of tuples containing the names and algorithm functions
+/// of the algorithms matched by the given `algorithm_names`.
 pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, Algorithm)> {
     let mut algorithms = Vec::new();
 
