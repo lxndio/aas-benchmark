@@ -57,6 +57,10 @@ impl Range {
             }
         }
 
+        if self.step_size == 0 {
+            return false;
+        }
+
         true
     }
 }

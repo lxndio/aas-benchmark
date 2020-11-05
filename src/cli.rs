@@ -190,7 +190,7 @@ impl CLIParams {
                     .unwrap_or(Range::new(0, 0, 0));
 
                 // TODO better error handling, probably using ok_or() above
-                if !random_pattern_from_text_length.is_empty() {
+                if random_pattern_from_text_length.is_valid() {
                     if let Some(length) = random_pattern_from_text_length.single() {
                         if length == 0 {
                             return PatternSource::Error(
