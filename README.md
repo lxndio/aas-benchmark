@@ -17,6 +17,7 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
     - [Pattern From Argument](#Pattern-From-Argument)
     - [Pattern From File](#Pattern-From-File)
     - [Random Pattern](#Random-Pattern)
+  - [Specifying a Seed](#Specifying-a-Seed)
   - [List of Algorithms](#List-of-Algorithms)
   - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
 
@@ -135,16 +136,25 @@ You can also use the `--randompattern` argument to generate a random pattern wit
 aas-benchmark naive ... --randompattern m
 ```
 
+### Specifying a Seed
+
+You can set a seed to make the generation of a random text and random patterns predictable using the `-s` or `--seed` argument:
+
+```
+aas-benchmark naive ... --seed 12345
+```
+
 ### List of Algorithms
 
 Currently, these algorithms are supported:
 
-Algorithm                | Command-line argument name            |
------------------------- | ------------------------------------- |
-Horspool                 | `horspool`                            |
-Naive approach           | `naive`                               |
-Knuth-Morris-Pratt (KMP) | `kmp` or `kmp-classic`                |
-Shift-And                | `shift-and`                           |
+Algorithm                                      | Command-line argument name            |
+---------------------------------------------- | ------------------------------------- |
+Backward Nondeterministic DAWG Matching (BNDM) | `bndm`                                |
+Horspool                                       | `horspool`                            |
+Naive approach                                 | `naive`                               |
+Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`                |
+Shift-And                                      | `shift-and`                           |
 
 ### List of Command-Line Arguments
 
