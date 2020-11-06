@@ -7,6 +7,7 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
   - [Steps](#Steps)
 - [Usage Instructions](#Usage-Instructions)
   - [Specifying Algorithms](#Specifying-Algorithms)
+    - [Benchmark All Algorithms at Once](#Benchmark-All-Algorithms-at-Once)
   - [Specifying a Number of Executions](#Specifying-a-Number-of-Executions)
   - [Specifying a Text Source](#Specifying-a-Text-Source)
     - [Random Generated Text](#Random-Generated-Text)
@@ -50,7 +51,9 @@ aas-benchmark naive ...
 aas-benchmark naive,horspool,kmp ...
 ```
 
-There is also a shortcut to benchmark all algorithms at once using `all`:
+#### Benchmark All Algorithms at Once
+
+There is also a shortcut to benchmark all algorithms at once:
 
 ```
 aas-benchmark all ...
