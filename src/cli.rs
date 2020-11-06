@@ -11,6 +11,7 @@ pub struct CLIParams {
     pub human_readble: bool,
 
     pub executions: usize,
+    pub seed: Option<u64>,
 
     pub pattern_source: PatternSource,
     pub text_source: TextSource,
@@ -44,6 +45,11 @@ impl CLIParams {
             .unwrap_or("1") // 1 so that if parameter is not given, the default of one execution is used
             .parse()
             .unwrap_or(0); // 0 so that if invalid parameter is given, validation fails
+        let seed: Option<u64> = matches
+            .value_of("seed")
+            .unwrap_or("-1") // -1 so that parse fails if the argument is not set, resulting in seed being None
+            .parse()
+            .ok();
 
         // Return new CLIParams object
         Self {
@@ -52,6 +58,7 @@ impl CLIParams {
             human_readble,
 
             executions,
+            seed,
 
             pattern_source: Self::set_pattern_source(&matches),
             text_source: Self::set_text_source(&matches),

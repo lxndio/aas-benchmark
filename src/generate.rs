@@ -1,23 +1,39 @@
-use rand::Rng;
+use rand::rngs::StdRng;
+use rand::{Rng, SeedableRng};
 
-/// Generates a `Vec<u8>` containing `n` random bytes.
-pub fn gen_rand_bytes(n: usize) -> Vec<u8> {
-    let mut rng = rand::thread_rng();
+/// Generates a byte vector containing random bytes.
+///
+/// Can take a u64 as a seed for random generation.
+pub fn gen_rand_bytes(n: usize, seed: Option<u64>) -> Vec<u8> {
+    match seed {
+        Some(seed) => {
+            let mut rng: StdRng = SeedableRng::seed_from_u64(seed);
 
-    let res: Vec<u8> = (0..n).map(|_| rng.gen_range(0, 255)).collect();
+            (0..n).map(|_| rng.gen_range(0, 255)).collect()
+        }
+        None => {
+            let mut rng = rand::thread_rng();
 
-    res
+            (0..n).map(|_| rng.gen_range(0, 255)).collect()
+        }
+    }
 }
 
-#[allow(unused)]
-pub fn gen_rand_bytes_seed(n: usize, seed: usize) -> Vec<u8> {
-    unimplemented!();
-}
+pub fn rand_pattern_from_bytes(bytes: &[u8], length: usize, seed: Option<u64>) -> &[u8] {
+    let left;
 
-pub fn rand_pattern_from_bytes(bytes: &[u8], length: usize) -> &[u8] {
-    let mut rng = rand::thread_rng();
+    match seed {
+        Some(seed) => {
+            let mut rng: StdRng = SeedableRng::seed_from_u64(seed);
 
-    let left = rng.gen_range(0, bytes.len() - length);
+            left = rng.gen_range(0, bytes.len() - length);
+        }
+        None => {
+            let mut rng = rand::thread_rng();
+
+            left = rng.gen_range(0, bytes.len() - length);
+        }
+    }
 
     &bytes[left..left + length]
 }

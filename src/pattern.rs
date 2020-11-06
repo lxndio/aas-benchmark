@@ -21,6 +21,7 @@ pub enum PatternSource {
 pub fn generate_patterns<'a>(
     cli_params: &'a CLIParams,
     text: &[u8],
+    seed: Option<u64>,
 ) -> Result<Vec<Vec<u8>>, String> {
     match &cli_params.pattern_source {
         PatternSource::FromArgument(pattern) => Ok(vec![pattern.as_bytes().to_vec()]),
@@ -46,7 +47,7 @@ pub fn generate_patterns<'a>(
             let mut patterns = Vec::new();
 
             for length in range.iter() {
-                patterns.push(rand_pattern_from_bytes(text, length).to_vec());
+                patterns.push(rand_pattern_from_bytes(text, length, seed).to_vec());
             }
 
             Ok(patterns)
@@ -55,7 +56,7 @@ pub fn generate_patterns<'a>(
             let mut patterns = Vec::new();
 
             for length in range.iter() {
-                patterns.push(gen_rand_bytes(length));
+                patterns.push(gen_rand_bytes(length, seed));
             }
 
             Ok(patterns)

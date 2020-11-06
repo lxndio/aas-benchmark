@@ -18,6 +18,12 @@ args:
         long: randomtext
         takes_value: true
         value_name: length
+    - seed:
+        help: Enter a seed (unsigned 64-bit integer) for random generated text and patterns
+        short: s
+        long: seed
+        takes_value: true
+        value_name: seed
     - text_from_file:
         help: Load a text from a file
         long: textfromfile
