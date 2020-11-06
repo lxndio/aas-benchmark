@@ -50,6 +50,12 @@ aas-benchmark naive ...
 aas-benchmark naive,horspool,kmp ...
 ```
 
+There is also a shortcut to benchmark all algorithms at once using `all`:
+
+```
+aas-benchmark all ...
+```
+
 ### Specifying a Number of Executions
 
 If you like, you can specify a number of executions for each algorithm. You could for example use
