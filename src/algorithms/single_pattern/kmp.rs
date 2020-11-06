@@ -1,4 +1,4 @@
-use crate::algorithms::dfa::dfa_with_delta;
+use crate::algorithms::dfa::dfa_with_lps_delta;
 
 /// Computes the lps function used by the KMP algorithm.
 ///
@@ -36,7 +36,7 @@ pub fn kmp_compute_lps(pattern: &[u8]) -> Vec<isize> {
 ///
 /// Returns the new active state after transitioning by simulating a delta
 /// function using the given lps function.
-pub fn dfa_delta_lps(q: isize, c: u8, pattern: &[u8], lps: Vec<isize>) -> isize {
+pub fn dfa_delta_lps(q: isize, c: u8, pattern: &[u8], lps: &Vec<isize>) -> isize {
     let m = pattern.len();
 
     let mut q = q;
@@ -52,17 +52,10 @@ pub fn dfa_delta_lps(q: isize, c: u8, pattern: &[u8], lps: Vec<isize>) -> isize 
     q
 }
 
-pub fn dfa_delta(q: isize, c: u8, pattern: &[u8]) -> isize {
-    let lps = kmp_compute_lps(pattern);
-
-    dfa_delta_lps(q, c, pattern, lps)
-}
-
 pub fn kmp(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let lps = kmp_compute_lps(pattern);
-    let delta = dfa_delta;
 
-    dfa_with_delta(pattern, text, delta, i0)
+    dfa_with_lps_delta(pattern, text, dfa_delta_lps, &lps, i0)
 }
 
 pub fn kmp_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
