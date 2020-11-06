@@ -1,7 +1,7 @@
 [package]
 name = "aas-benchmark"
-version = "0.1.1"
-authors = ["Alexander Korn <a@lxnd.me>"]
+version = "0.3.0"
+authors = ["Alexander Korn <dev@lxnd.me>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
