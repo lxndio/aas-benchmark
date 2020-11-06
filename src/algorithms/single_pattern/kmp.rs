@@ -52,12 +52,22 @@ pub fn dfa_delta_lps(q: isize, c: u8, pattern: &[u8], lps: &Vec<isize>) -> isize
     q
 }
 
+/// An implementation of the Knuth-Morris-Pratt algorithm (KMP).
+///
+/// It generates the lps function and then runs a DFA using `dfa_delta_lps`,
+/// a delta function that takes the lps function to calculate states.
 pub fn kmp(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let lps = kmp_compute_lps(pattern);
 
     dfa_with_lps_delta(pattern, text, dfa_delta_lps, &lps, i0)
 }
 
+/// Calculates all occurrences of a given pattern in a text by executing
+/// the KMP algorithm multiple times.
+///
+/// The `i0` value starts at 0 and is increased after each execution to
+/// start the next execution right after the current occurrence's position
+/// in text.
 pub fn kmp_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let mut res = Vec::new();
     let mut i0 = 0;
