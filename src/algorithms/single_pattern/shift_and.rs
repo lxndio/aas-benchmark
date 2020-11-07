@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-fn shift_and_single_masks(pattern: &[u8]) -> (HashMap<u8, usize>, usize, usize) {
+pub fn shift_and_single_masks(pattern: &[u8]) -> (HashMap<u8, usize>, usize, usize) {
     let mut masks = HashMap::new();
     let mut bit = 1;
 
@@ -24,6 +24,8 @@ fn shift_and_with_masks(
     let mut active: usize = 0;
 
     for (i, c) in text.iter().enumerate() {
+        // unwrap_or(&0) here, because the masks list should contain a 0
+        // for every character that is not specifically set
         active = ((active << 1) | ones) & masks.get(c).unwrap_or(&0);
 
         let found = active & accept;

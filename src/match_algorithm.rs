@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
 use crate::algorithms::single_pattern::naive::naive_all;
@@ -9,8 +10,9 @@ use crate::algorithms::single_pattern::shift_and::shift_and;
 pub type Algorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 
 lazy_static! {
-    /// List of existing algorithms and their names
+    /// List of existing algorithms and their internal names
     static ref ALGORITHMS: HashMap<&'static str, Algorithm> = hashmap! {
+        "bndm" => bndm as Algorithm,
         "horspool" => horspool_all as Algorithm,
         "naive" => naive_all as Algorithm,
         "kmp" => kmp_all as Algorithm,
@@ -68,6 +70,7 @@ pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, Algorithm
 /// algorithm with the given name.
 pub fn algorithm_name(algorithm: &str) -> &str {
     match algorithm.to_lowercase().as_str() {
+        "bndm" => "BNDM",
         "horspool" => "Horspool",
         "naive" => "Naive",
         "kmp" => "KMP",
