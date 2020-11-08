@@ -91,3 +91,7 @@ pub fn build_ac(patterns: Vec<&[u8]>) -> ACNode {
 
     root*/
 }
+
+pub fn aho_corasick(patterns: Vec<&[u8]>, text: &[u8]) -> Vec<Vec<usize>> {
+    unimplemented!();
+}

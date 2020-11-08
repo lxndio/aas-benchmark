@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::algorithms::multiple_patterns::aho_corasick::aho_corasick;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
@@ -7,17 +8,28 @@ use crate::algorithms::single_pattern::naive::naive_all;
 use crate::algorithms::single_pattern::shift_and::shift_and;
 
 /// The signature of a pattern matching algorithm
-pub type Algorithm = fn(&[u8], &[u8]) -> Vec<usize>;
+pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
+
+pub type MultiplePatternsAlgorithm = fn(Vec<&[u8]>, &[u8]) -> Vec<Vec<usize>>;
+
+pub enum TypedAlgorithm {
+    SinglePattern(SinglePatternAlgorithm),
+    MultiplePatterns(MultiplePatternsAlgorithm),
+}
 
 lazy_static! {
     /// List of existing algorithms and their internal names
-    static ref ALGORITHMS: HashMap<&'static str, Algorithm> = hashmap! {
-        "bndm" => bndm as Algorithm,
-        "horspool" => horspool_all as Algorithm,
-        "naive" => naive_all as Algorithm,
-        "kmp" => kmp_all as Algorithm,
-        "kmp-classic" => kmp_classic_all as Algorithm,
-        "shift-and" => shift_and as Algorithm,
+    static ref SINGLE_PATTERN_ALGORITHMS: HashMap<&'static str, SinglePatternAlgorithm> = hashmap! {
+        "bndm" => bndm as SinglePatternAlgorithm,
+        "horspool" => horspool_all as SinglePatternAlgorithm,
+        "naive" => naive_all as SinglePatternAlgorithm,
+        "kmp" => kmp_all as SinglePatternAlgorithm,
+        "kmp-classic" => kmp_classic_all as SinglePatternAlgorithm,
+        "shift-and" => shift_and as SinglePatternAlgorithm,
+    };
+
+    static ref MULTIPLE_PATTERNS_ALGORITHMS: HashMap<&'static str, MultiplePatternsAlgorithm> = hashmap! {
+        "aho-corasick" => aho_corasick as MultiplePatternsAlgorithm,
     };
 }
 
@@ -28,9 +40,15 @@ lazy_static! {
 ///
 /// It returns the algorithm function matching the name or `None`
 /// if there is no algorithm with the given name.
-pub fn match_algorithm(algorithm: &str) -> Option<Algorithm> {
-    if ALGORITHMS.contains_key(algorithm) {
-        Some(*ALGORITHMS.get(algorithm).unwrap())
+pub fn match_algorithm(algorithm: &str) -> Option<TypedAlgorithm> {
+    if SINGLE_PATTERN_ALGORITHMS.contains_key(algorithm) {
+        Some(TypedAlgorithm::SinglePattern(
+            *SINGLE_PATTERN_ALGORITHMS.get(algorithm).unwrap(),
+        ))
+    } else if MULTIPLE_PATTERNS_ALGORITHMS.contains_key(algorithm) {
+        Some(TypedAlgorithm::MultiplePatterns(
+            *MULTIPLE_PATTERNS_ALGORITHMS.get(algorithm).unwrap(),
+        ))
     } else {
         None
     }
@@ -43,14 +61,19 @@ pub fn match_algorithm(algorithm: &str) -> Option<Algorithm> {
 ///
 /// It returns a Vec of tuples containing the names and algorithm functions
 /// of the algorithms matched by the given `algorithm_names`.
-pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, Algorithm)> {
+pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, TypedAlgorithm)> {
     let mut algorithms = Vec::new();
 
     for algorithm_name in algorithm_names.iter() {
         // Special case for adding all algorithms
+        // TODO with multiple pattern algorithms now added, all becomes more
+        // complicated, so currently it does only add single pattern algorithms
         if algorithm_name == "all" {
-            for (algorithm_name, algorithm) in ALGORITHMS.iter() {
-                algorithms.push((algorithm_name.to_string(), *algorithm));
+            for (algorithm_name, algorithm) in SINGLE_PATTERN_ALGORITHMS.iter() {
+                algorithms.push((
+                    algorithm_name.to_string(),
+                    TypedAlgorithm::SinglePattern(*algorithm),
+                ));
             }
         } else if let Some(algorithm) = match_algorithm(algorithm_name) {
             algorithms.push((algorithm_name.to_string(), algorithm));
@@ -66,10 +89,11 @@ pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, Algorithm
 /// the user as a CLI parameter.
 ///
 /// It returns the pretty formatted name of the algorithm (containing spaces
-/// etc.) or `"Unknown Algorithm"` if there is no
+/// etc.) or `"Unknown SinglePatternAlgorithm"` if there is no
 /// algorithm with the given name.
 pub fn algorithm_name(algorithm: &str) -> &str {
     match algorithm.to_lowercase().as_str() {
+        "aho-corasick" => "Aho-Corasick",
         "bndm" => "BNDM",
         "horspool" => "Horspool",
         "naive" => "Naive",
