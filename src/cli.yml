@@ -46,10 +46,11 @@ args:
         takes_value: true
         value_name: range
     - pattern_from_argument:
-        help: Set a UTF-8 string as a pattern
+        help: Set one or multiple UTF-8 strings as a pattern
         long: patternfromarg
         takes_value: true
         value_name: pattern
+        multiple: true
     - pattern_from_file:
         help: Load a pattern from a file
         long: patternfromfile
