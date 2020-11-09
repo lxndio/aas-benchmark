@@ -36,6 +36,11 @@ fn load_text_from_file(file_name: &str) -> std::io::Result<Vec<u8>> {
 
     reader.read_to_end(&mut text)?;
 
+    // Remove \n at the end if existing
+    if *text.last().unwrap() == '\n' as u8 {
+        text.pop();
+    }
+
     Ok(text)
 }
 
