@@ -4,31 +4,21 @@ pub fn match_pattern(pos: Vec<usize>, pattern: &[u8], text: &[u8]) -> Vec<usize>
     let m = pattern.len();
     let n = text.len();
 
-    println!("Text: {:?}", text);
-
     let mut ls: Vec<usize> = (0..n)
-        .filter(|r| greater_eq_m(pattern, &text[pos[*r]..], m))
+        .filter(|r| less_eq_m(pattern, &text[pos[*r]..], m))
         .collect();
     ls.push(n);
 
-    println!("ls: {:?}", ls);
-
     let mut rs: Vec<isize> = (0..n)
-        .filter(|r| less_eq_m(pattern, &text[pos[*r]..], m))
+        .filter(|r| greater_eq_m(pattern, &text[pos[*r]..], m))
         .map(|x| x as isize)
         .collect();
     rs.push(-1);
-
-    println!("rs: {:?}", rs);
 
     let l = *ls.iter().min().unwrap();
     let r = *rs.iter().max().unwrap();
 
     if r >= l as isize {
-        println!(
-            "{:?}",
-            (l..=r as usize).map(|x| pos[x]).collect::<Vec<usize>>()
-        );
         (l..=r as usize).map(|x| pos[x]).collect()
     } else {
         Vec::new()
