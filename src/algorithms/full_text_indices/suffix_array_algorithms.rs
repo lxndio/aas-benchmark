@@ -4,6 +4,9 @@ pub fn match_pattern(pos: Vec<usize>, pattern: &[u8], text: &[u8]) -> Vec<usize>
     let m = pattern.len();
     let n = text.len();
 
+    // let l: usize = pos.iter().position(|x| less_eq_m(pattern, &text[*x..], m)).unwrap_or(n);
+    // let r: isize = pos.iter().rev().position(|x| greater_eq_m(pattern, &text[*x..], m)).map(|x| x as isize).unwrap_or(-1);
+
     let mut ls: Vec<usize> = (0..n)
         .filter(|r| less_eq_m(pattern, &text[pos[*r]..], m))
         .collect();
