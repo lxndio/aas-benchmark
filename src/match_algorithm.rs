@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::algorithms::full_text_indices::suffix_array_algorithms::match_pattern_slow_pos;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
@@ -18,6 +19,7 @@ lazy_static! {
         "kmp" => kmp_all as Algorithm,
         "kmp-classic" => kmp_classic_all as Algorithm,
         "shift-and" => shift_and as Algorithm,
+        "suffix-array" => match_pattern_slow_pos as Algorithm,
     };
 }
 
@@ -76,6 +78,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "kmp" => "KMP",
         "kmp-classic" => "Classic KMP",
         "shift-and" => "Shift-And",
+        "suffix-array" => "Suffix Array",
         _ => "Unknown Algorithm",
     }
 }
