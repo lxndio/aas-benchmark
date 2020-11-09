@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["gen_rand_bytes","Generates a byte vector containing random bytes."],["rand_pattern_from_bytes",""]]});

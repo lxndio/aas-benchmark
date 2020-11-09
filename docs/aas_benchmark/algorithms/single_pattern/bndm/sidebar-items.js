@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["bndm","An implementation of the Backward Nondeterministic DAWG Matching algorithm (BNDM)."],["bndm_with_masks","An implementation of the Backward Nondeterminstic DAWG Matching algorithm (BNDM) using already prepared shift masks."]]});

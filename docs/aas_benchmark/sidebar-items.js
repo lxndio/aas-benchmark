@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["main",""]],"mod":[["algorithms",""],["cli",""],["generate",""],["match_algorithm",""],["measure",""],["pattern",""],["range",""],["text",""]]});

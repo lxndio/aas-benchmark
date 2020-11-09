@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["lcp_slow","Calculates the longest common prefix (lcp) array in `O(n^3)` runtime."],["lcp_slow_single","Calculates the longest common prefix (lcp) of the suffixes at positions `r - 1` and `r` in the suffix array in `O(n^2)` runtime."],["slow","Calculates the suffix array for a given text in `O(n^2 log n)` runtime."]]});

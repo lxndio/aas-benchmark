@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ParseRangeError",""],["Range","A struct to represent a range starting and ending at specific values and increasing by a given step size."],["RangeIterator",""]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["PatternSource",""]],"fn":[["generate_patterns","Decides how a pattern should be generated based on the given CLI arguments and calls the appropriate function."],["load_pattern_from_file","Loads pattern from a file"]]});

@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["aas_benchmark"] = [{"text":"impl&lt;'a&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.117/serde/ser/trait.Serialize.html\" title=\"trait serde::ser::Serialize\">Serialize</a> for <a class=\"struct\" href=\"aas_benchmark/measure/csv_record/struct.CSVRecord.html\" title=\"struct aas_benchmark::measure::csv_record::CSVRecord\">CSVRecord</a>&lt;'a&gt;","synthetic":false,"types":["aas_benchmark::measure::csv_record::CSVRecord"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

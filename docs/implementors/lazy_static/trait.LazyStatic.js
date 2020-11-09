@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["aas_benchmark"] = [{"text":"impl <a class=\"trait\" href=\"https://docs.rs/lazy_static/1.4.0/lazy_static/trait.LazyStatic.html\" title=\"trait lazy_static::LazyStatic\">LazyStatic</a> for <a class=\"struct\" href=\"aas_benchmark/match_algorithm/struct.ALGORITHMS.html\" title=\"struct aas_benchmark::match_algorithm::ALGORITHMS\">ALGORITHMS</a>","synthetic":false,"types":["aas_benchmark::match_algorithm::ALGORITHMS"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
