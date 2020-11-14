@@ -70,6 +70,8 @@ pub fn fast(text: &[u8]) {
             .map(|x| if *x { '*' } else { ' ' })
             .collect::<String>(),
     );
+
+
 }
 
 fn types_lms_vec(text: &[u8]) -> (BitVec, BitVec) {
@@ -96,6 +98,8 @@ fn types_lms_vec(text: &[u8]) -> (BitVec, BitVec) {
         }
     }
 
+    // Add last LMS position because LMS vector is always
+    // one bit behind the types vector
     // TODO is this correct?
     if *types.last().unwrap() {
         lms.push(true);
@@ -103,5 +107,8 @@ fn types_lms_vec(text: &[u8]) -> (BitVec, BitVec) {
         lms.push(false);
     }
 
+    // Reverse both vectors because they are built from end
+    // to start, reversing them makes their indices correspond
+    // with the text
     (types.iter().rev().collect(), lms.iter().rev().collect())
 }
