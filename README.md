@@ -173,7 +173,7 @@ Shift-And                                      | `shift-and`                    
 
 Algorithm        | Command-line argument name |
 ---------------- | -------------------------- |
-Pattern Matching | sa-match-slow              |
+Pattern Matching | `sa-match-slow`              |
 
 The algorithms ending with `-slow` use a very simple and slow approach to generating the required suffix array.
 
