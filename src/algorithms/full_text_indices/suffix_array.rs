@@ -1,3 +1,5 @@
+use bitvec::prelude::*;
+
 /// Calculates the suffix array for a given text in `O(n^2 log n)` runtime.
 ///
 /// This function calculates the suffix array by sorting the indices of all
@@ -42,4 +44,64 @@ fn lcp_slow_single(text: &[u8], pos: &Vec<usize>, r: usize) -> isize {
 
         lcp
     }
+}
+
+/// Calculates the suffix array for a given text in `O(n)` runtime.
+///
+/// This function calculates the suffix array in linear runtime using the
+/// suffix array induced sorting (SAIS) algorithm.
+pub fn fast(text: &[u8]) {
+    // Add sentinel to text
+    let mut text = text.iter().map(|x| *x).collect::<Vec<u8>>();
+    text.push(0);
+    let text = text.as_slice();
+
+    // Generate types and LMS vector
+    let (types, lms) = types_lms_vec(&text);
+
+    println!(
+        "{}\n{}\n{}",
+        String::from_utf8(text.to_vec()).unwrap(),
+        types
+            .iter()
+            .map(|x| if *x { 'S' } else { 'L' })
+            .collect::<String>(),
+        lms.iter()
+            .map(|x| if *x { '*' } else { ' ' })
+            .collect::<String>(),
+    );
+}
+
+fn types_lms_vec(text: &[u8]) -> (BitVec, BitVec) {
+    let mut types = BitVec::<LocalBits, usize>::with_capacity(text.len());
+    let mut lms = BitVec::<LocalBits, usize>::with_capacity(text.len());
+
+    // Sentinel is always S-type
+    types.push(true);
+
+    for i in (0..text.len() - 2).rev() {
+        if text[i] > text[i + 1] {
+            // Push L-type
+            types.push(false);
+            lms.push(true);
+        } else if text[i] < text[i + 1] {
+            // Push S-type
+            types.push(true);
+            lms.push(false);
+        } else {
+            // Unwrap is safe here because there is at least the sentinel's
+            // type in the types vector
+            types.push(*types.last().unwrap());
+            lms.push(false);
+        }
+    }
+
+    // TODO is this correct?
+    if *types.last().unwrap() {
+        lms.push(true);
+    } else {
+        lms.push(false);
+    }
+
+    (types.iter().rev().collect(), lms.iter().rev().collect())
 }

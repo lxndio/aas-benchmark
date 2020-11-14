@@ -23,7 +23,18 @@ use measure::measure_multiple_different_patterns;
 use pattern::generate_patterns;
 use text::generate_text;
 
-fn main() -> Result<(), Box<dyn Error>> {
+//*
+// =====
+
+use algorithms::full_text_indices::suffix_array::*;
+
+fn main() {
+    fast("gccttaacattattacgccta".as_bytes());
+}
+
+// =====
+//*/
+/*fn main() -> Result<(), Box<dyn Error>> {
     // Get CLI parameters using Clap
     let cli_params = CLIParams::new();
 
@@ -80,4 +91,4 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
-}
+}*/
