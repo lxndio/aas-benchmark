@@ -3,24 +3,23 @@ pub mod measure_result;
 
 use std::time::{Duration, SystemTime};
 
-use crate::match_algorithm::Algorithm;
+use crate::match_algorithm::{SinglePatternAlgorithm, SlowSuffixArrayAlgorithm, TypedAlgorithm};
 use crate::measure::measure_result::MeasureResult;
 
-/// A function to measure the runtime of an algorithm.
+/// A single measurement containing an optional preparation runtime,
+/// a mandatory execution runtime (of the actual pattern matching algorithm
+/// itself) and the number of matches, i. d. how often the pattern has been
+/// found in the text.
+pub type SingleMeasurement = (Option<Duration>, Duration, usize);
+
+/// Trait for implementing a measurement.
 ///
-/// It takes a `pattern` and a `text` and executes a function `f` using
-/// the standard signature of the pattern matching algorithms
-/// `(&[u8], &[u8]) -> Vec<usize>`.
-///
-/// It returns a `Duration`, the runtime of the execution given function.
-pub fn measure(pattern: &[u8], text: &[u8], f: Algorithm) -> (Duration, usize) {
-    let before = SystemTime::now();
-
-    let matches = f(pattern, text).len();
-
-    let duration = before.elapsed();
-
-    (duration.expect("Could not measure time."), matches)
+/// Some algorithms may only be measurable differently from the standard
+/// algorithms which `fn measure` can measure. They may, for example,
+/// require to measure a preparation and a matching function or generate
+/// some other data first of which the time should not be measured.
+pub trait Measurement {
+    fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement;
 }
 
 /// A function to measure the runtimes of multiple executions of an algorithm.
@@ -34,19 +33,23 @@ pub fn measure(pattern: &[u8], text: &[u8], f: Algorithm) -> (Duration, usize) {
 pub fn measure_multiple(
     pattern: &[u8],
     text: &[u8],
-    f: Algorithm,
+    f: &TypedAlgorithm,
     n: usize,
-) -> (Vec<Duration>, usize) {
-    let mut durations: Vec<Duration> = Vec::new();
+) -> Vec<SingleMeasurement> {
+    let mut single_measurements: Vec<SingleMeasurement> = Vec::new();
 
     for _ in 0..n {
-        durations.push(measure(pattern, text, f).0);
+        single_measurements.push(match f {
+            TypedAlgorithm::SinglePatternAlgorithm(f) => {
+                SinglePatternAlgorithm::measure(pattern, text, f)
+            }
+            TypedAlgorithm::SlowSuffixArrayAlgorithm(f) => {
+                SlowSuffixArrayAlgorithm::measure(pattern, text, f)
+            }
+        });
     }
 
-    // Measure once again to get number of matches
-    let matches = measure(pattern, text, f).1;
-
-    (durations, matches)
+    single_measurements
 }
 
 /// Measures the runtimes of multiple executions of an algorithm
@@ -59,20 +62,33 @@ pub fn measure_multiple_different_patterns(
     algorithm: &str,
     patterns: &Vec<Vec<u8>>,
     text: &[u8],
-    f: Algorithm,
+    f: &TypedAlgorithm,
     n: usize,
 ) -> Vec<MeasureResult> {
     let mut measure_results: Vec<MeasureResult> = Vec::new();
 
     for pattern in patterns {
-        let (durations, matches) = measure_multiple(pattern, text, f, n);
+        let measurements = measure_multiple(pattern, text, f, n);
+
+        // TODO make this nicer in the future
+        //let preparation_durations: Vec<Duration>;
+        //if !measurements.iter().map(|m| m.0).filter(|d| d.is_none()).collect::<Vec<Option<Duration>>>().is_empty() {
+        let preparation_durations: Vec<Option<Duration>> =
+            measurements.iter().map(|m| m.0).collect();
+        //} else {
+        //    preparation_durations = vec![0; measurements.len()];
+        //}
+
+        let algorithm_durations: Vec<Duration> = measurements.iter().map(|m| m.1).collect();
+        let matches: usize = measurements.get(0).unwrap().2;
 
         measure_results.push(MeasureResult::new(
             &algorithm,
             text.len(),
             pattern.len(),
             matches,
-            durations,
+            preparation_durations,
+            algorithm_durations,
         ));
     }
 

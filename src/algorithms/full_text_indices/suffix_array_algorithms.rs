@@ -1,4 +1,43 @@
+use std::time::{Duration, SystemTime};
+
 use crate::algorithms::full_text_indices::suffix_array::slow;
+use crate::match_algorithm::SlowSuffixArrayAlgorithm;
+use crate::measure::{Measurement, SingleMeasurement};
+
+/// Measurement for slow suffix array algorithms as the preparation time,
+/// i. e. the time it takes to generate the suffix array, should also
+/// be measured.
+///
+/// The **slow** suffix array algorithms measurement uses the slow approach
+/// to generating the suffix array.
+impl Measurement for SlowSuffixArrayAlgorithm {
+    fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
+        // Add sentinel to text
+        let mut text = text.iter().map(|x| *x).collect::<Vec<u8>>();
+        text.push(0);
+        let text = text.as_slice();
+
+        // Measure time it takes to generate the suffix array
+        let before = SystemTime::now();
+
+        let pos = slow(text);
+
+        let preparation_duration = before.elapsed();
+
+        // Measure time it takes to run the actual algorithm
+        let before = SystemTime::now();
+
+        let matches = f(pos, pattern, text).len();
+
+        let algorithm_duration = before.elapsed();
+
+        (
+            Some(preparation_duration.expect("Could not measure preparation time.")),
+            algorithm_duration.expect("Could not measure time."),
+            matches,
+        )
+    }
+}
 
 pub fn match_pattern(pos: Vec<usize>, pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let m = pattern.len();
@@ -26,20 +65,6 @@ pub fn match_pattern(pos: Vec<usize>, pattern: &[u8], text: &[u8]) -> Vec<usize>
     } else {
         Vec::new()
     }
-}
-
-// TODO only for testing purposes?
-pub fn match_pattern_slow_pos(pattern: &[u8], text: &[u8]) -> Vec<usize> {
-    // Add sentinel to text
-    let mut text = text.iter().map(|x| *x).collect::<Vec<u8>>();
-    text.push(0);
-    let text = text.as_slice();
-
-    // Generate suffix array
-    let pos = slow(text);
-
-    // Run pattern matching
-    match_pattern(pos, pattern, text)
 }
 
 fn less_eq_m(a: &[u8], b: &[u8], m: usize) -> bool {

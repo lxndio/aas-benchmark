@@ -18,8 +18,10 @@ pub struct MeasureResult {
 
     matches: usize,
 
-    durations: Vec<Duration>,
-    avg_duration: f64,
+    preparation_durations: Vec<Option<Duration>>,
+    algorithm_durations: Vec<Duration>,
+    //avg_preparation_duration: f64,
+    avg_algorithm_duration: f64,
 }
 
 impl MeasureResult {
@@ -33,7 +35,8 @@ impl MeasureResult {
         text_length: usize,
         pattern_length: usize,
         matches: usize,
-        durations: Vec<Duration>,
+        preparation_durations: Vec<Option<Duration>>,
+        algorithm_durations: Vec<Duration>,
     ) -> Self {
         let mut new = Self {
             algorithm_name: String::from(algorithm_name(algorithm)),
@@ -43,11 +46,14 @@ impl MeasureResult {
 
             matches,
 
-            durations,
-            avg_duration: 0f64,
+            preparation_durations,
+            algorithm_durations,
+            //avg_preparation_duration: 0f64,
+            avg_algorithm_duration: 0f64,
         };
 
-        new.avg_duration = calculate_avg_duration(&new.durations);
+        //new.avg_preparation_duration = calculate_avg_duration(&new.preparation_durations);
+        new.avg_algorithm_duration = calculate_avg_duration(&new.algorithm_durations);
 
         new
     }
@@ -64,7 +70,7 @@ impl MeasureResult {
         println!("Matches: {}", self.matches);
 
         // Print average runtime
-        let average = self.avg_duration;
+        let average = self.avg_algorithm_duration;
         if average != 0f64 {
             println!("Average: {} ms", average);
         } else {
@@ -76,7 +82,7 @@ impl MeasureResult {
 
         // If print_durations is set, print a list of each duration
         if print_durations {
-            println!("{:?}\n", self.durations);
+            println!("{:?}\n", self.algorithm_durations);
         }
     }
 
@@ -85,8 +91,18 @@ impl MeasureResult {
             .has_headers(print_header)
             .from_writer(io::stdout());
 
-        for (execution, duration) in self.durations.iter().enumerate() {
-            let time_ms = duration.as_millis();
+        // Zip preparation durations and algorithm duration together
+        // to iterate over both vectors at the same time
+        let zipped = self
+            .preparation_durations
+            .iter()
+            .zip(self.algorithm_durations.iter());
+
+        for (execution, (preparation_duration, algorithm_duration)) in zipped.enumerate() {
+            let preparation_time_ms = preparation_duration
+                .unwrap_or(Duration::new(0, 0))
+                .as_millis();
+            let algorithm_time_ms = algorithm_duration.as_millis();
 
             wtr.serialize(CSVRecord::new(
                 &self.algorithm_name,
@@ -94,7 +110,8 @@ impl MeasureResult {
                 self.pattern_length,
                 execution,
                 self.matches,
-                time_ms,
+                preparation_time_ms,
+                algorithm_time_ms,
             ))?;
         }
 

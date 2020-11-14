@@ -18,7 +18,7 @@ mod text;
 use std::error::Error;
 
 use cli::CLIParams;
-use match_algorithm::match_algorithms;
+use match_algorithm::{match_algorithms, TypedAlgorithm};
 use measure::measure_multiple_different_patterns;
 use pattern::generate_patterns;
 use text::generate_text;
@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         &algorithm,
                         &patterns,
                         text,
-                        *algorithm_fn,
+                        algorithm_fn,
                         cli_params.executions,
                     );
 

@@ -16,6 +16,9 @@ pub struct CSVRecord<'a> {
     #[serde(rename = "Matches")]
     matches: usize,
 
+    #[serde(rename = "Preparation Time [ms]")]
+    preparation_time_ms: u128,
+
     #[serde(rename = "Time [ms]")]
     time_ms: u128,
 }
@@ -27,6 +30,7 @@ impl<'a> CSVRecord<'a> {
         pattern_length: usize,
         execution: usize,
         matches: usize,
+        preparation_time_ms: u128,
         time_ms: u128,
     ) -> Self {
         Self {
@@ -39,6 +43,7 @@ impl<'a> CSVRecord<'a> {
 
             matches,
 
+            preparation_time_ms,
             time_ms,
         }
     }

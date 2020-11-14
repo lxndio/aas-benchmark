@@ -1,26 +1,35 @@
 use std::collections::HashMap;
 
-use crate::algorithms::full_text_indices::suffix_array_algorithms::match_pattern_slow_pos;
+use crate::algorithms::full_text_indices::suffix_array::slow;
+use crate::algorithms::full_text_indices::suffix_array_algorithms::match_pattern;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
 use crate::algorithms::single_pattern::naive::naive_all;
 use crate::algorithms::single_pattern::shift_and::shift_and;
 
-/// The signature of a pattern matching algorithm
-pub type Algorithm = fn(&[u8], &[u8]) -> Vec<usize>;
-
 lazy_static! {
     /// List of existing algorithms and their internal names
-    static ref ALGORITHMS: HashMap<&'static str, Algorithm> = hashmap! {
-        "bndm" => bndm as Algorithm,
-        "horspool" => horspool_all as Algorithm,
-        "naive" => naive_all as Algorithm,
-        "kmp" => kmp_all as Algorithm,
-        "kmp-classic" => kmp_classic_all as Algorithm,
-        "shift-and" => shift_and as Algorithm,
-        "suffix-array" => match_pattern_slow_pos as Algorithm,
+    static ref ALGORITHMS: HashMap<&'static str, TypedAlgorithm> = hashmap! {
+        "bndm" => TypedAlgorithm::SinglePatternAlgorithm(bndm as SinglePatternAlgorithm),
+        "horspool" => TypedAlgorithm::SinglePatternAlgorithm(horspool_all as SinglePatternAlgorithm),
+        "naive" => TypedAlgorithm::SinglePatternAlgorithm(naive_all as SinglePatternAlgorithm),
+        "kmp" => TypedAlgorithm::SinglePatternAlgorithm(kmp_all as SinglePatternAlgorithm),
+        "kmp-classic" => TypedAlgorithm::SinglePatternAlgorithm(kmp_classic_all as SinglePatternAlgorithm),
+        "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and as SinglePatternAlgorithm),
+        "sa_match_slow" => TypedAlgorithm::SlowSuffixArrayAlgorithm(match_pattern as SlowSuffixArrayAlgorithm),
     };
+}
+
+/// The signature of an algorithm matching a
+pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
+
+pub type SlowSuffixArrayAlgorithm = fn(Vec<usize>, &[u8], &[u8]) -> Vec<usize>;
+
+#[derive(Clone, Copy)]
+pub enum TypedAlgorithm {
+    SinglePatternAlgorithm(SinglePatternAlgorithm),
+    SlowSuffixArrayAlgorithm(SlowSuffixArrayAlgorithm),
 }
 
 /// Returns the algorithm function matching the given name.
@@ -30,7 +39,7 @@ lazy_static! {
 ///
 /// It returns the algorithm function matching the name or `None`
 /// if there is no algorithm with the given name.
-pub fn match_algorithm(algorithm: &str) -> Option<Algorithm> {
+pub fn match_algorithm(algorithm: &str) -> Option<TypedAlgorithm> {
     if ALGORITHMS.contains_key(algorithm) {
         Some(*ALGORITHMS.get(algorithm).unwrap())
     } else {
@@ -45,7 +54,7 @@ pub fn match_algorithm(algorithm: &str) -> Option<Algorithm> {
 ///
 /// It returns a Vec of tuples containing the names and algorithm functions
 /// of the algorithms matched by the given `algorithm_names`.
-pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, Algorithm)> {
+pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, TypedAlgorithm)> {
     let mut algorithms = Vec::new();
 
     for algorithm_name in algorithm_names.iter() {
@@ -78,7 +87,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "kmp" => "KMP",
         "kmp-classic" => "Classic KMP",
         "shift-and" => "Shift-And",
-        "suffix-array" => "Suffix Array",
+        "sa_match_slow" => "Slow SA Pattern Matching",
         _ => "Unknown Algorithm",
     }
 }
