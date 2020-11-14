@@ -1,7 +1,7 @@
 pub mod csv_record;
 pub mod measure_result;
 
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
 
 use crate::match_algorithm::{SinglePatternAlgorithm, SlowSuffixArrayAlgorithm, TypedAlgorithm};
 use crate::measure::measure_result::MeasureResult;

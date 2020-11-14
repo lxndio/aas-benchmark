@@ -44,6 +44,6 @@ fn load_text_from_file(file_name: &str) -> std::io::Result<Vec<u8>> {
     Ok(text)
 }
 
-fn load_text_from_file_binary(file_name: &str) -> Vec<u8> {
+fn load_text_from_file_binary(_file_name: &str) -> Vec<u8> {
     unimplemented!();
 }

@@ -12,6 +12,7 @@ pub type LpsDeltaFunction = fn(isize, u8, &[u8], &Vec<isize>) -> isize;
 /// state. It then returns for which character the final state has been reached
 /// and therefore and occurrence has been found. If the final state could not
 /// be reached by iterating over each character in `text`, `None` is returned.
+#[allow(unused)]
 pub fn dfa_with_delta(
     pattern: &[u8],
     text: &[u8],

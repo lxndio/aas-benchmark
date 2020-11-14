@@ -5,7 +5,7 @@ pub mod kmp;
 pub mod naive;
 pub mod shift_and;
 
-use std::time::{Duration, SystemTime};
+use std::time::SystemTime;
 
 use crate::match_algorithm::SinglePatternAlgorithm;
 use crate::measure::{Measurement, SingleMeasurement};

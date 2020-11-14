@@ -12,6 +12,7 @@ pub fn slow(text: &[u8]) -> Vec<usize> {
 }
 
 /// Calculates the longest common prefix (lcp) array in `O(n^3)` runtime.
+#[allow(unused)]
 pub fn lcp_slow(text: &[u8], pos: &Vec<usize>) -> Vec<isize> {
     (0..text.len() + 1)
         .map(|r| lcp_slow_single(text, pos, r))

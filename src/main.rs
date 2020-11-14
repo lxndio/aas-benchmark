@@ -18,7 +18,7 @@ mod text;
 use std::error::Error;
 
 use cli::CLIParams;
-use match_algorithm::{match_algorithms, TypedAlgorithm};
+use match_algorithm::match_algorithms;
 use measure::measure_multiple_different_patterns;
 use pattern::generate_patterns;
 use text::generate_text;

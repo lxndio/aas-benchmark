@@ -1,4 +1,4 @@
-use std::time::{Duration, SystemTime};
+use std::time::SystemTime;
 
 use crate::algorithms::full_text_indices::suffix_array::slow;
 use crate::match_algorithm::SlowSuffixArrayAlgorithm;

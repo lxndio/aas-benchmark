@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use crate::algorithms::full_text_indices::suffix_array::slow;
 use crate::algorithms::full_text_indices::suffix_array_algorithms::match_pattern;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
