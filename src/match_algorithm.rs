@@ -17,7 +17,7 @@ lazy_static! {
         "kmp" => TypedAlgorithm::SinglePatternAlgorithm(kmp_all as SinglePatternAlgorithm),
         "kmp-classic" => TypedAlgorithm::SinglePatternAlgorithm(kmp_classic_all as SinglePatternAlgorithm),
         "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and as SinglePatternAlgorithm),
-        "sa_match_slow" => TypedAlgorithm::SlowSuffixArrayAlgorithm(match_pattern as SlowSuffixArrayAlgorithm),
+        "sa-match-slow" => TypedAlgorithm::SlowSuffixArrayAlgorithm(match_pattern as SlowSuffixArrayAlgorithm),
     };
 }
 
@@ -87,7 +87,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "kmp" => "KMP",
         "kmp-classic" => "Classic KMP",
         "shift-and" => "Shift-And",
-        "sa_match_slow" => "Slow SA Pattern Matching",
+        "sa-match-slow" => "Slow SA Pattern Matching",
         _ => "Unknown Algorithm",
     }
 }

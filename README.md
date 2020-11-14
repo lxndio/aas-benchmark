@@ -20,6 +20,8 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
     - [Random Pattern](#Random-Pattern)
   - [Specifying a Seed](#Specifying-a-Seed)
   - [List of Algorithms](#List-of-Algorithms)
+    - [Single Pattern Algorithms](#Single-Pattern-Algorithms)
+    - [Algorithms Using a Suffix Array](#Algorithms-Using-a-Suffix-Array)
   - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
 
 ## Build Instructions
@@ -157,6 +159,8 @@ aas-benchmark naive ... --seed 12345
 
 Currently, these algorithms are supported:
 
+#### Single Pattern Algorithms
+
 Algorithm                                      | Command-line argument name            |
 ---------------------------------------------- | ------------------------------------- |
 Backward Nondeterministic DAWG Matching (BNDM) | `bndm`                                |
@@ -164,6 +168,14 @@ Horspool                                       | `horspool`                     
 Naive approach                                 | `naive`                               |
 Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`                |
 Shift-And                                      | `shift-and`                           |
+
+#### Algorithms Using a Suffix Array
+
+Algorithm        | Command-line argument name |
+---------------- | -------------------------- |
+Pattern Matching | sa-match-slow              |
+
+The algorithms ending with `-slow` use a very simple and slow approach to generating the required suffix array.
 
 ### List of Command-Line Arguments
 
