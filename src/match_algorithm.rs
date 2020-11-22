@@ -24,6 +24,7 @@ lazy_static! {
 pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 
 pub type SlowSuffixArrayAlgorithm = fn(Vec<usize>, &[u8], &[u8]) -> Vec<usize>;
+pub type FastSuffixArrayAlgorithm = fn(Vec<usize>, &[u8], &[u8]) -> Vec<usize>;
 
 #[derive(Clone, Copy)]
 pub enum TypedAlgorithm {

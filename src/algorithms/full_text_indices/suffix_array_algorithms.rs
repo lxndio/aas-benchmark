@@ -1,7 +1,8 @@
 use std::time::SystemTime;
 
+use crate::algorithms::full_text_indices::sais::fast;
 use crate::algorithms::full_text_indices::suffix_array::slow;
-use crate::match_algorithm::SlowSuffixArrayAlgorithm;
+use crate::match_algorithm::{FastSuffixArrayAlgorithm, SlowSuffixArrayAlgorithm};
 use crate::measure::{Measurement, SingleMeasurement};
 
 /// Measurement for slow suffix array algorithms as the preparation time,

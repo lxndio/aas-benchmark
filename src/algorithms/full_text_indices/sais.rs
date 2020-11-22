@@ -1,4 +1,6 @@
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::time::SystemTime;
+
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::convert::TryFrom;
 use std::iter::FromIterator;
 
@@ -12,10 +14,25 @@ use bitvec::prelude::*;
 /// Make sure that the text contains a sentinel at the end which is a character
 /// that is lexicographically smaller than any other character in the text.
 pub fn fast(text: &[u8]) -> Vec<usize> {
+    let before = SystemTime::now();
+
     let types = types_vec(&text);
+    println!("Types: {}", before.elapsed().unwrap().as_millis());
+    let before = SystemTime::now();
     let lms = lms_vec(&types);
 
-    let buckets = sort(text, &types, &lms);
+    println!("LMS: {}", before.elapsed().unwrap().as_millis());
+    let before = SystemTime::now();
+
+    let bucket_ptrs = bucket_pointers(text);
+
+    println!("Bucket pointers: {}", before.elapsed().unwrap().as_millis());
+    let before = SystemTime::now();
+
+    let buckets = sort(text, &types, &lms, &bucket_ptrs);
+
+    println!("Buckets: {}", before.elapsed().unwrap().as_millis());
+    let before = SystemTime::now();
 
     // Use a set for faster contains check
     let lms_set: HashSet<isize> = HashSet::from_iter(lms.iter().map(|x| *x as isize));
@@ -27,14 +44,19 @@ pub fn fast(text: &[u8]) -> Vec<usize> {
         }
     }
 
-    let pos = sort(text, &types, &sorted_lms);
+    println!("Sort LMS: {}", before.elapsed().unwrap().as_millis());
+    let before = SystemTime::now();
+
+    let pos = sort(text, &types, &sorted_lms, &bucket_ptrs);
+
+    println!("Build pos: {}", before.elapsed().unwrap().as_millis());
 
     // Casting all as usize shouldn't fail here because there shouldn't be
     // any undefined values left at this point
     pos.iter().map(|x| *x as usize).collect()
 }
 
-fn types_vec(text: &[u8]) -> BitVec {
+fn types_vec_old(text: &[u8]) -> BitVec {
     let mut types: BitVec<LocalBits, usize> = BitVec::with_capacity(text.len());
 
     // Sentinel is always S-type
@@ -57,6 +79,30 @@ fn types_vec(text: &[u8]) -> BitVec {
     // Reverse the vector because it is built from end to start,
     // reversing it makes its indices correspond with the text
     types.iter().rev().collect()
+}
+
+fn types_vec(text: &[u8]) -> BitVec {
+    let mut types: BitVec<LocalBits, usize> = bitvec![0; text.len()];
+
+    // Sentinel is always S-type
+    types.set(text.len() - 1, true);
+
+    for i in (0..text.len() - 1).rev() {
+        if text[i] > text[i + 1] {
+            // Push L-type
+            //types.push(false);
+        } else if text[i] < text[i + 1] {
+            // Push S-type
+            types.set(i, true);
+        } else {
+            // Unwrap is safe here because there is at least the sentinel's
+            // type in the types vector
+            let t = *types.get(i + 1).unwrap();
+            types.set(i, t);
+        }
+    }
+
+    types
 }
 
 fn lms_vec(types: &BitVec) -> Vec<usize> {
@@ -94,20 +140,22 @@ fn bucket_pointers(text: &[u8]) -> HashMap<u8, (usize, usize)> {
     bucket_pointers
 }
 
-fn sort(text: &[u8], types: &BitVec, lms: &Vec<usize>) -> Vec<isize> {
+fn sort(text: &[u8], types: &BitVec, lms: &Vec<usize>, bucket_ptrs_orig: &HashMap<u8, (usize, usize)>) -> Vec<isize> {
     let mut buckets: Vec<isize> = vec![-1; text.len()];
-    let mut bucket_ptrs = bucket_pointers(text);
+    let mut bucket_ptrs = bucket_ptrs_orig.clone();
 
     for substring in lms.iter().rev() {
-        buckets[bucket_ptrs[&text[*substring]].1] = *substring as isize;
+        let curr_char = &text[*substring];
+
+        buckets[bucket_ptrs[curr_char].1] = *substring as isize;
         bucket_ptrs.insert(
-            text[*substring],
+            *curr_char,
             (
-                bucket_ptrs[&text[*substring]].0,
-                if bucket_ptrs[&text[*substring]].1 != 0 {
-                    bucket_ptrs[&text[*substring]].1 - 1
+                bucket_ptrs[curr_char].0,
+                if bucket_ptrs[curr_char].1 != 0 {
+                    bucket_ptrs[curr_char].1 - 1
                 } else {
-                    bucket_ptrs[&text[*substring]].1
+                    bucket_ptrs[curr_char].1
                 },
             ),
         );
@@ -132,8 +180,36 @@ fn sort(text: &[u8], types: &BitVec, lms: &Vec<usize>) -> Vec<isize> {
         }
     }
 
+    /*let mut sorted_ptrs: Vec<(&u8, &(usize, usize))> = bucket_ptrs.iter().collect();
+    sorted_ptrs.sort_by(|x, y| x.0.cmp(y.0));
+    let mut indices: BTreeSet<usize> = BTreeSet::new();
+    
+    for (_, (left, right)) in sorted_ptrs {
+        (*left..=*right).collect::<Vec<usize>>().iter().for_each(|x| { indices.insert(*x); });
+        println!("{:?}", indices);
+    }
+
+    for r in &mut indices {
+        let r = *indices.get(&r).unwrap();
+
+        let r_minus_1 = usize::try_from(buckets[r] - 1).unwrap_or(text.len() - 1);
+
+        // If the character text[r - 1] is L-type
+        if !types[r_minus_1] {
+            buckets[bucket_ptrs[&text[r_minus_1]].0] = r_minus_1 as isize;
+            bucket_ptrs.insert(
+                text[r_minus_1],
+                (
+                    bucket_ptrs[&text[r_minus_1]].0 + 1,
+                    bucket_ptrs[&text[r_minus_1]].1,
+                ),
+            );
+            indices.insert(bucket_ptrs[&text[r_minus_1]].0 + 1);
+        }
+    }*/
+
     // Reset pointers
-    bucket_ptrs = bucket_pointers(text);
+    bucket_ptrs = bucket_ptrs_orig.clone();
 
     // Induce sort from right to left
     for r in (0..buckets.len()).rev() {
@@ -167,6 +243,27 @@ mod tests {
     use super::*;
     use crate::algorithms::full_text_indices::suffix_array::slow;
     use crate::generate::gen_rand_bytes;
+
+    #[test]
+    fn types_vec_test() {
+        let mut text = "gccttaacattattacgccta"
+            .as_bytes()
+            .iter()
+            .map(|x| *x)
+            .collect::<Vec<u8>>();
+        text.push(0);
+        let text = text.as_slice();
+
+        assert_eq!(types_vec(text), types_vec_old(text));
+    }
+
+    #[test]
+    fn time() {
+        let text = gen_rand_bytes(1_000_000, None);
+        let text = text.as_slice();
+
+        fast(text);
+    }
 
     #[test]
     fn fixed_text() {
