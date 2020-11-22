@@ -140,7 +140,12 @@ fn bucket_pointers(text: &[u8]) -> HashMap<u8, (usize, usize)> {
     bucket_pointers
 }
 
-fn sort(text: &[u8], types: &BitVec, lms: &Vec<usize>, bucket_ptrs_orig: &HashMap<u8, (usize, usize)>) -> Vec<isize> {
+fn sort(
+    text: &[u8],
+    types: &BitVec,
+    lms: &Vec<usize>,
+    bucket_ptrs_orig: &HashMap<u8, (usize, usize)>,
+) -> Vec<isize> {
     let mut buckets: Vec<isize> = vec![-1; text.len()];
     let mut bucket_ptrs = bucket_ptrs_orig.clone();
 
@@ -183,7 +188,7 @@ fn sort(text: &[u8], types: &BitVec, lms: &Vec<usize>, bucket_ptrs_orig: &HashMa
     /*let mut sorted_ptrs: Vec<(&u8, &(usize, usize))> = bucket_ptrs.iter().collect();
     sorted_ptrs.sort_by(|x, y| x.0.cmp(y.0));
     let mut indices: BTreeSet<usize> = BTreeSet::new();
-    
+
     for (_, (left, right)) in sorted_ptrs {
         (*left..=*right).collect::<Vec<usize>>().iter().for_each(|x| { indices.insert(*x); });
         println!("{:?}", indices);
