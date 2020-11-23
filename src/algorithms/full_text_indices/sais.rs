@@ -12,25 +12,26 @@ use bitvec::prelude::*;
 /// Make sure that the text contains a sentinel at the end which is a character
 /// that is lexicographically smaller than any other character in the text.
 pub fn fast(text: &[u8]) -> Vec<usize> {
-    //let before = SystemTime::now();
+    let before = std::time::SystemTime::now();
 
     let types = types_vec(&text);
-    //println!("Types: {}", before.elapsed().unwrap().as_millis());
-    //let before = SystemTime::now();
+    println!("Types: {}", before.elapsed().unwrap().as_millis());
+    let before = std::time::SystemTime::now();
     let lms = lms_vec(&types);
 
-    //println!("LMS: {}", before.elapsed().unwrap().as_millis());
-    //let before = SystemTime::now();
+    println!("LMS: {}", before.elapsed().unwrap().as_millis());
+    let before = std::time::SystemTime::now();
 
-    let bucket_ptrs = bucket_pointers(text);
+    let bucket_ptrs: &mut [usize; 512] = &mut [0; 512];
+    bucket_pointers(text, bucket_ptrs);
 
-    //println!("Bucket pointers: {}", before.elapsed().unwrap().as_millis());
-    //let before = SystemTime::now();
+    println!("Bucket pointers: {}", before.elapsed().unwrap().as_millis());
+    let before = std::time::SystemTime::now();
 
-    let buckets = sort(text, &types, &lms, &bucket_ptrs);
+    let buckets = sort(text, &types, &lms, bucket_ptrs);
 
-    //println!("Buckets: {}", before.elapsed().unwrap().as_millis());
-    //let before = SystemTime::now();
+    println!("Buckets: {}", before.elapsed().unwrap().as_millis());
+    let before = std::time::SystemTime::now();
 
     // Use a set for faster contains check
     let lms_set: HashSet<isize> = HashSet::from_iter(lms.iter().map(|x| *x as isize));
@@ -42,12 +43,12 @@ pub fn fast(text: &[u8]) -> Vec<usize> {
         }
     }
 
-    //println!("Sort LMS: {}", before.elapsed().unwrap().as_millis());
-    //let before = SystemTime::now();
+    println!("Sort LMS: {}", before.elapsed().unwrap().as_millis());
+    let before = std::time::SystemTime::now();
 
-    let pos = sort(text, &types, &sorted_lms, &bucket_ptrs);
+    let pos = sort(text, &types, &sorted_lms, bucket_ptrs);
 
-    //println!("Build pos: {}", before.elapsed().unwrap().as_millis());
+    println!("Build pos: {}", before.elapsed().unwrap().as_millis());
 
     // Casting all as usize shouldn't fail here because there shouldn't be
     // any undefined values left at this point
@@ -94,49 +95,40 @@ fn lms_vec(types: &BitVec) -> Vec<usize> {
     lms.iter().rev().map(|x| *x).collect()
 }
 
-fn bucket_pointers(text: &[u8]) -> HashMap<u8, (usize, usize)> {
-    let bucket_lengths: BTreeMap<u8, usize> = text.iter().fold(BTreeMap::new(), |mut acc, c| {
-        *acc.entry(*c).or_insert(0) += 1;
-        acc
-    });
+fn bucket_pointers(text: &[u8], buckets_pointers: &mut [usize; 512]) {
+    let bucket_lengths: &mut [usize] = &mut [0; 256];
 
-    // TODO use HashMap here or BTreeMap as well? Is HashMap faster if order
-    // isn't important?
-    let mut bucket_pointers: HashMap<u8, (usize, usize)> = HashMap::new();
-    let mut sum = 0;
-
-    for (k, v) in bucket_lengths.iter() {
-        bucket_pointers.insert(*k, (sum, sum + v - 1));
-        sum += v;
+    for c in text.iter() {
+        bucket_lengths[*c as usize] += 1;
     }
 
-    bucket_pointers
+    let mut sum = 0;
+
+    for i in 0..bucket_lengths.len() {
+        if bucket_lengths[i] != 0 {
+            buckets_pointers[i * 2] = sum;
+            buckets_pointers[i * 2 + 1] = sum + bucket_lengths[i] - 1;
+            sum += bucket_lengths[i];
+        }
+    }
 }
 
 fn sort(
     text: &[u8],
     types: &BitVec,
     lms: &Vec<usize>,
-    bucket_ptrs_orig: &HashMap<u8, (usize, usize)>,
+    bucket_ptrs_orig: &[usize; 512],
 ) -> Vec<isize> {
     let mut buckets: Vec<isize> = vec![-1; text.len()];
     let mut bucket_ptrs = bucket_ptrs_orig.clone();
 
     for substring in lms.iter().rev() {
-        let curr_char = &text[*substring];
+        let curr_char = text[*substring] as usize;
 
-        buckets[bucket_ptrs[curr_char].1] = *substring as isize;
-        bucket_ptrs.insert(
-            *curr_char,
-            (
-                bucket_ptrs[curr_char].0,
-                if bucket_ptrs[curr_char].1 != 0 {
-                    bucket_ptrs[curr_char].1 - 1
-                } else {
-                    bucket_ptrs[curr_char].1
-                },
-            ),
-        );
+        buckets[bucket_ptrs[curr_char * 2 + 1]] = *substring as isize;
+        if bucket_ptrs[curr_char * 2 + 1] != 0 {
+            bucket_ptrs[curr_char * 2 + 1] -= 1;
+        }
     }
 
     // Induce sort from left to right
@@ -146,14 +138,10 @@ fn sort(
 
             // If the character text[r - 1] is L-type
             if !types[r_minus_1] {
-                buckets[bucket_ptrs[&text[r_minus_1]].0] = r_minus_1 as isize;
-                bucket_ptrs.insert(
-                    text[r_minus_1],
-                    (
-                        bucket_ptrs[&text[r_minus_1]].0 + 1,
-                        bucket_ptrs[&text[r_minus_1]].1,
-                    ),
-                );
+                let curr_char = text[r_minus_1] as usize;
+
+                buckets[bucket_ptrs[curr_char * 2]] = r_minus_1 as isize;
+                bucket_ptrs[curr_char * 2] += 1;
             }
         }
     }
@@ -170,18 +158,12 @@ fn sort(
 
         // If the character text[r - 1] is S-type
         if types[r_minus_1] {
-            buckets[bucket_ptrs[&text[r_minus_1]].1] = r_minus_1 as isize;
-            bucket_ptrs.insert(
-                text[r_minus_1],
-                (
-                    bucket_ptrs[&text[r_minus_1]].0,
-                    if bucket_ptrs[&text[r_minus_1]].1 != 0 {
-                        bucket_ptrs[&text[r_minus_1]].1 - 1
-                    } else {
-                        bucket_ptrs[&text[r_minus_1]].1
-                    },
-                ),
-            );
+            let curr_char = text[r_minus_1] as usize;
+
+            buckets[bucket_ptrs[curr_char * 2 + 1]] = r_minus_1 as isize;
+            if bucket_ptrs[curr_char * 2 + 1] != 0 {
+                bucket_ptrs[curr_char * 2 + 1] -= 1;
+            }
         }
     }
 
