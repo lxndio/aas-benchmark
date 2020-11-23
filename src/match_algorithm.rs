@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::algorithms::full_text_indices::sais::fast;
+use crate::algorithms::full_text_indices::suffix_array::slow;
 use crate::algorithms::full_text_indices::suffix_array_algorithms::match_pattern;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
@@ -10,26 +12,31 @@ use crate::algorithms::single_pattern::shift_and::shift_and;
 lazy_static! {
     /// List of existing algorithms and their internal names
     static ref ALGORITHMS: HashMap<&'static str, TypedAlgorithm> = hashmap! {
-        "bndm" => TypedAlgorithm::SinglePatternAlgorithm(bndm as SinglePatternAlgorithm),
-        "horspool" => TypedAlgorithm::SinglePatternAlgorithm(horspool_all as SinglePatternAlgorithm),
-        "naive" => TypedAlgorithm::SinglePatternAlgorithm(naive_all as SinglePatternAlgorithm),
-        "kmp" => TypedAlgorithm::SinglePatternAlgorithm(kmp_all as SinglePatternAlgorithm),
-        "kmp-classic" => TypedAlgorithm::SinglePatternAlgorithm(kmp_classic_all as SinglePatternAlgorithm),
-        "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and as SinglePatternAlgorithm),
-        "sa-match-slow" => TypedAlgorithm::SlowSuffixArrayAlgorithm(match_pattern as SlowSuffixArrayAlgorithm),
+        "bndm" => TypedAlgorithm::SinglePatternAlgorithm(bndm),
+        "horspool" => TypedAlgorithm::SinglePatternAlgorithm(horspool_all),
+        "naive" => TypedAlgorithm::SinglePatternAlgorithm(naive_all),
+        "kmp" => TypedAlgorithm::SinglePatternAlgorithm(kmp_all),
+        "kmp-classic" => TypedAlgorithm::SinglePatternAlgorithm(kmp_classic_all),
+        "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and),
+        "sa-match-slow" => TypedAlgorithm::SuffixArrayAlgorithm((match_pattern, slow)),
+        "sa-match-fast" => TypedAlgorithm::SuffixArrayAlgorithm((match_pattern, fast)),
     };
 }
 
-/// The signature of an algorithm matching a
+/// A single pattern algorithm.
 pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 
-pub type SlowSuffixArrayAlgorithm = fn(Vec<usize>, &[u8], &[u8]) -> Vec<usize>;
-pub type FastSuffixArrayAlgorithm = fn(Vec<usize>, &[u8], &[u8]) -> Vec<usize>;
+/// A suffix array algorithm tuple, containing the algorithm itself and
+/// the suffix array generation function to be used.
+pub type SuffixArrayAlgorithm = (
+    fn(Vec<usize>, &[u8], &[u8]) -> Vec<usize>,
+    fn(&[u8]) -> Vec<usize>,
+);
 
 #[derive(Clone, Copy)]
 pub enum TypedAlgorithm {
     SinglePatternAlgorithm(SinglePatternAlgorithm),
-    SlowSuffixArrayAlgorithm(SlowSuffixArrayAlgorithm),
+    SuffixArrayAlgorithm(SuffixArrayAlgorithm),
 }
 
 /// Returns the algorithm function matching the given name.
@@ -88,6 +95,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "kmp-classic" => "Classic KMP",
         "shift-and" => "Shift-And",
         "sa-match-slow" => "Slow SA Pattern Matching",
+        "sa-match-fast" => "Fast SA Pattern Matching",
         _ => "Unknown Algorithm",
     }
 }

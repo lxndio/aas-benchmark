@@ -14,25 +14,25 @@ use bitvec::prelude::*;
 /// Make sure that the text contains a sentinel at the end which is a character
 /// that is lexicographically smaller than any other character in the text.
 pub fn fast(text: &[u8]) -> Vec<usize> {
-    let before = SystemTime::now();
+    //let before = SystemTime::now();
 
     let types = types_vec(&text);
-    println!("Types: {}", before.elapsed().unwrap().as_millis());
-    let before = SystemTime::now();
+    //println!("Types: {}", before.elapsed().unwrap().as_millis());
+    //let before = SystemTime::now();
     let lms = lms_vec(&types);
 
-    println!("LMS: {}", before.elapsed().unwrap().as_millis());
-    let before = SystemTime::now();
+    //println!("LMS: {}", before.elapsed().unwrap().as_millis());
+    //let before = SystemTime::now();
 
     let bucket_ptrs = bucket_pointers(text);
 
-    println!("Bucket pointers: {}", before.elapsed().unwrap().as_millis());
-    let before = SystemTime::now();
+    //println!("Bucket pointers: {}", before.elapsed().unwrap().as_millis());
+    //let before = SystemTime::now();
 
     let buckets = sort(text, &types, &lms, &bucket_ptrs);
 
-    println!("Buckets: {}", before.elapsed().unwrap().as_millis());
-    let before = SystemTime::now();
+    //println!("Buckets: {}", before.elapsed().unwrap().as_millis());
+    //let before = SystemTime::now();
 
     // Use a set for faster contains check
     let lms_set: HashSet<isize> = HashSet::from_iter(lms.iter().map(|x| *x as isize));
@@ -44,12 +44,12 @@ pub fn fast(text: &[u8]) -> Vec<usize> {
         }
     }
 
-    println!("Sort LMS: {}", before.elapsed().unwrap().as_millis());
-    let before = SystemTime::now();
+    //println!("Sort LMS: {}", before.elapsed().unwrap().as_millis());
+    //let before = SystemTime::now();
 
     let pos = sort(text, &types, &sorted_lms, &bucket_ptrs);
 
-    println!("Build pos: {}", before.elapsed().unwrap().as_millis());
+    //println!("Build pos: {}", before.elapsed().unwrap().as_millis());
 
     // Casting all as usize shouldn't fail here because there shouldn't be
     // any undefined values left at this point
@@ -184,34 +184,6 @@ fn sort(
             }
         }
     }
-
-    /*let mut sorted_ptrs: Vec<(&u8, &(usize, usize))> = bucket_ptrs.iter().collect();
-    sorted_ptrs.sort_by(|x, y| x.0.cmp(y.0));
-    let mut indices: BTreeSet<usize> = BTreeSet::new();
-
-    for (_, (left, right)) in sorted_ptrs {
-        (*left..=*right).collect::<Vec<usize>>().iter().for_each(|x| { indices.insert(*x); });
-        println!("{:?}", indices);
-    }
-
-    for r in &mut indices {
-        let r = *indices.get(&r).unwrap();
-
-        let r_minus_1 = usize::try_from(buckets[r] - 1).unwrap_or(text.len() - 1);
-
-        // If the character text[r - 1] is L-type
-        if !types[r_minus_1] {
-            buckets[bucket_ptrs[&text[r_minus_1]].0] = r_minus_1 as isize;
-            bucket_ptrs.insert(
-                text[r_minus_1],
-                (
-                    bucket_ptrs[&text[r_minus_1]].0 + 1,
-                    bucket_ptrs[&text[r_minus_1]].1,
-                ),
-            );
-            indices.insert(bucket_ptrs[&text[r_minus_1]].0 + 1);
-        }
-    }*/
 
     // Reset pointers
     bucket_ptrs = bucket_ptrs_orig.clone();

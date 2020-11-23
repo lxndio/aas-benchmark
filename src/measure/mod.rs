@@ -3,7 +3,7 @@ pub mod measure_result;
 
 use std::time::Duration;
 
-use crate::match_algorithm::{SinglePatternAlgorithm, SlowSuffixArrayAlgorithm, TypedAlgorithm};
+use crate::match_algorithm::{SinglePatternAlgorithm, SuffixArrayAlgorithm, TypedAlgorithm};
 use crate::measure::measure_result::MeasureResult;
 
 /// A single measurement containing an optional preparation runtime,
@@ -43,8 +43,8 @@ pub fn measure_multiple(
             TypedAlgorithm::SinglePatternAlgorithm(f) => {
                 SinglePatternAlgorithm::measure(pattern, text, f)
             }
-            TypedAlgorithm::SlowSuffixArrayAlgorithm(f) => {
-                SlowSuffixArrayAlgorithm::measure(pattern, text, f)
+            TypedAlgorithm::SuffixArrayAlgorithm(f) => {
+                SuffixArrayAlgorithm::measure(pattern, text, f)
             }
         });
     }

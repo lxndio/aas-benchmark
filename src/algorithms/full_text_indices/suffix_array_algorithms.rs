@@ -2,7 +2,7 @@ use std::time::SystemTime;
 
 use crate::algorithms::full_text_indices::sais::fast;
 use crate::algorithms::full_text_indices::suffix_array::slow;
-use crate::match_algorithm::{FastSuffixArrayAlgorithm, SlowSuffixArrayAlgorithm};
+use crate::match_algorithm::SuffixArrayAlgorithm;
 use crate::measure::{Measurement, SingleMeasurement};
 
 /// Measurement for slow suffix array algorithms as the preparation time,
@@ -11,7 +11,7 @@ use crate::measure::{Measurement, SingleMeasurement};
 ///
 /// The **slow** suffix array algorithms measurement uses the slow approach
 /// to generating the suffix array.
-impl Measurement for SlowSuffixArrayAlgorithm {
+impl Measurement for SuffixArrayAlgorithm {
     fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
         // Add sentinel to text
         let mut text = text.iter().map(|x| *x).collect::<Vec<u8>>();
@@ -21,14 +21,14 @@ impl Measurement for SlowSuffixArrayAlgorithm {
         // Measure time it takes to generate the suffix array
         let before = SystemTime::now();
 
-        let pos = slow(text);
+        let pos = f.1(text);
 
         let preparation_duration = before.elapsed();
 
         // Measure time it takes to run the actual algorithm
         let before = SystemTime::now();
 
-        let matches = f(pos, pattern, text).len();
+        let matches = f.0(pos, pattern, text).len();
 
         let algorithm_duration = before.elapsed();
 
