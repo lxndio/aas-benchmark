@@ -1,7 +1,5 @@
 use std::time::SystemTime;
 
-use crate::algorithms::full_text_indices::sais::fast;
-use crate::algorithms::full_text_indices::suffix_array::slow;
 use crate::match_algorithm::SuffixArrayAlgorithm;
 use crate::measure::{Measurement, SingleMeasurement};
 

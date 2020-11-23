@@ -1,6 +1,4 @@
-use std::time::SystemTime;
-
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::convert::TryFrom;
 use std::iter::FromIterator;
 
@@ -54,31 +52,6 @@ pub fn fast(text: &[u8]) -> Vec<usize> {
     // Casting all as usize shouldn't fail here because there shouldn't be
     // any undefined values left at this point
     pos.iter().map(|x| *x as usize).collect()
-}
-
-fn types_vec_old(text: &[u8]) -> BitVec {
-    let mut types: BitVec<LocalBits, usize> = BitVec::with_capacity(text.len());
-
-    // Sentinel is always S-type
-    types.push(true);
-
-    for i in (0..text.len() - 1).rev() {
-        if text[i] > text[i + 1] {
-            // Push L-type
-            types.push(false);
-        } else if text[i] < text[i + 1] {
-            // Push S-type
-            types.push(true);
-        } else {
-            // Unwrap is safe here because there is at least the sentinel's
-            // type in the types vector
-            types.push(*types.last().unwrap());
-        }
-    }
-
-    // Reverse the vector because it is built from end to start,
-    // reversing it makes its indices correspond with the text
-    types.iter().rev().collect()
 }
 
 fn types_vec(text: &[u8]) -> BitVec {
@@ -220,19 +193,6 @@ mod tests {
     use super::*;
     use crate::algorithms::full_text_indices::suffix_array::slow;
     use crate::generate::gen_rand_bytes;
-
-    #[test]
-    fn types_vec_test() {
-        let mut text = "gccttaacattattacgccta"
-            .as_bytes()
-            .iter()
-            .map(|x| *x)
-            .collect::<Vec<u8>>();
-        text.push(0);
-        let text = text.as_slice();
-
-        assert_eq!(types_vec(text), types_vec_old(text));
-    }
 
     #[test]
     fn time() {
