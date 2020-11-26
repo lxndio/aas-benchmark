@@ -150,7 +150,7 @@ impl CLIParams {
                     .value_of("pattern_from_text")
                     .unwrap_or("0..0")
                     .parse()
-                    .unwrap_or(Range::new(0, 0, 0));
+                    .unwrap_or_default();
 
                 // TODO better error handling, probably using ok_or() above
                 if !pattern_from_text_range.is_empty() && pattern_from_text_range.step_size != 1 {
@@ -194,7 +194,7 @@ impl CLIParams {
                             Err(e)
                         }
                     })
-                    .unwrap_or(Range::new(0, 0, 0));
+                    .unwrap_or_default();
 
                 // TODO better error handling, probably using ok_or() above
                 if random_pattern_from_text_length.is_valid() {
@@ -271,15 +271,15 @@ impl CLIParams {
     }
 }
 
-fn only_one(bools: &Vec<bool>) -> bool {
+fn only_one(bools: &[bool]) -> bool {
     bools.iter().filter(|x| **x).count() == 1
 }
 
-fn none(bools: &Vec<bool>) -> bool {
+fn none(bools: &[bool]) -> bool {
     bools.iter().filter(|x| **x).count() == 0
 }
 
-fn only(bools: &Vec<bool>) -> Option<usize> {
+fn only(bools: &[bool]) -> Option<usize> {
     if only_one(bools) {
         Some(bools.iter().enumerate().find(|(_, x)| **x).unwrap().0)
     } else {

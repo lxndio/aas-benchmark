@@ -36,7 +36,7 @@ pub fn kmp_compute_lps(pattern: &[u8]) -> Vec<isize> {
 ///
 /// Returns the new active state after transitioning by simulating a delta
 /// function using the given lps function.
-pub fn dfa_delta_lps(q: isize, c: u8, pattern: &[u8], lps: &Vec<isize>) -> isize {
+pub fn dfa_delta_lps(q: isize, c: u8, pattern: &[u8], lps: &[isize]) -> isize {
     let m = pattern.len();
 
     let mut q = q;
@@ -96,12 +96,13 @@ pub fn kmp_classic(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let mut q: isize = -1;
     let lps = kmp_compute_lps(pattern);
 
-    for i in i0..n {
-        while q == m as isize - 1 || (pattern[(q + 1) as usize] != text[i] && q > -1) {
+    // Iterate over i0..n
+    for (i, c) in text.iter().enumerate().take(n).skip(i0) {
+        while q == m as isize - 1 || (pattern[(q + 1) as usize] != *c && q > -1) {
             q = lps[q as usize] - 1;
         }
 
-        if pattern[(q + 1) as usize] == text[i] {
+        if pattern[(q + 1) as usize] == *c {
             q += 1;
         }
 

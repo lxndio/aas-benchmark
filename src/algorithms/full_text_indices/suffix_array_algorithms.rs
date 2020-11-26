@@ -12,7 +12,7 @@ use crate::measure::{Measurement, SingleMeasurement};
 impl Measurement for SuffixArrayAlgorithm {
     fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
         // Add sentinel to text
-        let mut text = text.iter().map(|x| *x).collect::<Vec<u8>>();
+        let mut text = text.iter().copied().collect::<Vec<u8>>();
         text.push(0);
         let text = text.as_slice();
 

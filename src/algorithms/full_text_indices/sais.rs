@@ -1,6 +1,5 @@
-use std::collections::HashSet;
+use std::cmp::Ordering;
 use std::convert::TryFrom;
-use std::iter::FromIterator;
 
 use bitvec::prelude::*;
 
@@ -18,7 +17,7 @@ pub fn fast(text: &[u8]) -> Vec<usize> {
     let bucket_ptrs: &mut [usize; 512] = &mut [0; 512];
     bucket_pointers(text, bucket_ptrs);
 
-    let sorted_lms = sort(text, &types, &lms, bucket_ptrs)
+    let sorted_lms: Vec<usize> = sort(text, &types, &lms, bucket_ptrs)
         .iter()
         .filter(|x| **x != -1)
         .map(|x| *x as usize)
@@ -38,18 +37,22 @@ fn types_vec(text: &[u8]) -> BitVec {
     types.set(text.len() - 1, true);
 
     for i in (0..text.len() - 1).rev() {
-        // Pushing an L-type is not required as all positions are initialized
-        // as L-type positions, so the according if-case `text[i] > text[i + 1]`
-        // is just not implemented
-        if text[i] < text[i + 1] {
+        match text[i].cmp(&text[i + 1]) {
             // Push S-type
-            types.set(i, true);
-        } else if text[i] == text[i + 1] {
+            Ordering::Less => types.set(i, true),
+
             // Push same type as before
             // Unwrap is safe here because there is at least the sentinel's
             // type in the types vector
-            let t = *types.get(i + 1).unwrap();
-            types.set(i, t);
+            Ordering::Equal => {
+                let t = *types.get(i + 1).unwrap();
+                types.set(i, t);
+            }
+
+            // Pushing an L-type is not required as all positions are initialized
+            // as L-type positions, so the according case `text[i] > text[i + 1]`
+            // is just not implemented
+            _ => (),
         }
     }
 
@@ -69,7 +72,7 @@ fn lms_vec(types: &BitVec) -> Vec<usize> {
 
     // Reverse the vector because it is built from end to start, reversing
     // it sorts the indices contained by it in ascending order
-    lms.iter().rev().map(|x| *x).collect()
+    lms.iter().rev().copied().collect()
 }
 
 fn bucket_pointers(text: &[u8], buckets_pointers: &mut [usize; 512]) {
@@ -90,14 +93,9 @@ fn bucket_pointers(text: &[u8], buckets_pointers: &mut [usize; 512]) {
     }
 }
 
-fn sort(
-    text: &[u8],
-    types: &BitVec,
-    lms: &Vec<usize>,
-    bucket_ptrs_orig: &[usize; 512],
-) -> Vec<isize> {
+fn sort(text: &[u8], types: &BitVec, lms: &[usize], bucket_ptrs_orig: &[usize; 512]) -> Vec<isize> {
     let mut buckets: Vec<isize> = vec![-1; text.len()];
-    let mut bucket_ptrs = bucket_ptrs_orig.clone();
+    let mut bucket_ptrs = *bucket_ptrs_orig;
 
     for substring in lms.iter().rev() {
         let curr_char = text[*substring] as usize;
@@ -124,7 +122,7 @@ fn sort(
     }
 
     // Reset pointers
-    bucket_ptrs = bucket_ptrs_orig.clone();
+    bucket_ptrs = *bucket_ptrs_orig;
 
     // Induce sort from right to left
     for r in (0..buckets.len()).rev() {

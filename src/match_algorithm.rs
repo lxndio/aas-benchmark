@@ -61,7 +61,7 @@ pub fn match_algorithm(algorithm: &str) -> Option<TypedAlgorithm> {
 ///
 /// It returns a Vec of tuples containing the names and algorithm functions
 /// of the algorithms matched by the given `algorithm_names`.
-pub fn match_algorithms(algorithm_names: &Vec<String>) -> Vec<(String, TypedAlgorithm)> {
+pub fn match_algorithms(algorithm_names: &[String]) -> Vec<(String, TypedAlgorithm)> {
     let mut algorithms = Vec::new();
 
     for algorithm_name in algorithm_names.iter() {

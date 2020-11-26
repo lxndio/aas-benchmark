@@ -32,14 +32,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     if cli_params.valid() {
         let text = generate_text(&cli_params, cli_params.seed);
 
-        if text.is_ok() {
-            let text = &text.unwrap();
-
+        if let Ok(text) = &text {
             let patterns = generate_patterns(&cli_params, text, cli_params.seed);
 
-            if patterns.is_ok() {
-                let patterns = patterns.unwrap();
-
+            if let Ok(patterns) = patterns {
                 let mut csv_header_printed = false;
 
                 let algorithm_functions = match_algorithms(&cli_params.algorithms);
@@ -67,15 +63,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                         }
                     }
                 }
-            } else {
-                if let Err(err) = patterns {
-                    println!("Error while generating pattern source: {}", err);
-                }
+            } else if let Err(err) = patterns {
+                println!("Error while generating pattern source: {}", err);
             }
-        } else {
-            if let Err(err) = text {
-                println!("Error while generating text source: {}", err);
-            }
+        } else if let Err(err) = text {
+            println!("Error while generating text source: {}", err);
         }
     }
 

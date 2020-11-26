@@ -60,7 +60,7 @@ pub fn measure_multiple(
 /// It returns a `Vec<MeasureResult>` containing the results of this measurement.
 pub fn measure_multiple_different_patterns(
     algorithm: &str,
-    patterns: &Vec<Vec<u8>>,
+    patterns: &[Vec<u8>],
     text: &[u8],
     f: &TypedAlgorithm,
     n: usize,
@@ -101,8 +101,8 @@ pub fn measure_multiple_different_patterns(
 /// It takes a `Vec<Duration>` of multiple `Duration`s.
 ///
 /// It returns the average duration in milliseconds as an `f64`.
-pub fn calculate_avg_duration(durations: &Vec<Duration>) -> f64 {
-    if durations.len() == 0 {
+pub fn calculate_avg_duration(durations: &[Duration]) -> f64 {
+    if durations.is_empty() {
         return 0f64;
     }
 

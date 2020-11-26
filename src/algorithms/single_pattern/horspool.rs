@@ -4,8 +4,9 @@ fn horspool_shift(pattern: &[u8]) -> HashMap<u8, usize> {
     let mut shift = HashMap::new();
     let m = pattern.len();
 
-    for j in 0..m - 1 {
-        shift.insert(pattern[j], m - 1 - j);
+    // Iterate over 0..m - 1
+    for (j, c) in pattern.iter().enumerate().take(m - 1) {
+        shift.insert(*c, m - 1 - j);
     }
 
     shift

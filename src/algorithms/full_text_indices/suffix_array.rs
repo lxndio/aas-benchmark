@@ -16,7 +16,7 @@ pub fn slow(text: &[u8]) -> Vec<usize> {
 
 /// Calculates the longest common prefix (lcp) array in `O(n^3)` runtime.
 #[allow(unused)]
-pub fn lcp_slow(text: &[u8], pos: &Vec<usize>) -> Vec<isize> {
+pub fn lcp_slow(text: &[u8], pos: &[usize]) -> Vec<isize> {
     (0..text.len() + 1)
         .map(|r| lcp_slow_single(text, pos, r))
         .collect()
@@ -24,7 +24,7 @@ pub fn lcp_slow(text: &[u8], pos: &Vec<usize>) -> Vec<isize> {
 
 /// Calculates the longest common prefix (lcp) of the suffixes at positions
 /// `r - 1` and `r` in the suffix array in `O(n^2)` runtime.
-fn lcp_slow_single(text: &[u8], pos: &Vec<usize>, r: usize) -> isize {
+fn lcp_slow_single(text: &[u8], pos: &[usize], r: usize) -> isize {
     if r == 0 || r == text.len() {
         -1
     } else {

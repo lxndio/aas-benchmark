@@ -1,6 +1,6 @@
 pub type DeltaFunction = fn(isize, u8, &[u8]) -> isize;
 
-pub type LpsDeltaFunction = fn(isize, u8, &[u8], &Vec<isize>) -> isize;
+pub type LpsDeltaFunction = fn(isize, u8, &[u8], &[isize]) -> isize;
 
 /// Simulates a deterministic finite automaton (DFA) using a transition
 /// function `delta`.
@@ -24,8 +24,9 @@ pub fn dfa_with_delta(
 
     let mut q: isize = -1;
 
-    for i in i0..n {
-        q = delta(q, text[i], pattern);
+    // Iterate over i0..n
+    for (i, c) in text.iter().enumerate().take(n).skip(i0) {
+        q = delta(q, *c, pattern);
 
         if q == (m - 1) as isize {
             return Some(i - m + 1);
@@ -52,7 +53,7 @@ pub fn dfa_with_lps_delta(
     pattern: &[u8],
     text: &[u8],
     delta: LpsDeltaFunction,
-    lps: &Vec<isize>,
+    lps: &[isize],
     i0: usize,
 ) -> Option<usize> {
     let m = pattern.len();
@@ -60,8 +61,9 @@ pub fn dfa_with_lps_delta(
 
     let mut q: isize = -1;
 
-    for i in i0..n {
-        q = delta(q, text[i], pattern, lps);
+    // Iterate over i0..n
+    for (i, c) in text.iter().enumerate().take(n).skip(i0) {
+        q = delta(q, *c, pattern, lps);
 
         if q == (m - 1) as isize {
             return Some(i - m + 1);

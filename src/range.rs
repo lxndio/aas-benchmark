@@ -65,6 +65,12 @@ impl Range {
     }
 }
 
+impl Default for Range {
+    fn default() -> Self {
+        Self::new(0, 0, 0)
+    }
+}
+
 impl PartialEq for Range {
     fn eq(&self, other: &Self) -> bool {
         self.start == other.start && self.end == other.end && self.step_size == other.step_size
@@ -126,7 +132,7 @@ impl FromStr for Range {
 
             Ok(Range::new(single, single + 1, 1))
         } else {
-            return Err(ParseRangeError);
+            Err(ParseRangeError)
         }
     }
 }
