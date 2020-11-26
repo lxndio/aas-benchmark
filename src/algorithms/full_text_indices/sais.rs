@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::HashSet;
 use std::convert::TryFrom;
 use std::iter::FromIterator;
 
@@ -12,43 +12,19 @@ use bitvec::prelude::*;
 /// Make sure that the text contains a sentinel at the end which is a character
 /// that is lexicographically smaller than any other character in the text.
 pub fn fast(text: &[u8]) -> Vec<usize> {
-    let before = std::time::SystemTime::now();
-
     let types = types_vec(&text);
-    println!("Types: {}", before.elapsed().unwrap().as_millis());
-    let before = std::time::SystemTime::now();
     let lms = lms_vec(&types);
-
-    println!("LMS: {}", before.elapsed().unwrap().as_millis());
-    let before = std::time::SystemTime::now();
 
     let bucket_ptrs: &mut [usize; 512] = &mut [0; 512];
     bucket_pointers(text, bucket_ptrs);
 
-    println!("Bucket pointers: {}", before.elapsed().unwrap().as_millis());
-    let before = std::time::SystemTime::now();
-
-    let buckets = sort(text, &types, &lms, bucket_ptrs);
-
-    println!("Buckets: {}", before.elapsed().unwrap().as_millis());
-    let before = std::time::SystemTime::now();
-
-    // Use a set for faster contains check
-    let lms_set: HashSet<isize> = HashSet::from_iter(lms.iter().map(|x| *x as isize));
-    let mut sorted_lms: Vec<usize> = Vec::with_capacity(lms.len());
-
-    for lms in buckets.iter() {
-        if lms_set.contains(lms) {
-            sorted_lms.push(*lms as usize);
-        }
-    }
-
-    println!("Sort LMS: {}", before.elapsed().unwrap().as_millis());
-    let before = std::time::SystemTime::now();
+    let sorted_lms = sort(text, &types, &lms, bucket_ptrs)
+        .iter()
+        .filter(|x| **x != -1)
+        .map(|x| *x as usize)
+        .collect();
 
     let pos = sort(text, &types, &sorted_lms, bucket_ptrs);
-
-    println!("Build pos: {}", before.elapsed().unwrap().as_millis());
 
     // Casting all as usize shouldn't fail here because there shouldn't be
     // any undefined values left at this point
@@ -62,13 +38,14 @@ fn types_vec(text: &[u8]) -> BitVec {
     types.set(text.len() - 1, true);
 
     for i in (0..text.len() - 1).rev() {
-        if text[i] > text[i + 1] {
-            // Push L-type
-            //types.push(false);
-        } else if text[i] < text[i + 1] {
+        // Pushing an L-type is not required as all positions are initialized
+        // as L-type positions, so the according if-case `text[i] > text[i + 1]`
+        // is just not implemented
+        if text[i] < text[i + 1] {
             // Push S-type
             types.set(i, true);
-        } else {
+        } else if text[i] == text[i + 1] {
+            // Push same type as before
             // Unwrap is safe here because there is at least the sentinel's
             // type in the types vector
             let t = *types.get(i + 1).unwrap();
@@ -178,7 +155,8 @@ mod tests {
 
     #[test]
     fn time() {
-        let text = gen_rand_bytes(1_000_000, None);
+        let mut text = gen_rand_bytes(1_000_000, None);
+        text.push(0);
         let text = text.as_slice();
 
         fast(text);
