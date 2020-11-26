@@ -3,6 +3,9 @@
 /// This function calculates the suffix array by sorting the indices of all
 /// characters in the text (and therefore all start indices of suffixes)
 /// alphabetically.
+///
+/// Make sure that the text contains a sentinel at the end which is a character
+/// that is lexicographically smaller than any other character in the text.
 pub fn slow(text: &[u8]) -> Vec<usize> {
     let mut pos: Vec<usize> = (0..text.len()).collect();
 
