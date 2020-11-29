@@ -46,3 +46,19 @@ fn lcp_slow_single(text: &[u8], pos: &[usize], r: usize) -> isize {
         lcp
     }
 }
+
+/// Calculates the Burrows-Wheeler-Transformation (BWT) in `O(n)` runtime.
+///
+/// The BWT is defined as `r |-> b_r := text[pos[r] - 1]`, for `r` with
+/// `pos[r] = 0` be `b_r := s[n - 1]` (equal to the sentinel).
+pub fn bwt(text: &[u8], pos: &[usize]) -> Vec<u8> {
+    (0..pos.len())
+        .map(|r| {
+            if pos[r] == 0 {
+                text[text.len() - 1]
+            } else {
+                text[pos[r] - 1]
+            }
+        })
+        .collect()
+}
