@@ -171,11 +171,11 @@ Shift-And                                      | `shift-and`                    
 
 #### Algorithms Using a Suffix Array
 
-Algorithm        | Command-line argument name |
----------------- | -------------------------- |
-Pattern Matching | `sa-match-slow`              |
+Algorithm        | Command-line argument name       |
+---------------- | -------------------------------- |
+Pattern Matching | `sa-match-slow`, `sa-match-fast` |
 
-The algorithms ending with `-slow` use a very simple and slow approach to generating the required suffix array.
+The algorithms ending with `-slow` use a very simple and slow approach to generating the required suffix array. The corresponding `-fast` variants use the SAIS algorithm to generate the required suffix array.
 
 ### List of Command-Line Arguments
 
