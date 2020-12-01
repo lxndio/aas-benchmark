@@ -1,16 +1,18 @@
 use std::cmp::Ordering;
 use std::time::SystemTime;
 
-use crate::match_algorithm::SuffixArrayAlgorithm;
+use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
+use crate::match_algorithm::{BWTAlgorithm, SuffixArrayAlgorithm};
 use crate::measure::{Measurement, SingleMeasurement};
 
-/// Measurement for slow suffix array algorithms as the preparation time,
-/// i. e. the time it takes to generate the suffix array, should also
-/// be measured.
-///
-/// The **slow** suffix array algorithms measurement uses the slow approach
-/// to generating the suffix array.
 impl Measurement for SuffixArrayAlgorithm {
+    /// A function to measure the runtime of an algorithm that requires a
+    /// suffix array to work.
+    ///
+    /// It separately measures both the preparation time, i. e. the time it takes
+    /// to generate the suffix array using the given suffix array generation
+    /// function and the execution time, i. e. the time it takes to execute
+    /// the actual algorithm itself.
     #[cfg(not(tarpaulin_include))]
     fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
         // Add sentinel to text
@@ -28,7 +30,47 @@ impl Measurement for SuffixArrayAlgorithm {
         // Measure time it takes to run the actual algorithm
         let before = SystemTime::now();
 
-        let matches = f.0(pos, pattern, text).len();
+        let matches = f.0(&pos, pattern, text).len();
+
+        let algorithm_duration = before.elapsed();
+
+        (
+            Some(preparation_duration.expect("Could not measure preparation time.")),
+            algorithm_duration.expect("Could not measure time."),
+            matches,
+        )
+    }
+}
+
+impl Measurement for BWTAlgorithm {
+    /// A function to measure the runtime of an algorithm that requires a
+    /// suffix array to work.
+    ///
+    /// It separately measures both the preparation time, i. e. the time it takes
+    /// to generate the suffix array using the given suffix array generation
+    /// function and the execution time, i. e. the time it takes to execute
+    /// the actual algorithm itself.
+    #[cfg(not(tarpaulin_include))]
+    fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
+        // Add sentinel to text
+        let mut text = text.iter().copied().collect::<Vec<u8>>();
+        text.push(0);
+        let text = text.as_slice();
+
+        // Measure time it takes to generate the suffix array
+        let before = SystemTime::now();
+
+        let pos = f.1(text);
+        let bwt_vec = bwt(text, &pos);
+        let occ_vec = occ(&bwt_vec);
+        let less_vec = less(&bwt_vec);
+
+        let preparation_duration = before.elapsed();
+
+        // Measure time it takes to run the actual algorithm
+        let before = SystemTime::now();
+
+        let matches = f.0(&pos, &occ_vec, &less_vec, pattern).len();
 
         let algorithm_duration = before.elapsed();
 
@@ -46,7 +88,7 @@ impl Measurement for SuffixArrayAlgorithm {
 /// given suffix array including those suffixes which have a prefix equal
 /// to the sought pattern. Using that interval, it then extracts the beginning
 /// positions of the occurrences of the pattern in the text from the suffix array.
-pub fn match_pattern(pos: Vec<usize>, pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn match_pattern(pos: &[usize], pattern: &[u8], text: &[u8]) -> Vec<usize> {
     // Define the binary search function as a local function
     // because it is only needed here
     fn binary_search(
@@ -115,27 +157,34 @@ pub fn match_pattern(pos: Vec<usize>, pattern: &[u8], text: &[u8]) -> Vec<usize>
     }
 }
 
-pub fn match_pattern_bwt(occ: &[usize], less: &[usize], pattern: &[u8]) -> Vec<usize> {
+pub fn match_pattern_bwt(
+    pos: &[usize],
+    occ: &[usize],
+    less: &[usize],
+    pattern: &[u8],
+) -> Vec<usize> {
     let m = pattern.len();
+    let n = occ.len() / 256;
 
-    let mut l: usize = less[pattern[m - 1] as usize];
-    let mut r: usize =
-        less[pattern[m - 1] as usize] + occ[(m - 1) * 256 + pattern[m - 1] as usize] - 1;
+    let mut c = pattern[m - 1];
+    let mut left: usize = less[c as usize];
+    let mut right: usize = less[c as usize] + occ[(n - 1) * 256 + c as usize] - 1;
 
     for i in (0..m - 1).rev() {
-        let a = pattern[i];
+        c = pattern[i];
 
-        l = less[a as usize] + occ[(l - 1) * 256 + a as usize];
-        r = less[a as usize] + occ[r * 256 + a as usize] - 1;
+        left = less[c as usize] + occ[(left - 1) * 256 + c as usize];
+        right = less[c as usize] + occ[right * 256 + c as usize] - 1;
     }
 
-    println!("l: {}, r: {}", l, r);
-    (l..r).collect()
+    pos[left..=right].to_vec()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
 
     #[test]
     fn test_match_pattern() {
@@ -145,7 +194,7 @@ mod tests {
         ];
         let pattern = "tta".as_bytes();
 
-        let mut matches = match_pattern(pos, pattern, text);
+        let mut matches = match_pattern(&pos, pattern, text);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];
@@ -161,10 +210,30 @@ mod tests {
         ];
         let pattern = "abc".as_bytes();
 
-        let mut matches = match_pattern(pos, pattern, text);
+        let mut matches = match_pattern(&pos, pattern, text);
         matches.sort_unstable();
 
         let matches_correct = vec![];
+
+        assert_eq!(matches, matches_correct);
+    }
+
+    #[test]
+    fn test_match_pattern_bwt() {
+        // Text: gccttaacattattacgccta\u{0}
+        let pattern = "tta".as_bytes();
+
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+        let bwt_vec = "attattcaggaccc\u{0}ctttcaa".as_bytes();
+        let occ_vec = occ(&bwt_vec);
+        let less_vec = less(&bwt_vec);
+
+        let mut matches = match_pattern_bwt(&pos, &occ_vec, &less_vec, pattern);
+        matches.sort_unstable();
+
+        let matches_correct = vec![3, 9, 12];
 
         assert_eq!(matches, matches_correct);
     }

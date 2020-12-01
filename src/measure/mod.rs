@@ -3,7 +3,9 @@ pub mod measure_result;
 
 use std::time::Duration;
 
-use crate::match_algorithm::{SinglePatternAlgorithm, SuffixArrayAlgorithm, TypedAlgorithm};
+use crate::match_algorithm::{
+    BWTAlgorithm, SinglePatternAlgorithm, SuffixArrayAlgorithm, TypedAlgorithm,
+};
 use crate::measure::measure_result::MeasureResult;
 
 /// A single measurement containing an optional preparation runtime,
@@ -46,6 +48,7 @@ pub fn measure_multiple(
             TypedAlgorithm::SuffixArrayAlgorithm(f) => {
                 SuffixArrayAlgorithm::measure(pattern, text, f)
             }
+            TypedAlgorithm::BWTAlgorithm(f) => BWTAlgorithm::measure(pattern, text, f),
         });
     }
 

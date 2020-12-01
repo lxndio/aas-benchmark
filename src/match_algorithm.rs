@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use crate::algorithms::full_text_indices::sais::fast;
 use crate::algorithms::full_text_indices::suffix_array::slow;
-use crate::algorithms::full_text_indices::suffix_array_algorithms::match_pattern;
+use crate::algorithms::full_text_indices::suffix_array_algorithms::{
+    match_pattern, match_pattern_bwt,
+};
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
@@ -20,6 +22,8 @@ lazy_static! {
         "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and),
         "sa-match-slow" => TypedAlgorithm::SuffixArrayAlgorithm((match_pattern, slow)),
         "sa-match-fast" => TypedAlgorithm::SuffixArrayAlgorithm((match_pattern, fast)),
+        "bwt-match-slow" => TypedAlgorithm::BWTAlgorithm((match_pattern_bwt, slow)),
+        "bwt-match-fast" => TypedAlgorithm::BWTAlgorithm((match_pattern_bwt, fast)),
     };
 }
 
@@ -29,7 +33,12 @@ pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 /// A suffix array algorithm tuple, containing the algorithm itself and
 /// the suffix array generation function to be used.
 pub type SuffixArrayAlgorithm = (
-    fn(Vec<usize>, &[u8], &[u8]) -> Vec<usize>,
+    fn(&[usize], &[u8], &[u8]) -> Vec<usize>,
+    fn(&[u8]) -> Vec<usize>,
+);
+
+pub type BWTAlgorithm = (
+    fn(&[usize], &[usize], &[usize], &[u8]) -> Vec<usize>,
     fn(&[u8]) -> Vec<usize>,
 );
 
@@ -37,6 +46,7 @@ pub type SuffixArrayAlgorithm = (
 pub enum TypedAlgorithm {
     SinglePatternAlgorithm(SinglePatternAlgorithm),
     SuffixArrayAlgorithm(SuffixArrayAlgorithm),
+    BWTAlgorithm(BWTAlgorithm),
 }
 
 /// Returns the algorithm function matching the given name.
@@ -96,6 +106,8 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "shift-and" => "Shift-And",
         "sa-match-slow" => "Slow SA Pattern Matching",
         "sa-match-fast" => "Fast SA Pattern Matching",
+        "bwt-match-slow" => "Slow BWT Pattern Matching",
+        "bwt-match-fast" => "Fast BWT Pattern Matching",
         _ => "Unknown Algorithm",
     }
 }

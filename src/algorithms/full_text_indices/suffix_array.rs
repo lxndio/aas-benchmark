@@ -65,12 +65,12 @@ pub fn bwt(text: &[u8], pos: &[usize]) -> Vec<u8> {
         .collect()
 }
 
-/// Calculates the `Occ[a, r]` vector specifying how often the letter `a` is
+/// Calculates the `Occ[c, r]` vector specifying how often the letter `c` is
 /// contained in the BWT's interval `[0, r]`.
 ///
 /// As this two-dimensional vector is stored as a one-dimensional vector for
-/// performance reasons, you can get the value `Occ[a, r]` by getting the
-/// value at index `r * 256 + a` from the returned vector.
+/// performance reasons, you can get the value `Occ[c, r]` by getting the
+/// value at index `r * 256 + c` from the returned vector.
 pub fn occ(bwt: &[u8]) -> Vec<usize> {
     let mut occ: Vec<usize> = vec![0; 256 * bwt.len()];
 
@@ -87,14 +87,14 @@ pub fn occ(bwt: &[u8]) -> Vec<usize> {
     occ
 }
 
-/// Calculates the `less[a]` vector specifying for a letter `a` how many
+/// Calculates the `less[c]` vector specifying for a letter `c` how many
 /// letters in the BWT are smaller than this letter.
 pub fn less(bwt: &[u8]) -> Vec<usize> {
     let mut less: Vec<usize> = vec![0; 256];
 
     for c in bwt.iter() {
-        for i in (*c as usize) + 1..256 {
-            less[i] += 1;
+        for less_i in less.iter_mut().take(256).skip((*c as usize) + 1) {
+            *less_i += 1;
         }
     }
 
@@ -168,5 +168,30 @@ mod tests {
         occ_correct[6 * 256 + 'c' as usize] = 2;
 
         assert_eq!(occ(text), occ_correct);
+    }
+
+    #[test]
+    fn test_less() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let bwt_vec = "attattcaggaccc\u{0}ctttcaa".as_bytes();
+
+        let mut less_correct = vec![0; 256];
+        &less_correct[1..='a' as usize]
+            .iter_mut()
+            .for_each(|c| *c = 1);
+        less_correct['b' as usize..='c' as usize]
+            .iter_mut()
+            .for_each(|c| *c = 7);
+        &less_correct['d' as usize..='g' as usize]
+            .iter_mut()
+            .for_each(|c| *c = 13);
+        &less_correct['h' as usize..='t' as usize]
+            .iter_mut()
+            .for_each(|c| *c = 15);
+        &less_correct['u' as usize..=255]
+            .iter_mut()
+            .for_each(|c| *c = 22);
+
+        assert_eq!(less(bwt_vec), less_correct);
     }
 }
