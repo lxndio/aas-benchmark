@@ -33,3 +33,21 @@ pub fn naive_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
 
     res
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_naive_all() {
+        let text = "gccttaacattattacgccta".as_bytes();
+        let pattern = "tta".as_bytes();
+
+        let mut matches = naive_all(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![3, 9, 12];
+
+        assert_eq!(matches, matches_correct);
+    }
+}

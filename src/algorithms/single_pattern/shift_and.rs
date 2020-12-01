@@ -48,3 +48,21 @@ pub fn shift_and(pattern: &[u8], text: &[u8]) -> Vec<usize> {
 
     res
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_shift_and() {
+        let text = "gccttaacattattacgccta".as_bytes();
+        let pattern = "tta".as_bytes();
+
+        let mut matches = shift_and(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![3, 9, 12];
+
+        assert_eq!(matches, matches_correct);
+    }
+}
