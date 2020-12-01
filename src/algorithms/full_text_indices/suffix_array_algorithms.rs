@@ -152,4 +152,20 @@ mod tests {
 
         assert_eq!(matches, matches_correct);
     }
+
+    #[test]
+    fn test_match_pattern_nonexistent() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+        let pattern = "abc".as_bytes();
+
+        let mut matches = match_pattern(pos, pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![];
+
+        assert_eq!(matches, matches_correct);
+    }
 }
