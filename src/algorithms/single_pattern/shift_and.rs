@@ -21,8 +21,6 @@ fn shift_and_with_masks(
     let mut active: usize = 0;
 
     for (i, c) in text.iter().enumerate() {
-        // unwrap_or(&0) here, because the masks list should contain a 0
-        // for every character that is not specifically set
         active = ((active << 1) | ones) & masks[*c as usize];
 
         let found = active & accept;

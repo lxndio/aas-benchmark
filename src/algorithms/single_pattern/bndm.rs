@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::algorithms::single_pattern::shift_and::shift_and_single_masks;
 
 /// An implementation of the Backward Nondeterministic DAWG Matching
@@ -16,12 +14,12 @@ pub fn bndm(pattern: &[u8], text: &[u8]) -> Vec<usize> {
 
     let (masks, _, accept) = shift_and_single_masks(&pattern_rev);
 
-    bndm_with_masks(text, masks, accept, pattern.len())
+    bndm_with_masks(text, &masks, accept, pattern.len())
 }
 
 /// An implementation of the Backward Nondeterminstic DAWG Matching
 /// algorithm (BNDM) using already prepared shift masks.
-fn bndm_with_masks(text: &[u8], masks: HashMap<u8, usize>, accept: usize, m: usize) -> Vec<usize> {
+fn bndm_with_masks(text: &[u8], masks: &[usize], accept: usize, m: usize) -> Vec<usize> {
     let n = text.len();
     let mut window: usize = m;
     let mut active: usize;
@@ -36,9 +34,7 @@ fn bndm_with_masks(text: &[u8], masks: HashMap<u8, usize>, accept: usize, m: usi
         lastsuffix = 0;
 
         while active != 0 {
-            // unwrap_or(&0) here, because the masks list should contain a 0
-            // for every character that is not specifically set
-            active &= masks.get(&text[window - j]).unwrap_or(&0);
+            active &= masks[text[window - j] as usize];
 
             if active & accept != 0 {
                 if j == m {
