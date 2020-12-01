@@ -15,8 +15,10 @@ mod generate;
 mod match_algorithm;
 #[cfg(not(tarpaulin_include))]
 mod measure;
+#[cfg(not(tarpaulin_include))]
 mod pattern;
 mod range;
+#[cfg(not(tarpaulin_include))]
 mod text;
 
 use std::error::Error;

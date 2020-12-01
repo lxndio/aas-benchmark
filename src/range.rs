@@ -66,6 +66,7 @@ impl Range {
 }
 
 impl Default for Range {
+    #[cfg(not(tarpaulin_include))]
     fn default() -> Self {
         Self::new(0, 0, 0)
     }
@@ -168,6 +169,114 @@ impl Iterator for RangeIterator {
             Some(self.curr)
         } else {
             None
+        }
+    }
+}
+
+#[allow(unused)]
+macro_rules! range {
+    ($left:literal..$right:literal) => {
+        Range::new($left, $right, 1)
+    };
+    ($left:literal..$right:literal, $step_size:literal) => {
+        Range::new($left, $right, $step_size)
+    };
+    ($single:literal) => {
+        Range::new($single, $single + 1, 1)
+    };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_range_is_empty() {
+        let empty_range1 = Range::new(0, 0, 0);
+        let empty_range2 = Range::new(5, 5, 5);
+        let empty_range3 = Range::new(10, 5, 5);
+
+        let nonempty_range1 = Range::new(0, 5, 2);
+        let nonempty_range2 = Range::new(5, 10, 0);
+
+        assert_eq!(empty_range1.is_empty(), true);
+        assert_eq!(empty_range2.is_empty(), true);
+        assert_eq!(empty_range3.is_empty(), true);
+
+        assert_eq!(nonempty_range1.is_empty(), false);
+        assert_eq!(nonempty_range2.is_empty(), false);
+    }
+
+    #[test]
+    fn test_range_is_single() {
+        let single_range = Range::new(1, 2, 1);
+
+        let nonsingle_range = Range::new(1, 5, 1);
+
+        assert_eq!(single_range.single(), Some(1));
+
+        assert_eq!(nonsingle_range.single(), None);
+    }
+
+    #[test]
+    fn test_range_iterator() {
+        let range_single_step = Range::new(5, 10, 1);
+        let range_multiple_step = Range::new(5, 50, 5);
+
+        assert_eq!(
+            RangeIterator::from_range(&range_single_step).collect::<Vec<usize>>(),
+            vec![5, 6, 7, 8, 9]
+        );
+        assert_eq!(
+            RangeIterator::from_range(&range_multiple_step).collect::<Vec<usize>>(),
+            vec![5, 10, 15, 20, 25, 30, 35, 40, 45]
+        );
+    }
+
+    #[test]
+    fn test_range_eq() {
+        let range1 = Range::new(0, 10, 1);
+        let range2 = Range::new(0, 10, 1);
+        let range3 = Range::new(5, 10, 1);
+
+        assert_eq!(range1, range2);
+        assert_eq!(range2, range1);
+
+        assert_ne!(range1, range3);
+        assert_ne!(range3, range1);
+        assert_ne!(range1, range3);
+        assert_ne!(range3, range2);
+    }
+
+    #[test]
+    fn test_parse_range_from_str() {
+        let valid_strs = vec![
+            "1..2",
+            "1..15",
+            "10..25",
+            "10..5",
+            "1..2,5",
+            "10..25,253",
+            "42",
+        ];
+        let invalid_strs = vec!["-5..-20", "7..", "..10", ",15", "20,25", "-42"];
+
+        let valid_ranges = vec![
+            range!(1..2),
+            range!(1..15),
+            range!(10..25),
+            range!(10..5),
+            range!(1..2, 5),
+            range!(10..25, 253),
+            range!(42),
+        ];
+
+        for (valid_str, valid_range) in valid_strs.iter().zip(valid_ranges) {
+            assert_eq!(Range::from_str(valid_str).unwrap(), valid_range);
+        }
+
+        for invalid_str in invalid_strs.iter() {
+            assert!(Range::from_str(invalid_str).is_err());
         }
     }
 }
