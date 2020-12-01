@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-fn horspool_shift(pattern: &[u8]) -> HashMap<u8, usize> {
-    let mut shift = HashMap::new();
+fn horspool_shift(pattern: &[u8]) -> Vec<usize> {
+    let mut shift = vec![pattern.len(); 256];
     let m = pattern.len();
 
     // Iterate over 0..m - 1
     for (j, c) in pattern.iter().enumerate().take(m - 1) {
-        shift.insert(*c, m - 1 - j);
+        shift[*c as usize] = m - 1 - j;
     }
 
     shift
@@ -22,7 +22,7 @@ pub fn horspool(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
 
     loop {
         while last < n && text[last] != p_last {
-            last += shift.get(&text[last]).unwrap_or(&m);
+            last += shift[text[last] as usize];
         }
 
         if last >= n {
@@ -33,7 +33,7 @@ pub fn horspool(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
             return Some(last - m + 1);
         }
 
-        last += shift.get(&p_last).unwrap_or(&m);
+        last += shift[p_last as usize];
     }
 
     None
@@ -50,4 +50,22 @@ pub fn horspool_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     }
 
     res
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_shift_and() {
+        let text = "gccttaacattattacgccta".as_bytes();
+        let pattern = "tta".as_bytes();
+
+        let mut matches = horspool_all(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![3, 9, 12];
+
+        assert_eq!(matches, matches_correct);
+    }
 }
