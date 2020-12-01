@@ -1,4 +1,3 @@
-#[cfg(not(tarpaulin_include))]
 use clap::{App, ArgMatches};
 
 use crate::match_algorithm::match_algorithms;

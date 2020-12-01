@@ -7,9 +7,13 @@ extern crate maplit;
 extern crate regex;
 
 mod algorithms;
+#[cfg(not(tarpaulin_include))]
 mod cli;
+#[cfg(not(tarpaulin_include))]
 mod generate;
+#[cfg(not(tarpaulin_include))]
 mod match_algorithm;
+#[cfg(not(tarpaulin_include))]
 mod measure;
 mod pattern;
 mod range;
@@ -23,6 +27,7 @@ use measure::measure_multiple_different_patterns;
 use pattern::generate_patterns;
 use text::generate_text;
 
+#[cfg(not(tarpaulin_include))]
 fn main() -> Result<(), Box<dyn Error>> {
     // Get CLI parameters using Clap
     let cli_params = CLIParams::new();
