@@ -1,12 +1,9 @@
-use std::collections::HashMap;
-
-pub fn shift_and_single_masks(pattern: &[u8]) -> (HashMap<u8, usize>, usize, usize) {
-    let mut masks = HashMap::new();
+pub fn shift_and_single_masks(pattern: &[u8]) -> (Vec<usize>, usize, usize) {
+    let mut masks = vec![0; 256];
     let mut bit = 1;
 
     for c in pattern {
-        let entry = masks.entry(*c).or_insert(0);
-        *entry |= bit;
+        masks[*c as usize] |= bit;
 
         bit *= 2;
     }
@@ -16,7 +13,7 @@ pub fn shift_and_single_masks(pattern: &[u8]) -> (HashMap<u8, usize>, usize, usi
 
 fn shift_and_with_masks(
     text: &[u8],
-    masks: HashMap<u8, usize>,
+    masks: &[usize],
     ones: usize,
     accept: usize,
 ) -> Vec<(usize, usize)> {
@@ -26,7 +23,7 @@ fn shift_and_with_masks(
     for (i, c) in text.iter().enumerate() {
         // unwrap_or(&0) here, because the masks list should contain a 0
         // for every character that is not specifically set
-        active = ((active << 1) | ones) & masks.get(c).unwrap_or(&0);
+        active = ((active << 1) | ones) & masks[*c as usize];
 
         let found = active & accept;
         if found != 0 {
@@ -42,7 +39,7 @@ pub fn shift_and(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let m = pattern.len();
     let (mask, ones, accept) = shift_and_single_masks(pattern);
 
-    for (i, _) in shift_and_with_masks(text, mask, ones, accept) {
+    for (i, _) in shift_and_with_masks(text, &mask, ones, accept) {
         res.push(i - m + 1);
     }
 
