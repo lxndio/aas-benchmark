@@ -60,7 +60,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_shift_and() {
+    fn test_bndm() {
         let text = "gccttaacattattacgccta".as_bytes();
         let pattern = "tta".as_bytes();
 

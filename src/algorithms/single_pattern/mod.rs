@@ -18,6 +18,7 @@ impl Measurement for SinglePatternAlgorithm {
     /// `(&[u8], &[u8]) -> Vec<usize>`.
     ///
     /// It returns a `Duration`, the runtime of the execution given function.
+    #[cfg(not(tarpaulin_include))]
     fn measure(pattern: &[u8], text: &[u8], f: &SinglePatternAlgorithm) -> SingleMeasurement {
         let before = SystemTime::now();
 

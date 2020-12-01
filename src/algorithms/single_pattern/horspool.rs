@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 fn horspool_shift(pattern: &[u8]) -> Vec<usize> {
     let mut shift = vec![pattern.len(); 256];
     let m = pattern.len();
@@ -57,7 +55,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_shift_and() {
+    fn test_horspool_all() {
         let text = "gccttaacattattacgccta".as_bytes();
         let pattern = "tta".as_bytes();
 

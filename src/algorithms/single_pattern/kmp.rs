@@ -126,3 +126,40 @@ pub fn kmp_classic_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
 
     res
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_kmp_all() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+        let pattern = "tta".as_bytes();
+
+        let mut matches = kmp_all(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![3, 9, 12];
+
+        assert_eq!(matches, matches_correct);
+    }
+
+    #[test]
+    fn test_kmp_classic_all() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+        let pattern = "tta".as_bytes();
+
+        let mut matches = kmp_classic_all(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![3, 9, 12];
+
+        assert_eq!(matches, matches_correct);
+    }
+}
