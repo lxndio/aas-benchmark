@@ -1,4 +1,7 @@
 # aas-benchmark
+
+[![codecov](https://codecov.io/gh/lxndio/aas-benchmark/branch/main/graph/badge.svg?token=EwcxS3GDKU)](https://codecov.io/gh/lxndio/aas-benchmark)
+
 A collection of pattern matching algorithms and a tool to benchmark the algorithms against each other.
 
 ## Table of Contents
