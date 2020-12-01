@@ -134,9 +134,6 @@ mod tests {
     #[test]
     fn test_kmp_all() {
         let text = "gccttaacattattacgccta\u{0}".as_bytes();
-        let pos = vec![
-            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
-        ];
         let pattern = "tta".as_bytes();
 
         let mut matches = kmp_all(pattern, text);
@@ -150,9 +147,6 @@ mod tests {
     #[test]
     fn test_kmp_classic_all() {
         let text = "gccttaacattattacgccta\u{0}".as_bytes();
-        let pos = vec![
-            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
-        ];
         let pattern = "tta".as_bytes();
 
         let mut matches = kmp_classic_all(pattern, text);
