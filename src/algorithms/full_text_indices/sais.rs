@@ -152,15 +152,6 @@ mod tests {
     use crate::generate::gen_rand_bytes;
 
     #[test]
-    fn time() {
-        let mut text = gen_rand_bytes(1_000_000, None);
-        text.push(0);
-        let text = text.as_slice();
-
-        fast(text);
-    }
-
-    #[test]
     fn fixed_text() {
         let mut text = "gccttaacattattacgccta"
             .as_bytes()
@@ -171,18 +162,5 @@ mod tests {
         let text = text.as_slice();
 
         assert_eq!(fast(text), slow(text));
-    }
-
-    #[test]
-    fn random_texts() {
-        for i in 0..10 {
-            println!("Test {}", i);
-
-            let mut text = gen_rand_bytes(100000, None);
-            text.push(0);
-            let text = text.as_slice();
-
-            assert_eq!(fast(text), slow(text));
-        }
     }
 }

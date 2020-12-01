@@ -114,27 +114,51 @@ pub fn match_pattern(pos: Vec<usize>, pattern: &[u8], text: &[u8]) -> Vec<usize>
     }
 }
 
+pub fn match_pattern_bwt(occ: &[usize], less: &[usize], pattern: &[u8]) -> Vec<usize> {
+    let m = pattern.len();
+
+    let mut l: usize = less[pattern[m - 1] as usize];
+    let mut r: usize =
+        less[pattern[m - 1] as usize] + occ[(m - 1) * 256 + pattern[m - 1] as usize] - 1;
+
+    for i in (0..m - 1).rev() {
+        let a = pattern[i];
+
+        l = less[a as usize] + occ[(l - 1) * 256 + a as usize];
+        r = less[a as usize] + occ[r * 256 + a as usize] - 1;
+    }
+
+    println!("l: {}, r: {}", l, r);
+    (l..r).collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::algorithms::full_text_indices::sais::fast;
+    use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
     use crate::algorithms::single_pattern::naive::naive_all;
-    use crate::generate::{gen_rand_bytes, rand_pattern_from_bytes};
 
-    #[test]
-    fn test_match_pattern() {
+    /*fn test_match_pattern() {
         for i in 0..10 {
             println!("Test {}", i);
 
-            let mut text = gen_rand_bytes(1_000_000, None);
+            let mut text = "cabca".as_bytes().to_vec();
+            //let mut text = gen_rand_bytes(1_000_000, None);
             text.push(0);
             let text = text.as_slice();
 
-            let pattern = rand_pattern_from_bytes(text, 2, None);
+            //let pattern = rand_pattern_from_bytes(text, 2, None);
+            let pattern = "ca".as_bytes();
 
             let pos = fast(text);
+            let bwt = bwt(text, &pos);
+            let occ = occ(&bwt);
+            let less = less(&bwt);
 
-            let mut matches1 = match_pattern(pos, pattern, text);
+            println!("BWT: {:?}", String::from_utf8(bwt.to_vec()));
+
+            let mut matches1 = match_pattern_bwt(&occ, &less, pattern);
             let mut matches2 = naive_all(pattern, text);
 
             // Sort both lists because order could be different resulting
@@ -146,5 +170,5 @@ mod tests {
 
             assert_eq!(matches1, matches2);
         }
-    }
+    }*/
 }
