@@ -148,8 +148,6 @@ fn sort(text: &[u8], types: &BitVec, lms: &[usize], bucket_ptrs_orig: &[usize; 5
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::algorithms::full_text_indices::suffix_array::slow;
-    use crate::generate::gen_rand_bytes;
 
     #[test]
     fn fixed_text() {
@@ -161,6 +159,10 @@ mod tests {
         text.push(0);
         let text = text.as_slice();
 
-        assert_eq!(fast(text), slow(text));
+        let pos_correct = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+
+        assert_eq!(fast(text), pos_correct);
     }
 }
