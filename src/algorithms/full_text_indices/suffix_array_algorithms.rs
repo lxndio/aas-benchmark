@@ -11,6 +11,7 @@ use crate::measure::{Measurement, SingleMeasurement};
 /// The **slow** suffix array algorithms measurement uses the slow approach
 /// to generating the suffix array.
 impl Measurement for SuffixArrayAlgorithm {
+    #[cfg(not(tarpaulin_include))]
     fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
         // Add sentinel to text
         let mut text = text.iter().copied().collect::<Vec<u8>>();
@@ -135,40 +136,20 @@ pub fn match_pattern_bwt(occ: &[usize], less: &[usize], pattern: &[u8]) -> Vec<u
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::algorithms::full_text_indices::sais::fast;
-    use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
-    use crate::algorithms::single_pattern::naive::naive_all;
 
-    /*fn test_match_pattern() {
-        for i in 0..10 {
-            println!("Test {}", i);
+    #[test]
+    fn test_match_pattern() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+        let pattern = "tta".as_bytes();
 
-            let mut text = "cabca".as_bytes().to_vec();
-            //let mut text = gen_rand_bytes(1_000_000, None);
-            text.push(0);
-            let text = text.as_slice();
+        let mut matches = match_pattern(pos, pattern, text);
+        matches.sort_unstable();
 
-            //let pattern = rand_pattern_from_bytes(text, 2, None);
-            let pattern = "ca".as_bytes();
+        let matches_correct = vec![3, 9, 12];
 
-            let pos = fast(text);
-            let bwt = bwt(text, &pos);
-            let occ = occ(&bwt);
-            let less = less(&bwt);
-
-            println!("BWT: {:?}", String::from_utf8(bwt.to_vec()));
-
-            let mut matches1 = match_pattern_bwt(&occ, &less, pattern);
-            let mut matches2 = naive_all(pattern, text);
-
-            // Sort both lists because order could be different resulting
-            // in a failure of this test
-            matches1.sort_unstable();
-            matches2.sort_unstable();
-
-            println!("{:?}, {:?}", matches1, matches2);
-
-            assert_eq!(matches1, matches2);
-        }
-    }*/
+        assert_eq!(matches, matches_correct);
+    }
 }
