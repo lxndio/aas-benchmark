@@ -224,11 +224,11 @@ mod tests {
         let range_multiple_step = Range::new(5, 50, 5);
 
         assert_eq!(
-            RangeIterator::from_range(&range_single_step).collect::<Vec<usize>>(),
+            range_single_step.iter().collect::<Vec<usize>>(),
             vec![5, 6, 7, 8, 9]
         );
         assert_eq!(
-            RangeIterator::from_range(&range_multiple_step).collect::<Vec<usize>>(),
+            range_multiple_step.iter().collect::<Vec<usize>>(),
             vec![5, 10, 15, 20, 25, 30, 35, 40, 45]
         );
     }
