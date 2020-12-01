@@ -1,3 +1,5 @@
+use std::cmp::min;
+
 /// Calculates the suffix array for a given text in `O(n^2 log n)` runtime.
 ///
 /// This function calculates the suffix array by sorting the indices of all
@@ -17,7 +19,7 @@ pub fn slow(text: &[u8]) -> Vec<usize> {
 /// Calculates the longest common prefix (lcp) array in `O(n^3)` runtime.
 #[allow(unused)]
 pub fn lcp_slow(text: &[u8], pos: &[usize]) -> Vec<isize> {
-    (0..text.len() + 1)
+    (0..=text.len())
         .map(|r| lcp_slow_single(text, pos, r))
         .collect()
 }
@@ -35,7 +37,7 @@ fn lcp_slow_single(text: &[u8], pos: &[usize], r: usize) -> isize {
         let mut lcp = 0;
 
         // Count the length of the longest common prefix of those suffixes
-        for i in 0..pos_r1.len().min(pos_r.len()) {
+        for i in 0..min(pos_r1.len(), pos_r.len()) {
             if pos_r1[i] == pos_r[i] {
                 lcp += 1;
             } else {
@@ -50,7 +52,7 @@ fn lcp_slow_single(text: &[u8], pos: &[usize], r: usize) -> isize {
 /// Calculates the Burrows-Wheeler-Transformation (BWT) in `O(n)` runtime.
 ///
 /// The BWT is defined as `r |-> b_r := text[pos[r] - 1]`, for `r` with
-/// `pos[r] = 0` be `b_r := s[n - 1]` (equal to the sentinel).
+/// `pos[r] = 0` be `b_r := text[n - 1]` (equal to the sentinel).
 pub fn bwt(text: &[u8], pos: &[usize]) -> Vec<u8> {
     (0..pos.len())
         .map(|r| {
@@ -102,14 +104,47 @@ pub fn less(bwt: &[u8]) -> Vec<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::algorithms::full_text_indices::sais::fast;
-    use crate::generate::{gen_rand_bytes, rand_pattern_from_bytes};
+
+    #[test]
+    fn test_slow() {
+        let mut text = "gccttaacattattacgccta\u{0}".as_bytes();
+
+        let pos_correct = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+
+        assert_eq!(slow(text), pos_correct);
+    }
+
+    #[test]
+    fn test_lcp_slow() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+
+        let lcp_correct = vec![
+            -1, 0, 1, 1, 2, 1, 4, 0, 1, 3, 1, 1, 2, 0, 4, 0, 2, 2, 2, 1, 3, 3, -1,
+        ];
+
+        assert_eq!(lcp_slow(text, &pos), lcp_correct);
+    }
+
+    #[test]
+    fn test_bwt() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+
+        let bwt_correct = "attattcaggaccc\u{0}ctttcaa".as_bytes();
+
+        assert_eq!(bwt(text, &pos), bwt_correct);
+    }
 
     #[test]
     fn test_occ() {
         let text = "abcbbc\u{0}".as_bytes();
-
-        let occ = occ(text);
 
         let mut occ_correct = vec![0; 256 * text.len()];
         occ_correct[0 * 256 + 'a' as usize] = 1;
@@ -132,6 +167,6 @@ mod tests {
         occ_correct[6 * 256 + 'b' as usize] = 3;
         occ_correct[6 * 256 + 'c' as usize] = 2;
 
-        assert_eq!(occ, occ_correct);
+        assert_eq!(occ(text), occ_correct);
     }
 }

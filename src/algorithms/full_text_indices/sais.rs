@@ -150,14 +150,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn fixed_text() {
-        let mut text = "gccttaacattattacgccta"
-            .as_bytes()
-            .iter()
-            .map(|x| *x)
-            .collect::<Vec<u8>>();
-        text.push(0);
-        let text = text.as_slice();
+    fn test_sais() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
 
         let pos_correct = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
