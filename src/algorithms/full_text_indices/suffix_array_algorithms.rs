@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::cmp::{max, min, Ordering};
 use std::time::SystemTime;
 
 use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
@@ -135,8 +135,8 @@ pub fn match_pattern(pos: &[usize], pattern: &[u8], text: &[u8]) -> Vec<usize> {
 
                     // Now take the left-most left interval bound and
                     // the right-most right interval bound
-                    interval_l = l1.min(interval_l);
-                    interval_r = r2.max(interval_r);
+                    interval_l = min(l1, interval_l);
+                    interval_r = max(r2, interval_r);
 
                     return (interval_l, interval_r);
                 }
