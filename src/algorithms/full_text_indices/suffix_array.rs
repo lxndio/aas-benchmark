@@ -72,16 +72,28 @@ pub fn bwt(text: &[u8], pos: &[usize]) -> Vec<u8> {
 /// performance reasons, you can get the value `Occ[c, r]` by getting the
 /// value at index `r * 256 + c` from the returned vector.
 pub fn occ(bwt: &[u8]) -> Vec<usize> {
-    let mut occ: Vec<usize> = vec![0; 256 * bwt.len()];
+    let mut occ: Vec<usize> = Vec::with_capacity(256 * bwt.len());
+    let counters: &mut [usize] = &mut [0; 256];
 
-    occ[bwt[0] as usize] = 1;
+    for r in 0..bwt.len() {
+        counters[bwt[r] as usize] += 1;
 
-    for r in 1..bwt.len() {
-        for i in 0..255 {
-            occ[r * 256 + i] = occ[(r - 1) * 256 + i];
+        occ.extend_from_slice(counters);
+    }
+
+    occ
+}
+
+pub fn occ_k(bwt: &[u8], k: usize) -> Vec<usize> {
+    let mut occ: Vec<usize> = Vec::with_capacity(256 * ((bwt.len() / k) + 1));
+    let counters: &mut [usize] = &mut [0; 256];
+
+    for r in 0..=(bwt.len() / k) * k {
+        counters[bwt[r] as usize] += 1;
+
+        if r % k == 0 {
+            occ.extend_from_slice(counters);
         }
-
-        occ[r * 256 + (bwt[r] as usize)] += 1;
     }
 
     occ
@@ -168,6 +180,36 @@ mod tests {
         occ_correct[6 * 256 + 'c' as usize] = 2;
 
         assert_eq!(occ(text), occ_correct);
+    }
+
+    #[test]
+    fn test_occ_k() {
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let k = 4;
+
+        let mut occ_correct = vec![0; 256 * ((text.len() / k) + 1)];
+        occ_correct[0 * 256 + 'g' as usize] = 1;
+        occ_correct[1 * 256 + 'c' as usize] = 2;
+        occ_correct[1 * 256 + 'g' as usize] = 1;
+        occ_correct[1 * 256 + 't' as usize] = 2;
+        occ_correct[2 * 256 + 'a' as usize] = 3;
+        occ_correct[2 * 256 + 'c' as usize] = 3;
+        occ_correct[2 * 256 + 'g' as usize] = 1;
+        occ_correct[2 * 256 + 't' as usize] = 2;
+        occ_correct[3 * 256 + 'a' as usize] = 4;
+        occ_correct[3 * 256 + 'c' as usize] = 3;
+        occ_correct[3 * 256 + 'g' as usize] = 1;
+        occ_correct[3 * 256 + 't' as usize] = 5;
+        occ_correct[4 * 256 + 'a' as usize] = 5;
+        occ_correct[4 * 256 + 'c' as usize] = 4;
+        occ_correct[4 * 256 + 'g' as usize] = 2;
+        occ_correct[4 * 256 + 't' as usize] = 6;
+        occ_correct[5 * 256 + 'a' as usize] = 6;
+        occ_correct[5 * 256 + 'c' as usize] = 6;
+        occ_correct[5 * 256 + 'g' as usize] = 2;
+        occ_correct[5 * 256 + 't' as usize] = 7;
+
+        assert_eq!(occ_k(text, k), occ_correct);
     }
 
     #[test]
