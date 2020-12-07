@@ -182,19 +182,61 @@ pub fn match_pattern_bwt(
     pos[left..=right].to_vec()
 }
 
+#[allow(clippy::naive_bytecount)]
+pub fn match_pattern_bwt_k(
+    pos: &[usize],
+    bwt: &[u8],
+    occ: &[usize],
+    less: &[usize],
+    pattern: &[u8],
+    k: usize,
+) -> Vec<usize> {
+    let m = pattern.len();
+    let n = occ.len() / 256;
+
+    let mut c = pattern[m - 1];
+    let mut left: usize = less[c as usize];
+    let mut right: usize = less[c as usize] + occ[(n - 1) * 256 + c as usize] - 1;
+
+    for i in (0..m - 1).rev() {
+        c = pattern[i];
+
+        // Calculate Occ[c, left - 1] and Occ[c, right]
+        let left_r = (left - 1) / k;
+        let right_r = right / k;
+
+        let occ_left = occ[left_r * 256 + c as usize]
+            + bwt[left_r * k + 1..=left - 1]
+                .iter()
+                .filter(|x| **x == c)
+                .count();
+        let occ_right = occ[right_r * 256 + c as usize]
+            + bwt[right_r * k + 1..=right]
+                .iter()
+                .filter(|x| **x == c)
+                .count();
+
+        // Calculate left and right interval bounds
+        left = less[c as usize] + occ_left;
+        right = less[c as usize] + occ_right - 1;
+    }
+
+    pos[left..=right].to_vec()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    use crate::algorithms::full_text_indices::suffix_array::{less, occ};
+    use crate::algorithms::full_text_indices::suffix_array::{less, occ, occ_k};
 
     #[test]
     fn test_match_pattern() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
         let pos = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
         ];
-        let pattern = "tta".as_bytes();
+        let pattern = b"tta";
 
         let mut matches = match_pattern(&pos, pattern, text);
         matches.sort_unstable();
@@ -206,11 +248,11 @@ mod tests {
 
     #[test]
     fn test_match_pattern_nonexistent() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
         let pos = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
         ];
-        let pattern = "abc".as_bytes();
+        let pattern = b"abc";
 
         let mut matches = match_pattern(&pos, pattern, text);
         matches.sort_unstable();
@@ -223,16 +265,37 @@ mod tests {
     #[test]
     fn test_match_pattern_bwt() {
         // Text: gccttaacattattacgccta\u{0}
-        let pattern = "tta".as_bytes();
+        let pattern = b"tta";
 
         let pos = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
         ];
-        let bwt_vec = "attattcaggaccc\u{0}ctttcaa".as_bytes();
-        let occ_vec = occ(&bwt_vec);
-        let less_vec = less(&bwt_vec);
+        let bwt_vec = b"attattcaggaccc\0ctttcaa";
+        let occ_vec = occ(bwt_vec);
+        let less_vec = less(bwt_vec);
 
         let mut matches = match_pattern_bwt(&pos, &occ_vec, &less_vec, pattern);
+        matches.sort_unstable();
+
+        let matches_correct = vec![3, 9, 12];
+
+        assert_eq!(matches, matches_correct);
+    }
+
+    #[test]
+    fn text_match_pattern_bwt_k() {
+        // Text: gccttaacattattacgccta\u{0}
+        let pattern = b"tta";
+        let k = 4;
+
+        let pos = vec![
+            21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
+        ];
+        let bwt_vec = b"attattcaggaccc\0ctttcaa";
+        let occ_k_vec = occ_k(bwt_vec, k);
+        let less_vec = less(bwt_vec);
+
+        let mut matches = match_pattern_bwt_k(&pos, bwt_vec, &occ_k_vec, &less_vec, pattern, k);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];
