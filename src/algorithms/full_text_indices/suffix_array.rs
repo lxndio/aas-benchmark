@@ -124,7 +124,7 @@ mod tests {
 
     #[test]
     fn test_slow() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
 
         let pos_correct = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
@@ -135,7 +135,7 @@ mod tests {
 
     #[test]
     fn test_lcp_slow() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
         let pos = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
         ];
@@ -149,19 +149,20 @@ mod tests {
 
     #[test]
     fn test_bwt() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
         let pos = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
         ];
 
-        let bwt_correct = "attattcaggaccc\u{0}ctttcaa".as_bytes();
+        let bwt_correct = b"attattcaggaccc\0ctttcaa";
 
         assert_eq!(bwt(text, &pos), bwt_correct);
     }
 
     #[test]
+    #[allow(clippy::erasing_op, clippy::identity_op)]
     fn test_occ() {
-        let text = "abcbbc\u{0}".as_bytes();
+        let text = b"abcbbc\0";
 
         let mut occ_correct = vec![0; 256 * text.len()];
         occ_correct[0 * 256 + 'a' as usize] = 1;
@@ -188,8 +189,9 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::erasing_op, clippy::identity_op)]
     fn test_occ_k() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
         let k = 4;
 
         let mut occ_correct = vec![0; 256 * ((text.len() / k) + 1)];
@@ -219,23 +221,23 @@ mod tests {
 
     #[test]
     fn test_less() {
-        // text: "gccttaacattattacgccta\u{0}"
-        let bwt_vec = "attattcaggaccc\u{0}ctttcaa".as_bytes();
+        // Text: gccttaacattattacgccta\0
+        let bwt_vec = b"attattcaggaccc\0ctttcaa";
 
         let mut less_correct = vec![0; 256];
-        &less_correct[1..='a' as usize]
+        less_correct[1..='a' as usize]
             .iter_mut()
             .for_each(|c| *c = 1);
         less_correct['b' as usize..='c' as usize]
             .iter_mut()
             .for_each(|c| *c = 7);
-        &less_correct['d' as usize..='g' as usize]
+        less_correct['d' as usize..='g' as usize]
             .iter_mut()
             .for_each(|c| *c = 13);
-        &less_correct['h' as usize..='t' as usize]
+        less_correct['h' as usize..='t' as usize]
             .iter_mut()
             .for_each(|c| *c = 15);
-        &less_correct['u' as usize..=255]
+        less_correct['u' as usize..=255]
             .iter_mut()
             .for_each(|c| *c = 22);
 

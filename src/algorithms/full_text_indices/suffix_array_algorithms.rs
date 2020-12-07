@@ -264,7 +264,7 @@ mod tests {
 
     #[test]
     fn test_match_pattern_bwt() {
-        // Text: gccttaacattattacgccta\u{0}
+        // Text: gccttaacattattacgccta\0
         let pattern = b"tta";
 
         let pos = vec![
@@ -284,7 +284,7 @@ mod tests {
 
     #[test]
     fn text_match_pattern_bwt_k() {
-        // Text: gccttaacattattacgccta\u{0}
+        // Text: gccttaacattattacgccta\0
         let pattern = b"tta";
         let k = 4;
 
