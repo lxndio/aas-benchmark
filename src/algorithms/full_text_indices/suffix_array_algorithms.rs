@@ -82,7 +82,7 @@ impl Measurement for BWTAlgorithm {
     }
 }
 
-/// Returns occurrences of a pattern in a text using a predefined suffix array.
+/// Returns occurrences of a pattern in a text using a precalculated suffix array.
 ///
 /// The algorithm uses a modified binary search to find an interval in the
 /// given suffix array including those suffixes which have a prefix equal
@@ -157,6 +157,8 @@ pub fn match_pattern(pos: &[usize], pattern: &[u8], text: &[u8]) -> Vec<usize> {
     }
 }
 
+/// Returns occurrences of a pattern in a text using a precalculated
+/// Burrows-Wheeler-Transformation (BWT) of the text and the Occ and less vectors.
 pub fn match_pattern_bwt(
     pos: &[usize],
     occ: &[usize],
