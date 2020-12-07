@@ -107,7 +107,7 @@ mod tests {
 
     #[test]
     fn test_slow() {
-        let mut text = "gccttaacattattacgccta\u{0}".as_bytes();
+        let text = "gccttaacattattacgccta\u{0}".as_bytes();
 
         let pos_correct = vec![
             21, 20, 5, 6, 14, 11, 8, 7, 17, 1, 15, 18, 2, 16, 0, 19, 4, 13, 10, 3, 12, 9,
@@ -172,7 +172,7 @@ mod tests {
 
     #[test]
     fn test_less() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
+        // text: "gccttaacattattacgccta\u{0}"
         let bwt_vec = "attattcaggaccc\u{0}ctttcaa".as_bytes();
 
         let mut less_correct = vec![0; 256];

@@ -184,7 +184,7 @@ pub fn match_pattern_bwt(
 mod tests {
     use super::*;
 
-    use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
+    use crate::algorithms::full_text_indices::suffix_array::{less, occ};
 
     #[test]
     fn test_match_pattern() {
