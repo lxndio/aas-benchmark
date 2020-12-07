@@ -7,6 +7,7 @@ pub mod shift_and;
 
 use std::time::SystemTime;
 
+use crate::cli::CLIParams;
 use crate::match_algorithm::SinglePatternAlgorithm;
 use crate::measure::{Measurement, SingleMeasurement};
 
@@ -19,7 +20,12 @@ impl Measurement for SinglePatternAlgorithm {
     ///
     /// It returns a `Duration`, the runtime of the execution given function.
     #[cfg(not(tarpaulin_include))]
-    fn measure(pattern: &[u8], text: &[u8], f: &SinglePatternAlgorithm) -> SingleMeasurement {
+    fn measure(
+        pattern: &[u8],
+        text: &[u8],
+        f: &SinglePatternAlgorithm,
+        _: &CLIParams,
+    ) -> SingleMeasurement {
         let before = SystemTime::now();
 
         let matches = f(pattern, text).len();

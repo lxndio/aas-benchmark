@@ -3,6 +3,7 @@ pub mod measure_result;
 
 use std::time::Duration;
 
+use crate::cli::CLIParams;
 use crate::match_algorithm::{
     BWTAlgorithm, SinglePatternAlgorithm, SuffixArrayAlgorithm, TypedAlgorithm,
 };
@@ -21,7 +22,7 @@ pub type SingleMeasurement = (Option<Duration>, Duration, usize);
 /// require to measure a preparation and a matching function or generate
 /// some other data first of which the time should not be measured.
 pub trait Measurement {
-    fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement;
+    fn measure(pattern: &[u8], text: &[u8], f: &Self, cli_params: &CLIParams) -> SingleMeasurement;
 }
 
 /// A function to measure the runtimes of multiple executions of an algorithm.
@@ -36,19 +37,19 @@ pub fn measure_multiple(
     pattern: &[u8],
     text: &[u8],
     f: &TypedAlgorithm,
-    n: usize,
+    cli_params: &CLIParams,
 ) -> Vec<SingleMeasurement> {
     let mut single_measurements: Vec<SingleMeasurement> = Vec::new();
 
-    for _ in 0..n {
+    for _ in 0..cli_params.executions {
         single_measurements.push(match f {
             TypedAlgorithm::SinglePatternAlgorithm(f) => {
-                SinglePatternAlgorithm::measure(pattern, text, f)
+                SinglePatternAlgorithm::measure(pattern, text, f, cli_params)
             }
             TypedAlgorithm::SuffixArrayAlgorithm(f) => {
-                SuffixArrayAlgorithm::measure(pattern, text, f)
+                SuffixArrayAlgorithm::measure(pattern, text, f, cli_params)
             }
-            TypedAlgorithm::BWTAlgorithm(f) => BWTAlgorithm::measure(pattern, text, f),
+            TypedAlgorithm::BWTAlgorithm(f) => BWTAlgorithm::measure(pattern, text, f, cli_params),
         });
     }
 
@@ -66,12 +67,12 @@ pub fn measure_multiple_different_patterns(
     patterns: &[Vec<u8>],
     text: &[u8],
     f: &TypedAlgorithm,
-    n: usize,
+    cli_params: &CLIParams,
 ) -> Vec<MeasureResult> {
     let mut measure_results: Vec<MeasureResult> = Vec::new();
 
     for pattern in patterns {
-        let measurements = measure_multiple(pattern, text, f, n);
+        let measurements = measure_multiple(pattern, text, f, cli_params);
 
         // TODO make this nicer in the future
         //let preparation_durations: Vec<Duration>;

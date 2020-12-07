@@ -2,7 +2,10 @@ use std::cmp::{max, min, Ordering};
 use std::time::SystemTime;
 
 use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
-use crate::match_algorithm::{BWTAlgorithm, SuffixArrayAlgorithm};
+use crate::cli::CLIParams;
+use crate::match_algorithm::{
+    match_suffix_array_gen_algorithm, BWTAlgorithm, SuffixArrayAlgorithm,
+};
 use crate::measure::{Measurement, SingleMeasurement};
 
 impl Measurement for SuffixArrayAlgorithm {
@@ -14,7 +17,7 @@ impl Measurement for SuffixArrayAlgorithm {
     /// function and the execution time, i. e. the time it takes to execute
     /// the actual algorithm itself.
     #[cfg(not(tarpaulin_include))]
-    fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
+    fn measure(pattern: &[u8], text: &[u8], f: &Self, cli_params: &CLIParams) -> SingleMeasurement {
         // Add sentinel to text
         let mut text = text.iter().copied().collect::<Vec<u8>>();
         text.push(0);
@@ -23,14 +26,15 @@ impl Measurement for SuffixArrayAlgorithm {
         // Measure time it takes to generate the suffix array
         let before = SystemTime::now();
 
-        let pos = f.1(text);
+        let pos =
+            match_suffix_array_gen_algorithm(&cli_params.suffix_array_algorithm).unwrap()(text);
 
         let preparation_duration = before.elapsed();
 
         // Measure time it takes to run the actual algorithm
         let before = SystemTime::now();
 
-        let matches = f.0(&pos, pattern, text).len();
+        let matches = f(&pos, pattern, text).len();
 
         let algorithm_duration = before.elapsed();
 
@@ -51,7 +55,7 @@ impl Measurement for BWTAlgorithm {
     /// function and the execution time, i. e. the time it takes to execute
     /// the actual algorithm itself.
     #[cfg(not(tarpaulin_include))]
-    fn measure(pattern: &[u8], text: &[u8], f: &Self) -> SingleMeasurement {
+    fn measure(pattern: &[u8], text: &[u8], f: &Self, cli_params: &CLIParams) -> SingleMeasurement {
         // Add sentinel to text
         let mut text = text.iter().copied().collect::<Vec<u8>>();
         text.push(0);
@@ -60,7 +64,8 @@ impl Measurement for BWTAlgorithm {
         // Measure time it takes to generate the suffix array
         let before = SystemTime::now();
 
-        let pos = f.1(text);
+        let pos =
+            match_suffix_array_gen_algorithm(&cli_params.suffix_array_algorithm).unwrap()(text);
         let bwt_vec = bwt(text, &pos);
         let occ_vec = occ(&bwt_vec);
         let less_vec = less(&bwt_vec);
@@ -70,7 +75,7 @@ impl Measurement for BWTAlgorithm {
         // Measure time it takes to run the actual algorithm
         let before = SystemTime::now();
 
-        let matches = f.0(&pos, &occ_vec, &less_vec, pattern).len();
+        let matches = f(&pos, &occ_vec, &less_vec, pattern).len();
 
         let algorithm_duration = before.elapsed();
 

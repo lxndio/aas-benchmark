@@ -7,7 +7,7 @@ args:
         required: true
         index: 1
     - executions:
-        help: Set how often the algorithm is being executed (default 1)
+        help: Set how often the algorithm(s) are being executed, defaults to 1
         short: n
         long: executions
         takes_value: true
@@ -60,6 +60,16 @@ args:
         long: randompattern
         takes_value: true
         value_name: lengths
+    - suffix_array_algorithm:
+        help: Specify how a suffix array should be generated (only used for `sa-` and `bwt-` algorithms), defaults to `sais`
+        long: suffixarray
+        takes_value: true
+        value_name: suffix_array_algorithm
+    - occ_block_size:
+        help: Specify the block size of the Occ array (only used for the `bwt-match-k` algorithm), defaults to 1
+        long: occblocksize
+        takes_value: true
+        value_name: block_size
     - human_readble:
         help: Print a human-readble summary instead of a comma-seperated values summary
         short: h

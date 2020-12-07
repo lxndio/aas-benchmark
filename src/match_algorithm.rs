@@ -20,10 +20,14 @@ lazy_static! {
         "kmp" => TypedAlgorithm::SinglePatternAlgorithm(kmp_all),
         "kmp-classic" => TypedAlgorithm::SinglePatternAlgorithm(kmp_classic_all),
         "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and),
-        "sa-match-slow" => TypedAlgorithm::SuffixArrayAlgorithm((match_pattern, slow)),
-        "sa-match-fast" => TypedAlgorithm::SuffixArrayAlgorithm((match_pattern, fast)),
-        "bwt-match-slow" => TypedAlgorithm::BWTAlgorithm((match_pattern_bwt, slow)),
-        "bwt-match-fast" => TypedAlgorithm::BWTAlgorithm((match_pattern_bwt, fast)),
+        "sa-match" => TypedAlgorithm::SuffixArrayAlgorithm(match_pattern),
+        "bwt-match" => TypedAlgorithm::BWTAlgorithm(match_pattern_bwt),
+    };
+
+    /// List of suffix array generation algorithms and their internal names
+    static ref SUFFIX_ARRAY_GEN_ALGORITHMS: HashMap<&'static str, SuffixArrayGenAlgorithm> = hashmap! {
+        "naive" => slow as SuffixArrayGenAlgorithm,
+        "sais" => fast as SuffixArrayGenAlgorithm,
     };
 }
 
@@ -32,15 +36,11 @@ pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 
 /// A suffix array algorithm tuple, containing the algorithm itself and
 /// the suffix array generation function to be used.
-pub type SuffixArrayAlgorithm = (
-    fn(&[usize], &[u8], &[u8]) -> Vec<usize>,
-    fn(&[u8]) -> Vec<usize>,
-);
+pub type SuffixArrayAlgorithm = fn(&[usize], &[u8], &[u8]) -> Vec<usize>;
 
-pub type BWTAlgorithm = (
-    fn(&[usize], &[usize], &[usize], &[u8]) -> Vec<usize>,
-    fn(&[u8]) -> Vec<usize>,
-);
+pub type BWTAlgorithm = fn(&[usize], &[usize], &[usize], &[u8]) -> Vec<usize>;
+
+pub type SuffixArrayGenAlgorithm = fn(&[u8]) -> Vec<usize>;
 
 #[derive(Clone, Copy)]
 pub enum TypedAlgorithm {
@@ -86,6 +86,14 @@ pub fn match_algorithms(algorithm_names: &[String]) -> Vec<(String, TypedAlgorit
     }
 
     algorithms
+}
+
+pub(crate) fn match_suffix_array_gen_algorithm(algorithm: &str) -> Option<SuffixArrayGenAlgorithm> {
+    if SUFFIX_ARRAY_GEN_ALGORITHMS.contains_key(algorithm) {
+        Some(*SUFFIX_ARRAY_GEN_ALGORITHMS.get(algorithm).unwrap())
+    } else {
+        None
+    }
 }
 
 /// Returns the pretty formatted name of an algorithm matching the given name.

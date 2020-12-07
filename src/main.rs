@@ -53,7 +53,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         &patterns,
                         text,
                         algorithm_fn,
-                        cli_params.executions,
+                        &cli_params,
                     );
 
                     if !cli_params.human_readble {

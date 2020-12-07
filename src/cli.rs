@@ -15,6 +15,9 @@ pub struct CLIParams {
 
     pub pattern_source: PatternSource,
     pub text_source: TextSource,
+
+    pub suffix_array_algorithm: String,
+    pub occ_block_size: usize,
 }
 
 impl CLIParams {
@@ -35,6 +38,10 @@ impl CLIParams {
         .iter()
         .map(|algorithm| String::from(*algorithm))
         .collect();
+        let suffix_array_algorithm = matches
+            .value_of("suffix_array_algorithm")
+            .unwrap_or("sais")
+            .to_string();
 
         // Bool value parameters
         let human_readble: bool = matches.is_present("human_readble");
@@ -50,6 +57,11 @@ impl CLIParams {
             .unwrap_or("-1") // -1 so that parse fails if the argument is not set, resulting in seed being None
             .parse()
             .ok();
+        let occ_block_size = matches
+            .value_of("occ_block_size")
+            .unwrap_or("1")
+            .parse()
+            .unwrap_or(0);
 
         // Return new CLIParams object
         Self {
@@ -62,6 +74,9 @@ impl CLIParams {
 
             pattern_source: Self::set_pattern_source(&matches),
             text_source: Self::set_text_source(&matches),
+
+            suffix_array_algorithm,
+            occ_block_size,
         }
     }
 
@@ -80,9 +95,32 @@ impl CLIParams {
             valid = false;
         }
 
+        if self
+            .algorithms
+            .iter()
+            .any(|x| x.starts_with("sa-") || x.starts_with("bwt-"))
+            && !["naive", "sais"].contains(&self.suffix_array_algorithm.as_str())
+        {
+            println!(
+                "You have to specify a valid algorithm for suffix array generation. \
+                Options are: naive, sais.\nYou could also omit the parameter to use the \
+                default algorithm `sais`.\n"
+            );
+            valid = false;
+        }
+
         // Number value parameters
         if self.executions == 0 {
             println!("The -n argument needs to be a positive integer greater than 0.\n");
+            valid = false;
+        }
+
+        if self.algorithms.contains(&String::from("bwt-match-k")) && self.occ_block_size == 0 {
+            println!(
+                "You have to enter a valid block size for the Occ array when \
+                using the `bwt-match-k` algorithm or omit the parameter to use \
+                the default block size of 1."
+            );
             valid = false;
         }
 
