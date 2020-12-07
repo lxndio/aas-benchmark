@@ -50,8 +50,8 @@ mod tests {
 
     #[test]
     fn test_shift_and() {
-        let text = "gccttaacattattacgccta".as_bytes();
-        let pattern = "tta".as_bytes();
+        let text = b"gccttaacattattacgccta";
+        let pattern = b"tta";
 
         let mut matches = shift_and(pattern, text);
         matches.sort_unstable();

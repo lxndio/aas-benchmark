@@ -133,8 +133,8 @@ mod tests {
 
     #[test]
     fn test_kmp_all() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
-        let pattern = "tta".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
+        let pattern = b"tta";
 
         let mut matches = kmp_all(pattern, text);
         matches.sort_unstable();
@@ -146,8 +146,8 @@ mod tests {
 
     #[test]
     fn test_kmp_classic_all() {
-        let text = "gccttaacattattacgccta\u{0}".as_bytes();
-        let pattern = "tta".as_bytes();
+        let text = b"gccttaacattattacgccta\0";
+        let pattern = b"tta";
 
         let mut matches = kmp_classic_all(pattern, text);
         matches.sort_unstable();

@@ -40,8 +40,8 @@ mod tests {
 
     #[test]
     fn test_naive_all() {
-        let text = "gccttaacattattacgccta".as_bytes();
-        let pattern = "tta".as_bytes();
+        let text = b"gccttaacattattacgccta";
+        let pattern = b"tta";
 
         let mut matches = naive_all(pattern, text);
         matches.sort_unstable();
