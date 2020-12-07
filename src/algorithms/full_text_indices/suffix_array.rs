@@ -103,11 +103,16 @@ pub fn occ_k(bwt: &[u8], k: usize) -> Vec<usize> {
 /// letters in the BWT are smaller than this letter.
 pub fn less(bwt: &[u8]) -> Vec<usize> {
     let mut less: Vec<usize> = vec![0; 256];
+    let counters: &mut [usize] = &mut [0; 256];
 
-    for c in bwt.iter() {
-        for less_i in less.iter_mut().take(256).skip((*c as usize) + 1) {
-            *less_i += 1;
-        }
+    for r in 0..bwt.len() {
+        counters[bwt[r] as usize] += 1;
+    }
+
+    let mut sum = 1;
+    for c in 1..256 {
+        less[c] = sum;
+        sum += counters[c];
     }
 
     less
