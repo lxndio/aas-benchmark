@@ -25,6 +25,7 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
   - [List of Algorithms](#List-of-Algorithms)
     - [Single Pattern Algorithms](#Single-Pattern-Algorithms)
     - [Algorithms Using a Suffix Array](#Algorithms-Using-a-Suffix-Array)
+    - [Suffix Array Generation Algorithms](#Suffix-Array-Generation-Algorithms)
   - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
 
 ## Build Instructions
@@ -176,9 +177,24 @@ Shift-And                                      | `shift-and`                    
 
 Algorithm        | Command-line argument name       |
 ---------------- | -------------------------------- |
-Pattern Matching | `sa-match-slow`, `sa-match-fast` |
+Pattern Matching | `sa-match`                       |
 
-The algorithms ending with `-slow` use a very simple and slow approach to generating the required suffix array. The corresponding `-fast` variants use the SAIS algorithm to generate the required suffix array.
+See [Suffix Array Generation Algorithms](#Suffix-Array-Generation-Algorithms) for more information on how the suffix array is generated.
+
+#### Suffix Array Generation Algorithms
+
+Algorithms that require a suffix array to work generate this suffix array using the SAIS algorithm by default. You can, however, select the used suffix array generation algorithm yourself by specifying the `--suffixarray` parameter:
+
+```
+aas-benchmark sa-match ... --suffixarray sais
+```
+
+Currently, these algorithms are available for suffix array generation:
+
+Algorithm      | Command-line argument name |
+-------------- | -------------------------- |
+Naive approach | `naive`                    |
+SAIS           | `sais`                     |
 
 ### List of Command-Line Arguments
 
