@@ -18,6 +18,7 @@ pub struct CLIParams {
 
     pub suffix_array_algorithm: String,
     pub occ_block_size: usize,
+    pub maximum_error: Option<usize>,
 }
 
 impl CLIParams {
@@ -62,6 +63,11 @@ impl CLIParams {
             .unwrap_or("1")
             .parse()
             .unwrap_or(0);
+        let maximum_error = matches
+            .value_of("maximum_error")
+            .unwrap_or("0")
+            .parse()
+            .ok();
 
         // Return new CLIParams object
         Self {
@@ -77,6 +83,7 @@ impl CLIParams {
 
             suffix_array_algorithm,
             occ_block_size,
+            maximum_error,
         }
     }
 
@@ -120,6 +127,14 @@ impl CLIParams {
                 "You have to enter a valid block size for the Occ array when \
                 using the `bwt-match-k` algorithm or omit the parameter to use \
                 the default block size of 1."
+            );
+            valid = false;
+        }
+
+        if self.maximum_error.is_none() {
+            println!(
+                "The --maxerror argument needs to be a positive integer.\nYou could \
+                also omit the parameter to use the default value of 0.\n"
             );
             valid = false;
         }

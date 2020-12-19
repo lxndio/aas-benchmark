@@ -70,6 +70,11 @@ args:
         long: occblocksize
         takes_value: true
         value_name: block_size
+    - maximum_error:
+        help: Specify the maximum allowed error for approximative algorithms, defaults to 0
+        long: maxerror
+        takes_value: true
+        value_name: maximum_error
     - human_readble:
         help: Print a human-readble summary instead of a comma-seperated values summary
         short: h

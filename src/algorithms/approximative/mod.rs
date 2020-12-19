@@ -9,12 +9,14 @@ pub mod ukkonen;
 impl Measurement for ApproximativeAlgorithm {
     /// A function to measure the runtime of an approximative algorithm.
     ///
-    /// It takes the allowed maximum error from the given CLI parameters.
+    /// It takes the maximum allowed error from the given CLI parameters.
     #[cfg(not(tarpaulin_include))]
-    fn measure(pattern: &[u8], text: &[u8], f: &Self, _: &CLIParams) -> SingleMeasurement {
+    fn measure(pattern: &[u8], text: &[u8], f: &Self, cli_params: &CLIParams) -> SingleMeasurement {
         let before = SystemTime::now();
 
-        let matches = f(pattern, text, 1).len();
+        // Unwrapping the `maximum_error` CLI parameter is valid here
+        // because it can't be None as checked in `cli::valid()`
+        let matches = f(pattern, text, cli_params.maximum_error.unwrap()).len();
 
         let duration = before.elapsed();
 
