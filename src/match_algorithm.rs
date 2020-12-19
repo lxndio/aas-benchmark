@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::algorithms::approximative::ukkonen::ukkonen;
 use crate::algorithms::full_text_indices::sais::fast;
 use crate::algorithms::full_text_indices::suffix_array::slow;
 use crate::algorithms::full_text_indices::suffix_array_algorithms::{
@@ -22,6 +23,7 @@ lazy_static! {
         "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and),
         "sa-match" => TypedAlgorithm::SuffixArrayAlgorithm(match_pattern),
         "bwt-match" => TypedAlgorithm::BWTAlgorithm(match_pattern_bwt),
+        "ukkonen" => TypedAlgorithm::ApproximativeAlgorithm(ukkonen),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -38,7 +40,11 @@ pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 /// the suffix array generation function to be used.
 pub type SuffixArrayAlgorithm = fn(&[usize], &[u8], &[u8]) -> Vec<usize>;
 
+/// A BWT algorithm.
 pub type BWTAlgorithm = fn(&[usize], &[usize], &[usize], &[u8]) -> Vec<usize>;
+
+/// An approximative algorithm.
+pub type ApproximativeAlgorithm = fn(&[u8], &[u8], usize) -> Vec<(usize, usize)>;
 
 pub type SuffixArrayGenAlgorithm = fn(&[u8]) -> Vec<usize>;
 
@@ -47,6 +53,7 @@ pub enum TypedAlgorithm {
     SinglePatternAlgorithm(SinglePatternAlgorithm),
     SuffixArrayAlgorithm(SuffixArrayAlgorithm),
     BWTAlgorithm(BWTAlgorithm),
+    ApproximativeAlgorithm(ApproximativeAlgorithm),
 }
 
 /// Returns the algorithm function matching the given name.
@@ -116,6 +123,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "sa-match-fast" => "Fast SA Pattern Matching",
         "bwt-match-slow" => "Slow BWT Pattern Matching",
         "bwt-match-fast" => "Fast BWT Pattern Matching",
+        "ukkonen" => "Ukkonen Approximative",
         _ => "Unknown Algorithm",
     }
 }

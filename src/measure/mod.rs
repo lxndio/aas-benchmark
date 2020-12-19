@@ -5,7 +5,8 @@ use std::time::Duration;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::{
-    BWTAlgorithm, SinglePatternAlgorithm, SuffixArrayAlgorithm, TypedAlgorithm,
+    ApproximativeAlgorithm, BWTAlgorithm, SinglePatternAlgorithm, SuffixArrayAlgorithm,
+    TypedAlgorithm,
 };
 use crate::measure::measure_result::MeasureResult;
 
@@ -50,6 +51,9 @@ pub fn measure_multiple(
                 SuffixArrayAlgorithm::measure(pattern, text, f, cli_params)
             }
             TypedAlgorithm::BWTAlgorithm(f) => BWTAlgorithm::measure(pattern, text, f, cli_params),
+            TypedAlgorithm::ApproximativeAlgorithm(f) => {
+                ApproximativeAlgorithm::measure(pattern, text, f, cli_params)
+            }
         });
     }
 
