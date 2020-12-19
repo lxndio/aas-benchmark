@@ -26,6 +26,7 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
     - [Single Pattern Algorithms](#Single-Pattern-Algorithms)
     - [Algorithms Using a Suffix Array](#Algorithms-Using-a-Suffix-Array)
     - [Suffix Array Generation Algorithms](#Suffix-Array-Generation-Algorithms)
+    - [Approximative Algorithms](#Approximative-Algorithms)
   - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
 
 ## Build Instructions
@@ -183,7 +184,7 @@ See [Suffix Array Generation Algorithms](#Suffix-Array-Generation-Algorithms) fo
 
 #### Suffix Array Generation Algorithms
 
-Algorithms that require a suffix array to work generate this suffix array using the SAIS algorithm by default. You can, however, select the used suffix array generation algorithm yourself by specifying the `--suffixarray` parameter:
+Algorithms that require a suffix array to work generate this suffix array using the SAIS algorithm by default. You can, however, select the used suffix array generation algorithm yourself by specifying the `--suffixarray` argument:
 
 ```
 aas-benchmark sa-match ... --suffixarray sais
@@ -195,6 +196,20 @@ Algorithm      | Command-line argument name |
 -------------- | -------------------------- |
 Naive approach | `naive`                    |
 SAIS           | `sais`                     |
+
+#### Approximative Algorithms
+
+Algorithm              | Command-line argument name       |
+---------------------- | -------------------------------- |
+Ukkonen's DP Algorithm | `ukkonen`                        |
+
+For approximative algorithms you can set a maximum allowed error value using the `--maxerror` argument:
+
+```
+aas-benchmark ukkonen ... --maxerror 2
+```
+
+This value defaults to `0` if not set.
 
 ### List of Command-Line Arguments
 
