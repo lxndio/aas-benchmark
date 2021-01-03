@@ -1,10 +1,11 @@
+pub mod error_tolerant_shift_and;
+pub mod ukkonen;
+
 use std::time::SystemTime;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::ApproximativeAlgorithm;
 use crate::measure::{Measurement, SingleMeasurement};
-
-pub mod ukkonen;
 
 impl Measurement for ApproximativeAlgorithm {
     /// A function to measure the runtime of an approximative algorithm.
