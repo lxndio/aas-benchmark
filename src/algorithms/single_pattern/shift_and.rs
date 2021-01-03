@@ -1,3 +1,10 @@
+/// Preparation function for the Shift-And Algorithm.
+///
+/// For a given pattern, it returns a tuple containing:
+///
+/// - a shift bit mask for each possible character
+/// - a bit mask containing states after starting states and
+/// - a bit mask containing accepting states
 pub fn shift_and_single_masks(pattern: &[u8]) -> (Vec<usize>, usize, usize) {
     let mut masks = vec![0; 256];
     let mut bit = 1;
@@ -11,6 +18,7 @@ pub fn shift_and_single_masks(pattern: &[u8]) -> (Vec<usize>, usize, usize) {
     (masks, 1, bit / 2)
 }
 
+/// Simulates the Shift-And Algorithm's NFA.
 fn shift_and_with_masks(
     text: &[u8],
     masks: &[usize],
