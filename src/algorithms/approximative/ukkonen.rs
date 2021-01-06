@@ -1,6 +1,9 @@
 use std::cmp::{min, Ordering};
 use std::mem::swap;
 
+/// Returns occurences of a pattern in a text given a maximum error.
+///
+/// The runtime is `O(kn)` given a maximum error `k` and a text with length `n`.
 pub fn ukkonen(pattern: &[u8], text: &[u8], k: usize) -> Vec<(usize, usize)> {
     let m = pattern.len();
     let n = text.len();

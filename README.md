@@ -170,7 +170,7 @@ Algorithm                                      | Command-line argument name     
 ---------------------------------------------- | ------------------------------------- |
 Backward Nondeterministic DAWG Matching (BNDM) | `bndm`                                |
 Horspool                                       | `horspool`                            |
-Naive approach                                 | `naive`                               |
+Naive Approach                                 | `naive`                               |
 Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`                |
 Shift-And                                      | `shift-and`                           |
 
@@ -199,9 +199,10 @@ SAIS           | `sais`                     |
 
 #### Approximative Algorithms
 
-Algorithm              | Command-line argument name       |
----------------------- | -------------------------------- |
-Ukkonen's DP Algorithm | `ukkonen`                        |
+Algorithm                | Command-line argument name       |
+------------------------ | -------------------------------- |
+Ukkonen's DP Algorithm   | `ukkonen`                        |
+Error Tolerant Shift-And | `et-shift-and`                   |
 
 For approximative algorithms you can set a maximum allowed error value using the `--maxerror` argument:
 
