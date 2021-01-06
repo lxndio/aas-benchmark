@@ -36,7 +36,7 @@ pub fn ukkonen(pattern: &[u8], text: &[u8], k: usize) -> Vec<(usize, usize)> {
         }
 
         if last_k == m {
-            occurrences.push((j - 1, d_j[m]));
+            occurrences.push((j - m, d_j[m]));
         }
     }
 
@@ -56,13 +56,15 @@ mod tests {
 
     #[test]
     fn test_ukkonen() {
-        let text = b"adbcacbabcdacd";
+        let text = b"dddddabcddd";
         let pattern = b"abc";
         let k = 1;
 
         let matches = ukkonen(pattern, text, k);
 
-        let matches_correct = vec![(3, 1), (5, 1), (8, 1), (9, 0), (10, 1), (12, 1)];
+        println!("{:?}", matches);
+
+        let matches_correct = vec![(4, 1), (5, 0), (6, 1)];
 
         assert_eq!(matches, matches_correct);
     }

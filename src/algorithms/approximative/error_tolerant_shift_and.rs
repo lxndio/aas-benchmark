@@ -17,15 +17,18 @@ pub fn error_tolerant_shift_and(pattern: &[u8], text: &[u8], k: usize) -> Vec<(u
 
         active[0] = ((active[0] << 1) | ones) & mask[*c as usize];
 
+        let mut occurence_added = false;
         if active[0] & accept != 0 {
             occurrences.push((pos - m + 1, 0));
+            occurence_added = true;
         }
 
         for i in 1..=k {
             active[i] |= active[i - 1] << 1;
 
-            if active[i] & accept != 0 {
+            if active[i] & accept != 0 && !occurence_added {
                 occurrences.push((pos - m + 1, i));
+                occurence_added = true;
             }
         }
     }
@@ -39,13 +42,15 @@ mod tests {
 
     #[test]
     fn test_error_tolerant_shift_and() {
-        let text = b"adbcacbabcdacd";
+        let text = b"dddddabcddd";
         let pattern = b"abc";
         let k = 1;
 
         let matches = error_tolerant_shift_and(pattern, text, k);
 
-        let matches_correct = vec![(3, 1), (5, 1), (8, 1), (9, 0), (10, 1), (12, 1)];
+        println!("{:?}", matches);
+
+        let matches_correct = vec![(4, 1), (5, 0), (6, 1)];
 
         assert_eq!(matches, matches_correct);
     }
