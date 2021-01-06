@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::algorithms::approximative::error_tolerant_shift_and::error_tolerant_shift_and;
 use crate::algorithms::approximative::ukkonen::ukkonen;
 use crate::algorithms::full_text_indices::sais::fast;
 use crate::algorithms::full_text_indices::suffix_array::slow;
@@ -24,6 +25,7 @@ lazy_static! {
         "sa-match" => TypedAlgorithm::SuffixArrayAlgorithm(match_pattern),
         "bwt-match" => TypedAlgorithm::BWTAlgorithm(match_pattern_bwt),
         "ukkonen" => TypedAlgorithm::ApproximativeAlgorithm(ukkonen),
+        "et-shift-and" => TypedAlgorithm::ApproximativeAlgorithm(error_tolerant_shift_and),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -123,7 +125,8 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "sa-match-fast" => "Fast SA Pattern Matching",
         "bwt-match-slow" => "Slow BWT Pattern Matching",
         "bwt-match-fast" => "Fast BWT Pattern Matching",
-        "ukkonen" => "Ukkonen Approximative",
+        "ukkonen" => "Ukkonen's DP Algorithm",
+        "et-shift-and" => "Error Tolerant Shift-And",
         _ => "Unknown Algorithm",
     }
 }
