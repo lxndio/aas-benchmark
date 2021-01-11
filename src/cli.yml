@@ -15,7 +15,7 @@ args:
     - random_text:
         help: Generates a random text with the given length
         short: t
-        long: randomtext
+        long: tr
         takes_value: true
         value_name: length
     - seed:
@@ -26,7 +26,7 @@ args:
         value_name: seed
     - text_from_file:
         help: Load a text from a file
-        long: textfromfile
+        long: tf
         takes_value: true
         value_name: file_name
     #- text_from_file_binary:
@@ -37,27 +37,32 @@ args:
     - random_pattern_from_text:
         help: Take one or multiple random parts from the text with given length(s) as patterns  (e.g. 10 for length 10 or 1..10 for lengths 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
         short: p
-        long: randompatternfromtext
+        long: prt
+        takes_value: true
+        value_name: lengths
+    - multiple_random_patterns_from_text:
+        help: Take multiple random parts from the text with given lengths as patterns, seperated by semicolons. Used for benchmarking algorithms that take multiple patterns.
+        long: pmrt
         takes_value: true
         value_name: lengths
     - pattern_from_text:
         help: Takes a part from the text as a pattern using a given range (e.g. 0..10 for characters 0 to 9)
-        long: patternfromtext
+        long: pt
         takes_value: true
         value_name: range
     - pattern_from_argument:
         help: Set a UTF-8 string as a pattern
-        long: patternfromarg
+        long: pa
         takes_value: true
         value_name: pattern
     - pattern_from_file:
         help: Load a pattern from a file
-        long: patternfromfile
+        long: pf
         takes_value: true
         value_name: file_name
     - random_pattern:
         help: Generate one or multiple random patterns with given length(s) (e.g. 10 for length 10 or 1..10 for length 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
-        long: randompattern
+        long: pr
         takes_value: true
         value_name: lengths
     - suffix_array_algorithm:

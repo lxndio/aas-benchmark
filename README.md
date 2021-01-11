@@ -80,7 +80,7 @@ to run both the `naive` and `horspool` algorithm 10 times to smooth out deviatio
 
 #### Random Generated Text
 
-You can generate a random text with a length of `m` bytes by using the `-t` or `--randomtext` argument:
+You can generate a random text with a length of `m` bytes by using the `-t` or `--tr` argument:
 
 ```
 aas-benchmark naive -t m ...
@@ -88,29 +88,37 @@ aas-benchmark naive -t m ...
 
 #### Text From File
 
-It is possible to load a text as a UTF-8 string from a file by using `--textfromfile`:
+It is possible to load a text as a UTF-8 string from a file by using `--tf`:
 
 ```
-aas-benchmark naive ... --textfromfile text.txt
+aas-benchmark naive ... --tf text.txt
 ```
 
 This would load the content of the file `text.txt` as the text.
 
 ### Specifying a Pattern Source
 
+Below, all possible arguments for specifying a pattern source are listed. Note that the names of those arguments all follow the same naming convention:
+
+`--` + `p` + Random? + Source
+
+Random is denoted with `r`, if necessary. The source is denoted with another single letter as listed below.
+
+For example, to generate a **p**attern **r**andomly chosen from **t**ext, you would use the argument `--prt`.
+
 #### Pattern From Fixed Position in Text
 
-To use a pattern from a fixed position in the given text, set the `--patternfromtext` argument:
+To use a pattern from a fixed position in the given text, set the `--pt` argument:
 
 ```
-aas-benchmark naive ... --patternfromtext 10..15
+aas-benchmark naive ... --pt 10..15
 ```
 
 This would take as the pattern the characters at positions 10 to 14 from the given text. Notice that the upper bound is exclusive.
 
 #### Pattern(s) From Random Position in Text
 
-To use a pattern from a random position in the given text, set the `-p` or `--randompatternfromtext` argument:
+To use a pattern from a random position in the given text, set the `-p` or `--prt` argument:
 
 ```
 aas-benchmark naive ... -p 10
@@ -126,30 +134,30 @@ The third line does the same as the second line with the difference that it has 
 
 #### Pattern From Argument
 
-You can also specify a pattern as a UTF-8 string by using the `--patternfromarg` argument:
+You can also specify a pattern as a UTF-8 string by using the `--pa` argument:
 
 ```
-aas-benchmark naive ... --patternfromarg abc
+aas-benchmark naive ... --pa abc
 ```
 
 This command would set the pattern as `abc`.
 
 #### Pattern From File
 
-It is possible to load a pattern as a UTF-8 string from a file by using `--patternfromfile`:
+It is possible to load a pattern as a UTF-8 string from a file by using `--pf`:
 
 ```
-aas-benchmark naive ... --patternfromfile pattern.txt
+aas-benchmark naive ... --pf pattern.txt
 ```
 
 This would load the content of the file `pattern.txt` as the pattern.
 
 #### Random Pattern
 
-You can also use the `--randompattern` argument to generate a random pattern with a length of `m` bytes:
+You can also use the `--pr` argument to generate a random pattern with a length of `m` bytes:
 
 ```
-aas-benchmark naive ... --randompattern m
+aas-benchmark naive ... --pr m
 ```
 
 ### Specifying a Seed
