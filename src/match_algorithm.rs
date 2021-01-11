@@ -7,6 +7,7 @@ use crate::algorithms::full_text_indices::suffix_array::slow;
 use crate::algorithms::full_text_indices::suffix_array_algorithms::{
     match_pattern, match_pattern_bwt,
 };
+use crate::algorithms::multiple_patterns::naive::naive_multiple;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
@@ -26,6 +27,7 @@ lazy_static! {
         "bwt-match" => TypedAlgorithm::BWTAlgorithm(match_pattern_bwt),
         "ukkonen" => TypedAlgorithm::ApproximativeAlgorithm(ukkonen),
         "et-shift-and" => TypedAlgorithm::ApproximativeAlgorithm(error_tolerant_shift_and),
+        "mp-naive" => TypedAlgorithm::MultiplePatternAlgorithm(naive_multiple),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -37,6 +39,9 @@ lazy_static! {
 
 /// A single pattern algorithm.
 pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
+
+/// A multiple pattern algorithm.
+pub type MultiplePatternAlgorithm = fn(&[&[u8]], &[u8]) -> Vec<Vec<usize>>;
 
 /// A suffix array algorithm tuple, containing the algorithm itself and
 /// the suffix array generation function to be used.
@@ -53,6 +58,7 @@ pub type SuffixArrayGenAlgorithm = fn(&[u8]) -> Vec<usize>;
 #[derive(Clone, Copy)]
 pub enum TypedAlgorithm {
     SinglePatternAlgorithm(SinglePatternAlgorithm),
+    MultiplePatternAlgorithm(MultiplePatternAlgorithm),
     SuffixArrayAlgorithm(SuffixArrayAlgorithm),
     BWTAlgorithm(BWTAlgorithm),
     ApproximativeAlgorithm(ApproximativeAlgorithm),
@@ -127,6 +133,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "bwt-match-fast" => "Fast BWT Pattern Matching",
         "ukkonen" => "Ukkonen's DP Algorithm",
         "et-shift-and" => "Error Tolerant Shift-And",
+        "mp-naive" => "Naive Multiple Patterns",
         _ => "Unknown Algorithm",
     }
 }

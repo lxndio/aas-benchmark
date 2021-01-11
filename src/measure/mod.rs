@@ -47,6 +47,9 @@ pub fn measure_multiple(
             TypedAlgorithm::SinglePatternAlgorithm(f) => {
                 SinglePatternAlgorithm::measure(pattern, text, f, cli_params)
             }
+            TypedAlgorithm::MultiplePatternAlgorithm(_) => {
+                unimplemented!();
+            }
             TypedAlgorithm::SuffixArrayAlgorithm(f) => {
                 SuffixArrayAlgorithm::measure(pattern, text, f, cli_params)
             }
