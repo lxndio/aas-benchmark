@@ -1,6 +1,6 @@
 use crate::algorithms::single_pattern::shift_and::shift_and_single_masks;
 
-/// Returns occurences of a pattern in a text given a maximum error.
+/// Returns occurrences of a pattern in a text given a maximum error.
 ///
 /// This is a modified version of the Shift-And Algorithm, simulating multiple
 /// NFAs to account for the pattern being able to have a given edit distance
@@ -25,22 +25,22 @@ pub fn error_tolerant_shift_and(pattern: &[u8], text: &[u8], k: usize) -> Vec<(u
 
         active[0] = ((active[0] << 1) | ones) & mask[*c as usize];
 
-        // The occurence_added variable is used to prevent a position to be
+        // The occurrence_added variable is used to prevent a position to be
         // added multiple times with different errors; because the error values
         // are iterated ascendingly from here on, only the lowest error for each
-        // position will be added to the occurences
-        let mut occurence_added = false;
+        // position will be added to the occurrences
+        let mut occurrence_added = false;
         if active[0] & accept != 0 {
             occurrences.push((pos - m + 1, 0));
-            occurence_added = true;
+            occurrence_added = true;
         }
 
         for i in 1..=k {
             active[i] |= active[i - 1] << 1;
 
-            if active[i] & accept != 0 && !occurence_added {
+            if active[i] & accept != 0 && !occurrence_added {
                 occurrences.push((pos - m + 1, i));
-                occurence_added = true;
+                occurrence_added = true;
             }
         }
     }
