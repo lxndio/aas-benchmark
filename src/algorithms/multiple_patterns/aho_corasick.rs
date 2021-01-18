@@ -160,8 +160,7 @@ impl ACTrie {
             q = self.delta(q, *c);
 
             for x in self.node(q).out.iter() {
-                //res[*x].push(i - patterns[*x].len() + 1);
-                res[*x].push(i);
+                res[*x].push((i as isize - patterns[*x].len() as isize + 1) as usize);
             }
         }
 
