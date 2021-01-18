@@ -5,7 +5,7 @@ use crate::algorithms::single_pattern::naive::naive_all;
 /// Takes multiple patterns and a text, returning a vector containing
 /// vectors with the positions of the found occurrences for each pattern.
 ///
-/// Uses a naive approach by simply calling the naive single pattern algorithm
+/// It uses a naive approach by simply calling the naive single pattern algorithm
 /// for each given pattern.
 pub fn naive_multiple(patterns: &[&[u8]], text: &[u8]) -> Vec<Vec<usize>> {
     let mut matches = Vec::new();

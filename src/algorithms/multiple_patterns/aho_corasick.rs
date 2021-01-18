@@ -1,10 +1,12 @@
 use std::collections::VecDeque;
 
-pub struct ACTrie {
+/// A struct that manages all nodes in a Trie used by the Aho-Corasick algorithm.
+struct ACTrie {
     nodes: Vec<ACNode>,
 }
 
-pub struct ACNode {
+/// A node of a Trie used by the Aho-Corasick algorithm.
+struct ACNode {
     id: usize,
 
     targets: Vec<usize>,
@@ -17,15 +19,20 @@ pub struct ACNode {
 }
 
 impl ACTrie {
-    pub fn new(patterns: &[&[u8]]) -> Self {
+    /// Creates an empty Trie and builds it up according to the Aho-Corasick algorithm.
+    fn new(patterns: &[&[u8]]) -> Self {
         let mut ac_trie = Self { nodes: Vec::new() };
         let root = ac_trie.new_node(None, None, 0, &[]);
         let mut node;
 
+        // Build the Trie for each pattern by iterating over the pattern's characters
+        // and checking whether there are already "paths" in the Trie to take or not,
+        // adding new nodes along the way if necessary
         for (i, pattern) in patterns.iter().enumerate() {
             node = root;
 
             for c in *pattern {
+                // Is there already a "path" to take given the already read characters?
                 if let Some(target) = ac_trie.target_with(node, *c) {
                     node = target;
                 } else {
@@ -36,12 +43,17 @@ impl ACTrie {
             ac_trie.node_mut(node).out.push(i);
         }
 
-        // Build lps by iterating through trie in BFS-order
+        // Next, the lps-links have to be built. This is done by iterating
+        // through the previously built Trie in BFS-order
         for node in ac_trie.bfs(root) {
+            // If there is no parent node, i. e. the current node is the root,
+            // there can't be an lps-link to anywhere, so this iteration will
+            // be skipped
             if ac_trie.node(node).parent.is_none() {
                 continue;
             }
 
+            // Find the lps-link by using a delta transition
             ac_trie.node_mut(node).lps = Some(if ac_trie.node(node).depth > 1 {
                 ac_trie.delta(
                     ac_trie
@@ -51,9 +63,12 @@ impl ACTrie {
                     ac_trie.node(node).letter.unwrap(),
                 )
             } else {
+                // For all nodes with depth 1, the lps-link is the root node
                 root
             });
 
+            // Extend the output function of the current node by the values
+            // of the lps-link's output function
             let lps = ac_trie.node(node).lps.unwrap();
             let out = ac_trie.node(lps).out.clone();
             ac_trie.node_mut(node).out.extend(out.iter());
@@ -62,6 +77,7 @@ impl ACTrie {
         ac_trie
     }
 
+    /// Creates a new node, setting its label and depth according to its parent.
     fn new_node(
         &mut self,
         parent: Option<usize>,
@@ -70,7 +86,7 @@ impl ACTrie {
         label: &[u8],
     ) -> usize {
         let id = self.nodes.len();
-        let mut node = ACNode::new(id).parent(parent).letter(letter);
+        let mut node = ACNode::new(id, parent, letter);
 
         if let Some(parent) = parent {
             node.depth = self.node(parent).depth + 1;
@@ -97,18 +113,25 @@ impl ACTrie {
         id
     }
 
+    /// Returns a reference to a node in the Trie given its ID.
     fn node(&self, id: usize) -> &ACNode {
         &self.nodes[id]
     }
 
+    /// Returns a mutable reference to a node in the Trie given its ID.
     fn node_mut(&mut self, id: usize) -> &mut ACNode {
         &mut self.nodes[id]
     }
 
+    /// Returns a reference to the Trie's root node.
     fn root(&self) -> &ACNode {
         &self.nodes[0]
     }
 
+    /// Returns a node from a given node's target list which is reachable from
+    /// the given node by reading a given letter.
+    ///
+    /// Returns `None` if there is no such node.
     fn target_with(&self, node: usize, letter: u8) -> Option<usize> {
         self.node(node)
             .targets
@@ -119,10 +142,13 @@ impl ACTrie {
             .next()
     }
 
+    /// Returns whether there is a node in a given node's target list which is
+    /// reachable from the given node by reading a given letter.
     fn has_target_with(&self, node: usize, letter: u8) -> bool {
         self.target_with(node, letter).is_some()
     }
 
+    /// Simulates the Trie's delta function.
     fn delta(&self, node: usize, c: u8) -> usize {
         let mut q = self.node(node);
 
@@ -137,6 +163,8 @@ impl ACTrie {
         q.id
     }
 
+    /// Returns a vector containing the IDs of all nodes from the subtree at
+    /// a given node, sorted in BFS-order.
     fn bfs(&self, node: usize) -> Vec<usize> {
         let mut res = Vec::new();
         let mut queue = VecDeque::from(vec![node]);
@@ -152,6 +180,9 @@ impl ACTrie {
         res
     }
 
+    /// Runs the Aho-Corasick algorithm given a list of patterns and a text.
+    ///
+    /// The Trie must have already been built.
     fn ac_with_automaton(&self, patterns: &[&[u8]], text: &[u8]) -> Vec<Vec<usize>> {
         let mut res = vec![Vec::new(); patterns.len()];
         let mut q = self.root().id;
@@ -169,33 +200,29 @@ impl ACTrie {
 }
 
 impl ACNode {
-    pub fn new(id: usize) -> Self {
+    /// Creates a new node.
+    fn new(id: usize, parent: Option<usize>, letter: Option<u8>) -> Self {
         Self {
             id,
 
             targets: Vec::new(),
             lps: None,
-            parent: None,
-            letter: None,
+            parent,
+            letter,
             label: Vec::new(),
             depth: 0,
             out: Vec::new(),
         }
     }
-
-    pub fn parent(mut self, parent: Option<usize>) -> Self {
-        self.parent = parent;
-
-        self
-    }
-
-    pub fn letter(mut self, letter: Option<u8>) -> Self {
-        self.letter = letter;
-
-        self
-    }
 }
 
+/// Returns occurrences of given patterns in a text.
+///
+/// Takes multiple patterns and a text, returning a vector containing
+/// vectors with the positions of the found occurrences for each pattern.
+///
+/// It uses the Aho-Corasick algorithm to first build a Trie with lps-links and
+/// then find the occurrences of the given patterns in the text.
 pub fn aho_corasick(patterns: &[&[u8]], text: &[u8]) -> Vec<Vec<usize>> {
     let ac_trie = ACTrie::new(patterns);
 
