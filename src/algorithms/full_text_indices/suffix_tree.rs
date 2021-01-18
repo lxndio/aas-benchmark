@@ -100,7 +100,7 @@ impl SuffixTree {
                     active.depth += 1;
                 }
 
-                // TODO Check if new position is a node
+                // Check if new active position is a node
                 let child = self.child_at(active.node, self.text[phase]).unwrap();
 
                 if self.node(child).interval.1.is_some()
@@ -167,4 +167,12 @@ impl ActivePosition {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /*#[test]
+    fn test_ukkonen_sa_gen() {
+        let text = b"gccttaacattattacgccta\0";
+
+        let mut suffix_tree = SuffixTree::new(text);
+        suffix_tree.ukkonen();
+    }*/
 }
