@@ -1,4 +1,5 @@
 #![allow(dead_code, unused_imports, unused_variables)]
+#![cfg(not(tarpaulin_include))]
 
 use std::cell::RefCell;
 use std::rc::Rc;
