@@ -7,6 +7,7 @@ use crate::algorithms::full_text_indices::suffix_array::slow;
 use crate::algorithms::full_text_indices::suffix_array_algorithms::{
     match_pattern, match_pattern_bwt,
 };
+use crate::algorithms::multiple_patterns::aho_corasick::aho_corasick;
 use crate::algorithms::multiple_patterns::naive::naive_multiple;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::horspool::horspool_all;
@@ -28,6 +29,7 @@ lazy_static! {
         "ukkonen" => TypedAlgorithm::ApproximativeAlgorithm(ukkonen),
         "et-shift-and" => TypedAlgorithm::ApproximativeAlgorithm(error_tolerant_shift_and),
         "mp-naive" => TypedAlgorithm::MultiplePatternAlgorithm(naive_multiple),
+        "aho-corasick" => TypedAlgorithm::MultiplePatternAlgorithm(aho_corasick),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -134,6 +136,7 @@ pub fn algorithm_name(algorithm: &str) -> &str {
         "ukkonen" => "Ukkonen's DP Algorithm",
         "et-shift-and" => "Error Tolerant Shift-And",
         "mp-naive" => "Naive Multiple Patterns",
+        "aho-corasick" => "Aho-Corasick",
         _ => "Unknown Algorithm",
     }
 }

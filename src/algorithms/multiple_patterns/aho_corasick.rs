@@ -55,7 +55,7 @@ impl ACTrie {
             });
 
             let lps = ac_trie.node(node).lps.unwrap();
-            let out = ac_trie.node(node).out.clone();
+            let out = ac_trie.node(lps).out.clone();
             ac_trie.node_mut(node).out.extend(out.iter());
         }
 
