@@ -5,7 +5,8 @@ use std::time::SystemTime;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::ApproximativeAlgorithm;
-use crate::measure::{Measure, SingleMeasurement};
+use crate::measure::measurement::SingleMeasurement;
+use crate::measure::Measure;
 
 impl Measure for ApproximativeAlgorithm {
     /// A function to measure the runtime of an approximative algorithm.

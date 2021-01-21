@@ -6,7 +6,8 @@ use crate::cli::CLIParams;
 use crate::match_algorithm::{
     match_suffix_array_gen_algorithm, BWTAlgorithm, SuffixArrayAlgorithm,
 };
-use crate::measure::{Measure, SingleMeasurement};
+use crate::measure::measurement::SingleMeasurement;
+use crate::measure::Measure;
 
 impl Measure for SuffixArrayAlgorithm {
     /// A function to measure the runtime of an algorithm that requires a

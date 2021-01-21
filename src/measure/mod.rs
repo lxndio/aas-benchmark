@@ -1,20 +1,16 @@
 pub mod csv_record;
 pub mod measure_result;
+pub mod measurement;
 
 use std::time::Duration;
 
+use self::measure_result::MeasureResult;
+use self::measurement::SingleMeasurement;
 use crate::cli::CLIParams;
 use crate::match_algorithm::{
     ApproximativeAlgorithm, BWTAlgorithm, SinglePatternAlgorithm, SuffixArrayAlgorithm,
     TypedAlgorithm,
 };
-use crate::measure::measure_result::MeasureResult;
-
-/// A single measurement containing an optional preparation runtime,
-/// a mandatory execution runtime (of the actual pattern matching algorithm
-/// itself) and the number of matches, i. e. how often the pattern has been
-/// found in the text.
-pub type SingleMeasurement = (Option<Duration>, Duration, usize);
 
 /// Trait for implementing a measurement.
 ///

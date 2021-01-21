@@ -9,7 +9,8 @@ use std::time::SystemTime;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::SinglePatternAlgorithm;
-use crate::measure::{Measure, SingleMeasurement};
+use crate::measure::measurement::SingleMeasurement;
+use crate::measure::Measure;
 
 impl Measure for SinglePatternAlgorithm {
     /// A function to measure the runtime of an algorithm.
