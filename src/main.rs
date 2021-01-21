@@ -40,7 +40,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let text = generate_text(&cli_params, cli_params.seed);
 
         if let Ok(text) = &text {
-            let patterns = generate_patterns(&cli_params, text, cli_params.seed);
+            let patterns = generate_patterns(&cli_params, text);
 
             if let Ok(patterns) = patterns {
                 let mut csv_header_printed = false;

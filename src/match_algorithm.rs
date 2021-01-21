@@ -37,6 +37,24 @@ lazy_static! {
         "naive" => slow as SuffixArrayGenAlgorithm,
         "sais" => fast as SuffixArrayGenAlgorithm,
     };
+
+    /// List of algorithm names
+    static ref ALGORITHM_NAMES: HashMap<&'static str, &'static str> = hashmap! {
+        "bndm" => "BNDM",
+        "horspool" => "Horspool",
+        "naive" => "Naive",
+        "kmp" => "KMP",
+        "kmp-classic" => "Classic KMP",
+        "shift-and" => "Shift-And",
+        "sa-match-slow" => "Slow SA Pattern Matching",
+        "sa-match-fast" => "Fast SA Pattern Matching",
+        "bwt-match-slow" => "Slow BWT Pattern Matching",
+        "bwt-match-fast" => "Fast BWT Pattern Matching",
+        "ukkonen" => "Ukkonen's DP Algorithm",
+        "et-shift-and" => "Error Tolerant Shift-And",
+        "mp-naive" => "Naive Multiple Patterns",
+        "aho-corasick" => "Aho-Corasick",
+    };
 }
 
 /// A single pattern algorithm.
@@ -55,6 +73,7 @@ pub type BWTAlgorithm = fn(&[usize], &[usize], &[usize], &[u8]) -> Vec<usize>;
 /// An approximative algorithm.
 pub type ApproximativeAlgorithm = fn(&[u8], &[u8], usize) -> Vec<(usize, usize)>;
 
+/// A suffix array generation algorithm.
 pub type SuffixArrayGenAlgorithm = fn(&[u8]) -> Vec<usize>;
 
 #[derive(Clone, Copy)]
@@ -105,6 +124,13 @@ pub fn match_algorithms(algorithm_names: &[String]) -> Vec<(String, TypedAlgorit
     algorithms
 }
 
+/// Returns the suffix array generation algorithm function matching the given name.
+///
+/// The function takes a `&str` containing an algorithm name given by the user
+/// as a CLI parameter.
+///
+/// It returns the suffix array generation algorithm function matching the name
+/// or `None` if there is no algorithm with the given name.
 pub(crate) fn match_suffix_array_gen_algorithm(algorithm: &str) -> Option<SuffixArrayGenAlgorithm> {
     if SUFFIX_ARRAY_GEN_ALGORITHMS.contains_key(algorithm) {
         Some(*SUFFIX_ARRAY_GEN_ALGORITHMS.get(algorithm).unwrap())
@@ -118,25 +144,12 @@ pub(crate) fn match_suffix_array_gen_algorithm(algorithm: &str) -> Option<Suffix
 /// The function takes a `&str` containing an algorithm name given by
 /// the user as a CLI parameter.
 ///
-/// It returns the pretty formatted name of the algorithm (containing spaces
-/// etc.) or `"Unknown Algorithm"` if there is no
-/// algorithm with the given name.
+/// It returns the nicely formatted name of the algorithm (containing spaces
+/// etc.) or `"Unknown Algorithm"` if there is no algorithm with the given name.
 pub fn algorithm_name(algorithm: &str) -> &str {
-    match algorithm.to_lowercase().as_str() {
-        "bndm" => "BNDM",
-        "horspool" => "Horspool",
-        "naive" => "Naive",
-        "kmp" => "KMP",
-        "kmp-classic" => "Classic KMP",
-        "shift-and" => "Shift-And",
-        "sa-match-slow" => "Slow SA Pattern Matching",
-        "sa-match-fast" => "Fast SA Pattern Matching",
-        "bwt-match-slow" => "Slow BWT Pattern Matching",
-        "bwt-match-fast" => "Fast BWT Pattern Matching",
-        "ukkonen" => "Ukkonen's DP Algorithm",
-        "et-shift-and" => "Error Tolerant Shift-And",
-        "mp-naive" => "Naive Multiple Patterns",
-        "aho-corasick" => "Aho-Corasick",
-        _ => "Unknown Algorithm",
+    if ALGORITHM_NAMES.contains_key(algorithm) {
+        ALGORITHM_NAMES.get(algorithm).unwrap()
+    } else {
+        "Unknown Algorithm"
     }
 }
