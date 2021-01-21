@@ -5,9 +5,9 @@ use std::time::SystemTime;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::ApproximativeAlgorithm;
-use crate::measure::{Measurement, SingleMeasurement};
+use crate::measure::{Measure, SingleMeasurement};
 
-impl Measurement for ApproximativeAlgorithm {
+impl Measure for ApproximativeAlgorithm {
     /// A function to measure the runtime of an approximative algorithm.
     ///
     /// It takes the maximum allowed error from the given CLI parameters.

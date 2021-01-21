@@ -5,9 +5,9 @@ use std::time::SystemTime;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::MultiplePatternAlgorithm;
-use crate::measure::{Measurement, SingleMeasurement};
+use crate::measure::{Measure, SingleMeasurement};
 
-impl Measurement for MultiplePatternAlgorithm {
+impl Measure for MultiplePatternAlgorithm {
     /// A function to measure the runtime of an algorithm.
     ///
     /// It takes a `pattern` and a `text` and executes a function `f` using

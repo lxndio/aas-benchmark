@@ -22,7 +22,7 @@ pub type SingleMeasurement = (Option<Duration>, Duration, usize);
 /// algorithms which `fn measure` can measure. They may, for example,
 /// require to measure a preparation and a matching function or generate
 /// some other data first of which the time should not be measured.
-pub trait Measurement {
+pub trait Measure {
     fn measure(pattern: &[u8], text: &[u8], f: &Self, cli_params: &CLIParams) -> SingleMeasurement;
 }
 
