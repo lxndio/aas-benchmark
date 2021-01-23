@@ -25,7 +25,7 @@ use std::error::Error;
 
 use cli::CLIParams;
 use match_algorithm::match_algorithms;
-use measure::measure_multiple_different_patterns;
+use measure::measurement::Measurement;
 use pattern::generate_patterns;
 use text::generate_text;
 
@@ -43,33 +43,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             let patterns = generate_patterns(&cli_params, text);
 
             if let Ok(patterns) = patterns {
-                let mut csv_header_printed = false;
+                let algorithms = match_algorithms(&cli_params.algorithms);
 
-                let algorithm_functions = match_algorithms(&cli_params.algorithms);
-
-                for (algorithm, algorithm_fn) in algorithm_functions.iter() {
-                    let measure_results = measure_multiple_different_patterns(
-                        &algorithm,
-                        &patterns,
-                        text,
-                        algorithm_fn,
-                        &cli_params,
-                    );
-
-                    if !cli_params.human_readble {
-                        for measure_result in measure_results {
-                            measure_result.print_csv(!csv_header_printed)?;
-
-                            if !csv_header_printed {
-                                csv_header_printed = true;
-                            }
-                        }
-                    } else {
-                        for measure_result in measure_results {
-                            measure_result.print(false);
-                        }
-                    }
-                }
+                Measurement::new(algorithms, text.to_vec(), patterns, cli_params)
+                    .run_measurement()
+                    .print_csv()
+                    .expect("Internal error");
             } else if let Err(err) = patterns {
                 println!("Error while generating pattern source: {}", err);
             }

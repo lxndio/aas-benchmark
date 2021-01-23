@@ -10,7 +10,7 @@ use crate::measure::csv_record::CSVRecord;
 
 /// A struct containg the measurement results of one or multiple
 /// algorithm executions of the same algorithm.
-pub struct MeasureResult {
+pub struct MeasurementResult {
     algorithm_name: String,
 
     text_length: usize,
@@ -24,7 +24,7 @@ pub struct MeasureResult {
     avg_algorithm_duration: f64,
 }
 
-impl MeasureResult {
+impl MeasurementResult {
     /// Initalizes a new `MeasureResult` and calculates the average duration
     /// of the given durations.
     ///

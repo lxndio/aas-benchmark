@@ -6,9 +6,9 @@ use std::time::SystemTime;
 use crate::cli::CLIParams;
 use crate::match_algorithm::MultiplePatternAlgorithm;
 use crate::measure::measurement::SingleMeasurement;
-use crate::measure::Measure;
+use crate::measure::MultiplePatternMeasure;
 
-impl Measure for MultiplePatternAlgorithm {
+impl MultiplePatternMeasure for MultiplePatternAlgorithm {
     /// A function to measure the runtime of an algorithm.
     ///
     /// It takes a `pattern` and a `text` and executes a function `f` using
@@ -17,15 +17,10 @@ impl Measure for MultiplePatternAlgorithm {
     ///
     /// It returns a `Duration`, the runtime of the execution given function.
     #[cfg(not(tarpaulin_include))]
-    fn measure(
-        pattern: &[u8],
-        text: &[u8],
-        f: &MultiplePatternAlgorithm,
-        _: &CLIParams,
-    ) -> SingleMeasurement {
+    fn measure(&self, patterns: &Vec<Vec<u8>>, text: &[u8], _: &CLIParams) -> SingleMeasurement {
         let before = SystemTime::now();
 
-        let matches = f(&[pattern], text).len(); // TODO actually allow multiple pattern
+        let matches = self(patterns, text).len();
 
         let duration = before.elapsed();
 

@@ -18,7 +18,7 @@ impl Measure for SuffixArrayAlgorithm {
     /// function and the execution time, i. e. the time it takes to execute
     /// the actual algorithm itself.
     #[cfg(not(tarpaulin_include))]
-    fn measure(pattern: &[u8], text: &[u8], f: &Self, cli_params: &CLIParams) -> SingleMeasurement {
+    fn measure(&self, pattern: &[u8], text: &[u8], cli_params: &CLIParams) -> SingleMeasurement {
         // Add sentinel to text
         let mut text = text.iter().copied().collect::<Vec<u8>>();
         text.push(0);
@@ -35,7 +35,7 @@ impl Measure for SuffixArrayAlgorithm {
         // Measure time it takes to run the actual algorithm
         let before = SystemTime::now();
 
-        let matches = f(&pos, pattern, text).len();
+        let matches = self(&pos, pattern, text).len();
 
         let algorithm_duration = before.elapsed();
 
@@ -56,7 +56,7 @@ impl Measure for BWTAlgorithm {
     /// function and the execution time, i. e. the time it takes to execute
     /// the actual algorithm itself.
     #[cfg(not(tarpaulin_include))]
-    fn measure(pattern: &[u8], text: &[u8], f: &Self, cli_params: &CLIParams) -> SingleMeasurement {
+    fn measure(&self, pattern: &[u8], text: &[u8], cli_params: &CLIParams) -> SingleMeasurement {
         // Add sentinel to text
         let mut text = text.iter().copied().collect::<Vec<u8>>();
         text.push(0);
@@ -76,7 +76,7 @@ impl Measure for BWTAlgorithm {
         // Measure time it takes to run the actual algorithm
         let before = SystemTime::now();
 
-        let matches = f(&pos, &occ_vec, &less_vec, pattern).len();
+        let matches = self(&pos, &occ_vec, &less_vec, pattern).len();
 
         let algorithm_duration = before.elapsed();
 

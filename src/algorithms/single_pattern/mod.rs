@@ -21,15 +21,10 @@ impl Measure for SinglePatternAlgorithm {
     ///
     /// It returns a `Duration`, the runtime of the execution given function.
     #[cfg(not(tarpaulin_include))]
-    fn measure(
-        pattern: &[u8],
-        text: &[u8],
-        f: &SinglePatternAlgorithm,
-        _: &CLIParams,
-    ) -> SingleMeasurement {
+    fn measure(&self, pattern: &[u8], text: &[u8], _: &CLIParams) -> SingleMeasurement {
         let before = SystemTime::now();
 
-        let matches = f(pattern, text).len();
+        let matches = self(pattern, text).len();
 
         let duration = before.elapsed();
 

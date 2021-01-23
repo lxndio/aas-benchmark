@@ -20,7 +20,7 @@ struct ACNode {
 
 impl ACTrie {
     /// Creates an empty Trie and builds it up according to the Aho-Corasick algorithm.
-    fn new(patterns: &[&[u8]]) -> Self {
+    fn new(patterns: &Vec<Vec<u8>>) -> Self {
         let mut ac_trie = Self { nodes: Vec::new() };
         let root = ac_trie.new_node(None, None, 0, &[]);
         let mut node;
@@ -31,7 +31,7 @@ impl ACTrie {
         for (i, pattern) in patterns.iter().enumerate() {
             node = root;
 
-            for c in *pattern {
+            for c in pattern.iter() {
                 // Is there already a "path" to take given the already read characters?
                 if let Some(target) = ac_trie.target_with(node, *c) {
                     node = target;
@@ -183,7 +183,7 @@ impl ACTrie {
     /// Runs the Aho-Corasick algorithm given a list of patterns and a text.
     ///
     /// The Trie must have already been built.
-    fn ac_with_automaton(&self, patterns: &[&[u8]], text: &[u8]) -> Vec<Vec<usize>> {
+    fn ac_with_automaton(&self, patterns: &Vec<Vec<u8>>, text: &[u8]) -> Vec<Vec<usize>> {
         let mut res = vec![Vec::new(); patterns.len()];
         let mut q = self.root().id;
 
@@ -223,7 +223,7 @@ impl ACNode {
 ///
 /// It uses the Aho-Corasick algorithm to first build a Trie with lps-links and
 /// then find the occurrences of the given patterns in the text.
-pub fn aho_corasick(patterns: &[&[u8]], text: &[u8]) -> Vec<Vec<usize>> {
+pub fn aho_corasick(patterns: &Vec<Vec<u8>>, text: &[u8]) -> Vec<Vec<usize>> {
     let ac_trie = ACTrie::new(patterns);
 
     ac_trie.ac_with_automaton(patterns, text)
@@ -236,9 +236,14 @@ mod tests {
     #[test]
     fn test_aho_corasick() {
         let text = b"gccttaacattattacgccta";
-        let patterns: &[&[u8]] = &[b"tta", b"catta", b"gcct", b"abc"];
+        let patterns: Vec<Vec<u8>> = vec![
+            b"tta".to_vec(),
+            b"catta".to_vec(),
+            b"gcct".to_vec(),
+            b"abc".to_vec(),
+        ];
 
-        let matches = aho_corasick(patterns, text);
+        let matches = aho_corasick(&patterns, text);
 
         let matches_correct = vec![vec![3, 9, 12], vec![7], vec![0, 16], vec![]];
 
