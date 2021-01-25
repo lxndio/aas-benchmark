@@ -175,11 +175,8 @@ impl CLIParams {
         match only(&sources) {
             // Pattern from argument
             Some(0) => {
-                let pattern = String::from(matches.value_of("pattern_from_argument").unwrap_or(""));
-
-                // TODO better error handling, probably using ok_or() above
-                if pattern != "" {
-                    PatternSource::FromArgument(pattern)
+                if let Some(pattern) = matches.value_of("pattern_from_argument") {
+                    PatternSource::FromArgument(pattern.to_string())
                 } else {
                     PatternSource::Error(
                         "The --patternfromarg argument requires a valid, non-empty pattern.",
@@ -188,11 +185,8 @@ impl CLIParams {
             }
             // Pattern from file
             Some(1) => {
-                let file_name = String::from(matches.value_of("pattern_from_file").unwrap_or(""));
-
-                // TODO better error handling, probably using ok_or() above
-                if file_name != "" {
-                    PatternSource::FromFile(file_name)
+                if let Some(file_name) = matches.value_of("pattern_from_file") {
+                    PatternSource::FromFile(file_name.to_string())
                 } else {
                     PatternSource::Error("The --patternfromfile argument needs a valid parameter.")
                 }
