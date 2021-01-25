@@ -5,9 +5,7 @@ pub mod measurement_result;
 use std::time::Duration;
 
 use self::measurement::SingleMeasurement;
-use self::measurement_result::MeasurementResult;
 use crate::cli::CLIParams;
-use crate::match_algorithm::TypedAlgorithm;
 
 /// Trait for implementing a measurement.
 ///
@@ -27,7 +25,7 @@ pub trait Measure {
 pub trait MultiplePatternMeasure {
     fn measure(
         &self,
-        patterns: &Vec<Vec<u8>>,
+        patterns: &[Vec<u8>],
         text: &[u8],
         cli_params: &CLIParams,
     ) -> SingleMeasurement;

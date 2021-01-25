@@ -58,34 +58,6 @@ impl MeasurementResult {
         new
     }
 
-    /// Prints a summary of the `MeasureResult` containing statistical
-    /// facts.
-    ///
-    /// If `print_durations` is `true`, it also prints a list containing
-    /// the durations of each execution.
-    pub fn print(&self, print_durations: bool) {
-        // Print algorithm name
-        println!("===== {} =====", self.algorithm_name);
-
-        println!("Matches: {}", self.matches);
-
-        // Print average runtime
-        let average = self.avg_algorithm_duration;
-        if average != 0f64 {
-            println!("Average: {} ms", average);
-        } else {
-            println!("No executions");
-        }
-
-        // Print new line at the end
-        println!();
-
-        // If print_durations is set, print a list of each duration
-        if print_durations {
-            println!("{:?}\n", self.algorithm_durations);
-        }
-    }
-
     pub fn print_csv(&self, print_header: bool) -> Result<(), Box<dyn Error>> {
         let mut wtr = WriterBuilder::new()
             .has_headers(print_header)

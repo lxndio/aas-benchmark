@@ -61,7 +61,7 @@ lazy_static! {
 pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
 
 /// A multiple pattern algorithm.
-pub type MultiplePatternAlgorithm = fn(&Vec<Vec<u8>>, &[u8]) -> Vec<Vec<usize>>;
+pub type MultiplePatternAlgorithm = fn(&[Vec<u8>], &[u8]) -> Vec<Vec<usize>>;
 
 /// A suffix array algorithm tuple, containing the algorithm itself and
 /// the suffix array generation function to be used.

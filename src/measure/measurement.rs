@@ -1,10 +1,7 @@
 use std::time::Duration;
 
 use crate::cli::CLIParams;
-use crate::match_algorithm::{
-    ApproximativeAlgorithm, BWTAlgorithm, MultiplePatternAlgorithm, SinglePatternAlgorithm,
-    SuffixArrayAlgorithm, TypedAlgorithm,
-};
+use crate::match_algorithm::TypedAlgorithm;
 use crate::measure::measurement_result::MeasurementResult;
 use crate::measure::{Measure, MultiplePatternMeasure};
 

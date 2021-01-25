@@ -17,7 +17,7 @@ impl MultiplePatternMeasure for MultiplePatternAlgorithm {
     ///
     /// It returns a `Duration`, the runtime of the execution given function.
     #[cfg(not(tarpaulin_include))]
-    fn measure(&self, patterns: &Vec<Vec<u8>>, text: &[u8], _: &CLIParams) -> SingleMeasurement {
+    fn measure(&self, patterns: &[Vec<u8>], text: &[u8], _: &CLIParams) -> SingleMeasurement {
         let before = SystemTime::now();
 
         let matches = self(patterns, text).len();

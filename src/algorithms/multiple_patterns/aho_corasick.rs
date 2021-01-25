@@ -20,7 +20,7 @@ struct ACNode {
 
 impl ACTrie {
     /// Creates an empty Trie and builds it up according to the Aho-Corasick algorithm.
-    fn new(patterns: &Vec<Vec<u8>>) -> Self {
+    fn new(patterns: &[Vec<u8>]) -> Self {
         let mut ac_trie = Self { nodes: Vec::new() };
         let root = ac_trie.new_node(None, None, 0, &[]);
         let mut node;
@@ -183,7 +183,7 @@ impl ACTrie {
     /// Runs the Aho-Corasick algorithm given a list of patterns and a text.
     ///
     /// The Trie must have already been built.
-    fn ac_with_automaton(&self, patterns: &Vec<Vec<u8>>, text: &[u8]) -> Vec<Vec<usize>> {
+    fn ac_with_automaton(&self, patterns: &[Vec<u8>], text: &[u8]) -> Vec<Vec<usize>> {
         let mut res = vec![Vec::new(); patterns.len()];
         let mut q = self.root().id;
 
@@ -223,7 +223,7 @@ impl ACNode {
 ///
 /// It uses the Aho-Corasick algorithm to first build a Trie with lps-links and
 /// then find the occurrences of the given patterns in the text.
-pub fn aho_corasick(patterns: &Vec<Vec<u8>>, text: &[u8]) -> Vec<Vec<usize>> {
+pub fn aho_corasick(patterns: &[Vec<u8>], text: &[u8]) -> Vec<Vec<usize>> {
     let ac_trie = ACTrie::new(patterns);
 
     ac_trie.ac_with_automaton(patterns, text)
