@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["dfa",""],["full_text_indices",""],["single_pattern",""]]});

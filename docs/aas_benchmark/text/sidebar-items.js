@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["TextSource",""]],"fn":[["generate_text","Decides how a text should be generated based on the given CLI arguments and calls the appropriate function."],["load_text_from_file","Loads text from a file"],["load_text_from_file_binary",""]]});

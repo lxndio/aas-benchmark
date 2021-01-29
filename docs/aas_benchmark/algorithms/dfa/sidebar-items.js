@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["dfa_with_delta","Simulates a deterministic finite automaton (DFA) using a transition function `delta`."],["dfa_with_lps_delta","Simulates a deterministic finite automation (DFA) using a transition function `delta` which takes an lps table (used for KMP algorithm)."]],"type":[["DeltaFunction",""],["LpsDeltaFunction",""]]});

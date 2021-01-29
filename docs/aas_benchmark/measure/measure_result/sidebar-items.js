@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["MeasureResult","A struct containg the measurement results of one or multiple algorithm executions of the same algorithm."]]});

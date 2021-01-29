@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["naive","The naive algorithm approach uses a simple loop to look for an occurrence of a `pattern` in a `text`."],["naive_all",""]]});
