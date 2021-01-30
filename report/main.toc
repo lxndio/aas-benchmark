@@ -1,0 +1,13 @@
+\babel@toc {ngerman}{}
+\contentsline {section}{\numberline {1}Einleitung}{1}%
+\contentsline {section}{\numberline {2}Algorithmen}{1}%
+\contentsline {subsection}{\numberline {2.1}Algorithmen für einzelne Muster}{1}%
+\contentsline {subsection}{\numberline {2.2}Algorithmen für mehrere Muster}{1}%
+\contentsline {subsection}{\numberline {2.3}Fehlertolerante Algorithmen}{1}%
+\contentsline {subsection}{\numberline {2.4}Volltextindizes}{1}%
+\contentsline {section}{\numberline {3}Das Ausgabeformat}{1}%
+\contentsline {section}{\numberline {4}Nutzung}{2}%
+\contentsline {subsection}{\numberline {4.1}Wahl der Algorithmen}{2}%
+\contentsline {subsection}{\numberline {4.2}Mehrere Ausführungen}{2}%
+\contentsline {subsection}{\numberline {4.3}Textquellen}{2}%
+\contentsline {section}{\numberline {5}Beispiele}{3}%

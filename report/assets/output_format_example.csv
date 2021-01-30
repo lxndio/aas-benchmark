@@ -1,0 +1,13 @@
+algorithm,text_length,pattern_length,execution,matches,prep_time_ms,time_ms
+Naive,1000000,1,0,4082,0,90
+Naive,1000000,1,1,4082,0,90
+Naive,1000000,2,0,14,0,90
+Naive,1000000,2,1,14,0,90
+Horspool,1000000,1,0,4082,0,79
+Horspool,1000000,1,1,4082,0,79
+Horspool,1000000,2,0,14,0,15
+Horspool,1000000,2,1,14,0,15
+KMP,1000000,1,0,4082,0,59
+KMP,1000000,1,1,4082,0,59
+KMP,1000000,2,0,14,0,56
+KMP,1000000,2,1,14,0,56
