@@ -2,24 +2,24 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct CSVRecord<'a> {
-    #[serde(rename = "Algorithm")]
+    #[serde(rename = "algorithm")]
     algorithm_name: &'a str,
 
-    #[serde(rename = "Text Length")]
+    #[serde(rename = "text_length")]
     text_length: usize,
-    #[serde(rename = "Pattern Length")]
+    #[serde(rename = "pattern_length")]
     pattern_length: usize,
 
-    #[serde(rename = "Execution")]
+    #[serde(rename = "execution")]
     execution: usize,
 
-    #[serde(rename = "Matches")]
+    #[serde(rename = "matches")]
     matches: usize,
 
-    #[serde(rename = "Preparation Time [ms]")]
+    #[serde(rename = "prep_time_ms")]
     preparation_time_ms: u128,
 
-    #[serde(rename = "Time [ms]")]
+    #[serde(rename = "time_ms")]
     time_ms: u128,
 }
 
