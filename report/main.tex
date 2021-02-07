@@ -45,6 +45,8 @@
 
 In dieser Übersicht sollen dem Leser die verschiedenen Funktionen von AaS-Benchmark nähergebracht und mit einigen Beispielen demonstriert werden.
 
+Das Tool lässt sich auf GitHub 
+
 \section{Algorithmen}
 
 Für Aas-Benchmark wurden elf Algorithmen aus der Vorlesung implementiert. Diese lassen sich wie folgt in drei Kategorien aufteilen:
@@ -57,7 +59,8 @@ Diese Gruppe von Algorithmen findet alle Vorkommen eines einzelnen Musters in ei
     \item Naiver Algorithmus
     \item Knuth-Morris-Pratt
     \item Shift-And
-    \item BNDM
+    \item Backward Nondeterministic DAWG Matching (BNDM)
+    \item Backward Oracle Matching (BOM)
 \end{itemize}
 
 \subsection{Algorithmen für mehrere Muster}
@@ -94,17 +97,9 @@ Jede Zeile steht für eine einzelne Ausführung des Algorithmus, der in der erst
     \item \texttt{pattern\_length}: Die Länge des Musters bei dieser Ausführung
     \item \texttt{execution}: Die wievielte Ausführung dies ist
     \item \texttt{matches}: Wie viele Vorkommen des Musters bei dieser Ausführung im Text gefunden wurden
-    \item \texttt{prep\_time\_ms}: Die benötigte Vorbereitungszeit in Millisekunden\footnote{Bei Algorithmen, die keine Vorbereitungszeit benötigen immer 0}
+    \item \texttt{prep\_time\_ms}: Die benötigte Vorbereitungszeit in Millisekunden\footnote{Bei Algorithmen, die keine Vorbereitungszeit benötigen, immer 0}
     \item \texttt{time\_ms}: Die benötigte Zeit, um den Algorithmus mit den gegebenen Parametern auszuführen
 \end{itemize}
-
-\section{Nutzung}
-
-\subsection{Wahl der Algorithmen}
-
-\subsection{Mehrere Ausführungen}
-
-\subsection{Textquellen}
 
 \lstinputlisting[caption=Beispiel des Ausgabeformates, captionpos=b, frame=single, breaklines=true, label=lst:output_format_example]{assets/output_format_example.csv}
 
@@ -118,11 +113,11 @@ Der Befehl für die Ausführung von AaS-Benchmark könnte dafür zum Beispiel wi
     ./aas-benchmark naive -t 100000000 -p 1..10
 \end{lstlisting}
 
-\begin{wrapfigure}{l}{0.65\linewidth}
+\begin{figure}
     \includegraphics[width=\linewidth]{assets/graph_1.png}
     \caption{Laufzeit des naiven Algorithmus}
     \label{fig:runtime_naive}
-\end{wrapfigure}
+\end{figure}
 
 Lässt man sich die Ausgabe dieses Befehls plotten, so erhält man das Diagramm in Abbildung \ref{fig:runtime_naive}. So kann man mit Aas-Benchmark das Verhalten der implementierten Algorithmen einfach betrachten und die verschiedenen Algorithmen miteinander vergleichen.
 
@@ -132,11 +127,11 @@ Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zw
     ./aas-benchmark kmp,horspool -t 100000000 -p 1..10
 \end{lstlisting}
 
-\begin{wrapfigure}{r}{0.65\linewidth}
+\begin{figure}
     \includegraphics[width=\linewidth]{assets/graph_2.png}
     \caption{Laufzeit des Horspool Algorithmus verglichen mit der des Shift-And Algorithmus}
     \label{fig:runtime_horspool_shift_and}
-\end{wrapfigure}
+\end{figure}
 
 Lässt man sich die Ausgabe erneut plotten (Abbildung \ref{fig:runtime_horspool_shift_and}), kann man nun erkennen, dass der \textit{Horspool} Algorithmus mit steigender Musterlänge immer schneller ausgeführt werden kann, während die Laufzeit des \textit{Shift-And} Algorithmus relativ konstant bleibt.
 
