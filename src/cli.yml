@@ -80,8 +80,7 @@ args:
         long: maxerror
         takes_value: true
         value_name: maximum_error
-    - human_readble:
-        help: Print a human-readble summary instead of a comma-seperated values summary
-        short: h
-        long: human-readble
+    - no_header:
+        help: Do not print a header row for the comma-seperated values output
+        long: noheader
         takes_value: false

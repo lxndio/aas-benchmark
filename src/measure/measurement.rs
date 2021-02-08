@@ -97,7 +97,9 @@ impl Measurement {
 
     pub fn print_csv(&self) -> Result<(), String> {
         if !self.measurement_results.is_empty() {
-            let mut csv_header_printed = false;
+            // Set to no_header so that there will be no header printed if
+            // no_header is set, as the variable will already be true then
+            let mut csv_header_printed = self.cli_params.no_header;
 
             for measurement_result in self.measurement_results.iter() {
                 // TODO is there a nicer way to do this?

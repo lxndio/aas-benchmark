@@ -8,7 +8,7 @@ use crate::text::TextSource;
 pub struct CLIParams {
     pub algorithms: Vec<String>,
 
-    pub human_readble: bool,
+    pub no_header: bool,
 
     pub executions: usize,
     pub seed: Option<u64>,
@@ -45,7 +45,7 @@ impl CLIParams {
             .to_string();
 
         // Bool value parameters
-        let human_readble: bool = matches.is_present("human_readble");
+        let no_header: bool = matches.is_present("no_header");
 
         // Number value parameters
         let executions: usize = matches
@@ -73,7 +73,7 @@ impl CLIParams {
         Self {
             algorithms,
 
-            human_readble,
+            no_header,
 
             executions,
             seed,
