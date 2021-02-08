@@ -22,6 +22,7 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
     - [Pattern From File](#Pattern-From-File)
     - [Random Pattern](#Random-Pattern)
   - [Specifying a Seed](#Specifying-a-Seed)
+  - [Other Arguments](#Other-Arguments)
   - [List of Algorithms](#List-of-Algorithms)
     - [Single Pattern Algorithms](#Single-Pattern-Algorithms)
     - [Algorithms Using a Suffix Array](#Algorithms-Using-a-Suffix-Array)
@@ -168,6 +169,14 @@ You can set a seed to make the generation of a random text and random patterns p
 aas-benchmark naive ... --seed 12345
 ```
 
+### Other Arguments
+
+Here is a list of other arguments you can set:
+
+Argument         | Description                           |
+---------------- | ------------------------------------- |
+`--noheader`     | Disables the header in the CSV output |
+
 ### List of Algorithms
 
 Currently, these algorithms are supported:
@@ -177,6 +186,7 @@ Currently, these algorithms are supported:
 Algorithm                                      | Command-line argument name            |
 ---------------------------------------------- | ------------------------------------- |
 Backward Nondeterministic DAWG Matching (BNDM) | `bndm`                                |
+Backward Oracle Matching (BOM)                 | `bom`                                 |
 Horspool                                       | `horspool`                            |
 Naive Approach                                 | `naive`                               |
 Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`                |
