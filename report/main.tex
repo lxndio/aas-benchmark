@@ -102,7 +102,7 @@ Jede Zeile steht für eine einzelne Ausführung des Algorithmus, der in der erst
     \item \texttt{time\_ms}: Die benötigte Zeit, um den Algorithmus mit den gegebenen Parametern auszuführen
 \end{itemize}
 
-\lstinputlisting[caption=Beispiel des Ausgabeformates, captionpos=b, frame=single, breaklines=true, label=lst:output_format_example]{assets/output_format_example.csv}
+\lstinputlisting[caption=Beispiel des Ausgabeformates., captionpos=b, frame=single, breaklines=true, label=lst:output_format_example]{assets/output_format_example.csv}
 
 \section{Beispiele}
 
@@ -116,7 +116,7 @@ Der Befehl für die Ausführung von AaS-Benchmark könnte dafür zum Beispiel wi
 
 \begin{figure}
     \includegraphics[width=\linewidth]{assets/graph_1.png}
-    \caption{Laufzeit des naiven Algorithmus}
+    \caption{Laufzeit des naiven Algorithmus.}
     \label{fig:runtime_naive}
 \end{figure}
 
@@ -130,7 +130,7 @@ Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zw
 
 \begin{figure}
     \includegraphics[width=\linewidth]{assets/graph_2.png}
-    \caption{Laufzeit des Horspool Algorithmus verglichen mit der des Shift-And Algorithmus}
+    \caption{Laufzeit des Horspool Algorithmus verglichen mit der des Shift-And Algorithmus.}
     \label{fig:runtime_horspool_shift_and}
 \end{figure}
 
@@ -138,6 +138,18 @@ Lässt man sich die Ausgabe erneut plotten (Abbildung \ref{fig:runtime_horspool_
 
 Dies gilt hier, da auf einem Text mit einer Länge von 100.000.000 Zeichen gesucht wird, bei dem selbst eine 
 
-Nun möchten wir testen, wie sich die Laufzeit eines Algorithmus verhält, wenn wir ihn mehrmals hintereinander mit den gleichen Paramtern, also auf dem gleichen Text mit dem gleichen zu findenden Muster, ausführen.
+Nun möchten wir testen, wie sich die Laufzeit eines Algorithmus verhält, wenn wir ihn mehrmals hintereinander mit den gleichen Paramtern, also auf dem gleichen Text mit dem gleichen zu findenden Muster, ausführen. Dies kann beispielsweise dazu nützen, Abweichungen in den einzelnen Messungen, die unter anderem durch anderweitige Auslastung des Computers auftreten können, zu glätten. So könnte man nicht mit einzelnen Messwerten, sondern mit den Durschschnittswerten vieler Messungen arbeiten.
+
+\begin{lstlisting}[breaklines=true,autogobble=true]
+    ./aas-benchmark bndm,shift-and -t 100000000 -p 3 -n 10
+\end{lstlisting}
+
+Der Parameter \texttt{-n 10} gibt hierbei an, dass jede Messung zehnmal ausgeführt werden soll. Wie in Abbildung \ref{fig:runtime_bndm_shift_and} zu sehen, variiert die Laufzeit bei einzelnen, nacheinander durchgeführten Messungen.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{assets/graph_3.png}
+    \caption{Laufzeit des BNDM und Shift-And Algorithmus bei gleichen Parametern über mehrere Messungen, Durchschnitt jeweils in Grau.}
+    \label{fig:runtime_bndm_shift_and}
+\end{figure}
 
 \end{document}
