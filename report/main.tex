@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{hyperref}
+\usepackage{float}
 
 \geometry{
     a4paper,
@@ -106,6 +107,8 @@ Jede Zeile steht für eine einzelne Ausführung des Algorithmus, der in der erst
 
 \section{Beispiele}
 
+\subsection*{Laufzeit des naiven Algorithmus}
+
 Beginnen wir mit einem einfachen Beispiel. Wir möchten testen, wie sich die Laufzeit des naiven Algorithmus für die Mustersuche bei steigender Musterlänge verhält.
 
 Der Befehl für die Ausführung von AaS-Benchmark könnte dafür zum Beispiel wie folgt aussehen:
@@ -122,6 +125,8 @@ Der Befehl für die Ausführung von AaS-Benchmark könnte dafür zum Beispiel wi
 
 Lässt man sich die Ausgabe dieses Befehls plotten, so erhält man das Diagramm in Abbildung \ref{fig:runtime_naive}. So kann man mit Aas-Benchmark das Verhalten der implementierten Algorithmen einfach betrachten und die verschiedenen Algorithmen miteinander vergleichen.
 
+\subsection*{Vergleich der Laufzeiten des Horspool und Shift-And Algorithmus}
+
 Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zweier Algorithmen bei steigender Musterlänge geprüft wurde. Dazu wurde der folgende Befehl verwendet:
 
 \begin{lstlisting}[breaklines=true,autogobble=true]
@@ -136,7 +141,9 @@ Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zw
 
 Lässt man sich die Ausgabe erneut plotten (Abbildung \ref{fig:runtime_horspool_shift_and}), kann man nun erkennen, dass der \textit{Horspool} Algorithmus mit steigender Musterlänge immer schneller ausgeführt werden kann, während die Laufzeit des \textit{Shift-And} Algorithmus relativ konstant bleibt.
 
-Dies gilt hier, da auf einem Text mit einer Länge von 100.000.000 Zeichen gesucht wird, bei dem selbst eine 
+Dies gilt hier, da auf einem Text mit einer Länge von 100.000.000 Zeichen (bei einer Alphabetgröße von 8 Bit also 100 MB) gesucht wird, bei dem es bereits relativ unwahrscheinlich ist, ein Pattern mit einer Länge von 5 Zeichen (welches zufällig aus dem Text gewählt wurde) mehr als einmal zu finden.
+
+\subsection*{Laufzeit bei mehreren Ausführungen}
 
 Nun möchten wir testen, wie sich die Laufzeit eines Algorithmus verhält, wenn wir ihn mehrmals hintereinander mit den gleichen Paramtern, also auf dem gleichen Text mit dem gleichen zu findenden Muster, ausführen. Dies kann beispielsweise dazu nützen, Abweichungen in den einzelnen Messungen, die unter anderem durch anderweitige Auslastung des Computers auftreten können, zu glätten. So könnte man nicht mit einzelnen Messwerten, sondern mit den Durschschnittswerten vieler Messungen arbeiten.
 
@@ -149,6 +156,24 @@ Der Parameter \texttt{-n 10} gibt hierbei an, dass jede Messung zehnmal ausgefü
 \begin{figure}
     \includegraphics[width=\linewidth]{assets/graph_3.png}
     \caption{Laufzeit des BNDM und Shift-And Algorithmus bei gleichen Parametern über mehrere Messungen, Durchschnitt jeweils in Grau.}
+    \label{fig:runtime_bndm_shift_and}
+\end{figure}
+
+\subsection*{Laufzeit bei sich ändernder Textlänge}
+
+Im letzten Beispiel betrachten wir das Verhalten des Horspool Algorithmus bei sich ändernder Textlänge für verschiedene Musterlängen. So können wir beobachten, ob das Verhalten des Horspool Algorithmus bei steigender Musterlänge für verschiedene Textlängen jeweils gleich ist. Zur Erzeugung entsprechender Daten, könnte die folgende Befehlsfolge verwendet werden:
+
+\begin{lstlisting}[breaklines=true,autogobble=true]
+    ./aas-benchmark horspool -t 10000000 -p 1..10 -n 10 >> output.csv
+    ./aas-benchmark horspool -t 100000000 -p 1..10 -n 10 --noheader >> output.csv
+    ./aas-benchmark horspool -t 100000000 -p 1..10 -n 10 --noheader >> output.csv
+\end{lstlisting}
+
+Dieses Beispiel zeigt außerdem die Möglichkeit, mehrere Ausführungen von AaS-Benchmark zu einer Ausgabe zu sammeln. Dies lässt sich dadurch realisieren, dass man bei jedem weiteren Befehl, der seine Ausgabe in eine gemeinsame Ausgabedatei schreibt, den Parameter \texttt{---noheader} anhängt, sodass lediglich die erste Ausführung des Tools eine Titelzeile für die CSV-Ausgabe in die Ausgabedatei schreibt.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{assets/graph_4.png}
+    \caption{Laufzeit des Horspool Algorithmus bei sich ändernder Textlänge für verschiedene Musterlängen.}
     \label{fig:runtime_bndm_shift_and}
 \end{figure}
 
