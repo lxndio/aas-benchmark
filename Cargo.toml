@@ -1,6 +1,6 @@
 [package]
 name = "aas-benchmark"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["Alexander Korn <dev@lxnd.me>"]
 edition = "2018"
 
