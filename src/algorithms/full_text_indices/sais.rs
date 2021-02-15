@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::convert::TryFrom;
 
-use bitvec::prelude::*;
+use bitvec::prelude as bv;
 
 /// Calculates the suffix array for a given text in `O(n)` runtime.
 ///
@@ -30,8 +30,8 @@ pub fn fast(text: &[u8]) -> Vec<usize> {
     pos.iter().map(|x| *x as usize).collect()
 }
 
-fn types_vec(text: &[u8]) -> BitVec {
-    let mut types: BitVec<LocalBits, usize> = bitvec![0; text.len()];
+fn types_vec(text: &[u8]) -> bv::BitVec {
+    let mut types: bv::BitVec<bv::LocalBits, usize> = bv::bitvec![0; text.len()];
 
     // Sentinel is always S-type
     types.set(text.len() - 1, true);
@@ -59,7 +59,7 @@ fn types_vec(text: &[u8]) -> BitVec {
     types
 }
 
-fn lms_vec(types: &BitVec) -> Vec<usize> {
+fn lms_vec(types: &bv::BitVec) -> Vec<usize> {
     let mut lms: Vec<usize> = Vec::new();
 
     for i in (0..types.len() - 1).rev() {
@@ -93,7 +93,12 @@ fn bucket_pointers(text: &[u8], buckets_pointers: &mut [usize; 512]) {
     }
 }
 
-fn sort(text: &[u8], types: &BitVec, lms: &[usize], bucket_ptrs_orig: &[usize; 512]) -> Vec<isize> {
+fn sort(
+    text: &[u8],
+    types: &bv::BitVec,
+    lms: &[usize],
+    bucket_ptrs_orig: &[usize; 512],
+) -> Vec<isize> {
     let mut buckets: Vec<isize> = vec![-1; text.len()];
     let mut bucket_ptrs = *bucket_ptrs_orig;
 
