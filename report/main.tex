@@ -14,6 +14,7 @@
 \usepackage{wrapfig}
 \usepackage{hyperref}
 \usepackage{float}
+\usepackage[font={small,it}]{caption}
 
 \geometry{
     a4paper,
@@ -27,23 +28,15 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{AaS-Benchmark}
+\lhead{Übersicht über die Funktionalität von AaS-Benchmark mit Beispielen}
 \rhead{Alexander Korn}
 \rfoot{\thepage}
 
-\title{\Large \textbf{Übersicht über die Funktionalität von AaS-Benchmark mit Beispielen}}
-\author{Alexander Korn}
-\date{}
-
 \begin{document}
-
-\maketitle
-
-\tableofcontents
 
 \section{Einleitung}
 
-\textit{AaS-Benchmark} ist ein Tool, das es ermöglicht, die Ausführungszeiten von Algorithmen aus der Vorlesung \textit{Algorithmen auf Sequenzen} zu messen. Dabei können verschiedenste Parameter gewählt werden, um so beispielsweise Zusammenhänge von Musterlängen und Ausführungszeiten zu erkennen. Die Algorithmen aus der Vorlesung sowie dieses Tool wurden dazu in der Programmiersprache \textit{Rust} implementiert.
+\textit{AaS-Benchmark} ist ein Tool, welches es ermöglicht, die Ausführungszeiten von Algorithmen aus der Vorlesung \textit{Algorithmen auf Sequenzen} zu messen. Dabei können verschiedenste Parameter gewählt werden, um so beispielsweise Zusammenhänge von Musterlängen und Ausführungszeiten zu erkennen. Dazu wurde dieses Tool samt der, in der Vorlesung vorgestellen, Algorithmen in der Programmiersprache \textit{Rust} implementiert.
 
 In dieser Übersicht sollen dem Leser die verschiedenen Funktionen von AaS-Benchmark nähergebracht und mit einigen Beispielen demonstriert werden.
 
@@ -51,13 +44,14 @@ Das Tool sowie der Quelltext lassen sich auf GitHub unter \hyperlink{https://git
 
 \section{Algorithmen}
 
-Für Aas-Benchmark wurden elf Algorithmen aus der Vorlesung implementiert. Diese lassen sich wie folgt in drei Kategorien aufteilen:
+Für Aas-Benchmark wurden einige Algorithmen aus der Vorlesung implementiert. Diese lassen sich wie folgt in drei Kategorien aufteilen:
 
 \subsection{Algorithmen für einzelne Muster}
 
 Diese Gruppe von Algorithmen findet alle Vorkommen eines einzelnen Musters in einem Text. Implementiert sind in dieser Gruppe die folgenden Algorithmen:
 
 \begin{itemize}
+    \setlength\itemsep{0em}
     \item Naiver Algorithmus
     \item Knuth-Morris-Pratt
     \item Shift-And
@@ -67,7 +61,7 @@ Diese Gruppe von Algorithmen findet alle Vorkommen eines einzelnen Musters in ei
 
 \subsection{Algorithmen für mehrere Muster}
 
-Diese Gruppe enthält Algorithmen, die alle Vorkommen von Mustern aus einer gegebenen Menge in einem Text finden. Sie unterscheiden sich also insofern von den Algorithmen der letzten Gruppe, als dass sie nicht mit nur nach einem einzelnen Muster suchen, sondern nach mehreren Mustern gleichzeitig.
+Diese Gruppe enthält Algorithmen, die alle Vorkommen von Mustern aus einer gegebenen Menge in einem Text finden. Sie unterscheiden sich also insofern von den Algorithmen der letzten Gruppe, als dass sie nicht nur nach einem einzelnen Muster suchen, sondern nach mehreren Mustern gleichzeitig.
 
 Hier sind ein naiver Algorithmus sowie der \textit{Aho-Corasick} Algorithmus implementiert.
 
@@ -85,7 +79,7 @@ Für diese Kategorie sind zwei Arten von Algorithmen implementiert. Die einen di
 
 Ein Volltextindex ist eine Datenstruktur, welche aus einem Text erzeugt werden kann und es ermöglicht, verschiedene Operationen effizienter durchführen zu können, als hätte man lediglich den Text.
 
-Als Volltextindex-Datenstruktur ist das \textit{Suffix Array} implementiert, das mittels eines naiven Algorithmus oder des sehr schnellen, in Linearzeit ausführbaren, \textit{SAIS}-Algorithmus erzeugt werden kann. Zur Mustersuche mittels eines Suffix Arrays sind Algorithmus zur exakten Mustersuche, sowie der \textit{Backward-Search}-Algorithmus implementiert. Letzterer benötigt zusätzlich zum Suffix Array auch noch die \textit{Burrows-Wheeler-Transformation} und die \textit{Occ}- und \textit{Less}-Arrays benötigt. Auch diese drei Datenstrukturen lassen sich mit Aas-Benchmark zur Ausführung des oben genannten Algorithmus erzeugen.
+Als Volltextindex-Datenstruktur ist das \textit{Suffix Array} implementiert, das mittels eines naiven Algorithmus oder des sehr schnellen, in Linearzeit ausführbaren, \textit{SAIS}-Algorithmus erzeugt werden kann. Zur Mustersuche mittels eines Suffix Arrays sind ein einfacher Algorithmus zur exakten Mustersuche, sowie der \textit{Backward-Search}-Algorithmus implementiert. Letzterer benötigt zusätzlich zum Suffix Array auch noch die \textit{Burrows-Wheeler-Transformation} und die \textit{Occ}- und \textit{Less}-Arrays. Auch diese drei Datenstrukturen lassen sich mit Aas-Benchmark zur Ausführung des oben genannten Algorithmus erzeugen.
 
 \section{Das Ausgabeformat}
 
@@ -94,6 +88,7 @@ Wurde Aas-Benchmark korrekt ausgeführt, erhält man eine Ausgabe, die der Form 
 Jede Zeile steht für eine einzelne Ausführung des Algorithmus, der in der ersten Spalte der Zeile gegeben ist. Die Spalten enthalten die folgenden Informationen:
 
 \begin{itemize}
+    \setlength\itemsep{0em}
     \item \texttt{algorithm}: Der ausgeführte Algorithmus
     \item \texttt{text\_length}: Die Länge des Textes bei dieser Ausführung
     \item \texttt{pattern\_length}: Die Länge des Musters bei dieser Ausführung
@@ -104,6 +99,12 @@ Jede Zeile steht für eine einzelne Ausführung des Algorithmus, der in der erst
 \end{itemize}
 
 \lstinputlisting[caption=Beispiel des Ausgabeformates., captionpos=b, frame=single, breaklines=true, label=lst:output_format_example]{assets/output_format_example.csv}
+
+\begin{figure}[h]
+    \includegraphics[width=\linewidth]{assets/graph_1.png}
+    \caption{Laufzeit des naiven Algorithmus.}
+    \label{fig:runtime_naive}
+\end{figure}
 
 \section{Beispiele}
 
@@ -117,17 +118,11 @@ Der Befehl für die Ausführung von AaS-Benchmark könnte dafür zum Beispiel wi
     ./aas-benchmark naive -t 100000000 -p 1..10
 \end{lstlisting}
 
-\begin{figure}
-    \includegraphics[width=\linewidth]{assets/graph_1.png}
-    \caption{Laufzeit des naiven Algorithmus.}
-    \label{fig:runtime_naive}
-\end{figure}
-
-Lässt man sich die Ausgabe dieses Befehls plotten, so erhält man das Diagramm in Abbildung \ref{fig:runtime_naive}. So kann man mit Aas-Benchmark das Verhalten der implementierten Algorithmen einfach betrachten und die verschiedenen Algorithmen miteinander vergleichen.
+Lässt man sich die Ausgabe dieses Befehls plotten, so erhält man das Diagramm in Abbildung \ref{fig:runtime_naive}. Auf diese Weise kann man mit Aas-Benchmark das Verhalten der implementierten Algorithmen einfach betrachten und die verschiedenen Algorithmen miteinander vergleichen.
 
 \subsection*{Vergleich der Laufzeiten des Horspool und Shift-And Algorithmus}
 
-Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zweier Algorithmen bei steigender Musterlänge geprüft wurde. Dazu wurde der folgende Befehl verwendet:
+Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zweier Algorithmen bei steigender Musterlänge geprüft wird. Dazu verwenden wir den folgenden Befehl:
 
 \begin{lstlisting}[breaklines=true,autogobble=true]
     ./aas-benchmark kmp,horspool -t 100000000 -p 1..10
@@ -139,19 +134,19 @@ Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zw
     \label{fig:runtime_horspool_shift_and}
 \end{figure}
 
-Lässt man sich die Ausgabe erneut plotten (Abbildung \ref{fig:runtime_horspool_shift_and}), kann man nun erkennen, dass der \textit{Horspool} Algorithmus mit steigender Musterlänge immer schneller ausgeführt werden kann, während die Laufzeit des \textit{Shift-And} Algorithmus relativ konstant bleibt.
+Lässt man sich die Ausgabe plotten (Abbildung \ref{fig:runtime_horspool_shift_and}), kann man nun erkennen, dass der \textit{Horspool} Algorithmus mit steigender Musterlänge immer schneller ausgeführt werden kann, während die Laufzeit des \textit{Shift-And} Algorithmus relativ konstant bleibt.
 
-Dies gilt hier, da auf einem Text mit einer Länge von 100.000.000 Zeichen (bei einer Alphabetgröße von 8 Bit also 100 MB) gesucht wird, bei dem es bereits relativ unwahrscheinlich ist, ein Pattern mit einer Länge von 5 Zeichen (welches zufällig aus dem Text gewählt wurde) mehr als einmal zu finden.
+Dies gilt hier, da auf einem Text mit einer Länge von 100.000.000 Zeichen (bei einer Alphabetgröße von 8 Bit also 100 MB) gesucht wird, bei dem es jedoch relativ unwahrscheinlich ist, ein Pattern mit einer Länge von 5 Zeichen (welches zufällig aus dem Text gewählt wurde) mehr als einmal zu finden.
 
 \subsection*{Laufzeit bei mehreren Ausführungen}
 
-Nun möchten wir testen, wie sich die Laufzeit eines Algorithmus verhält, wenn wir ihn mehrmals hintereinander mit den gleichen Paramtern, also auf dem gleichen Text mit dem gleichen zu findenden Muster, ausführen. Dies kann beispielsweise dazu nützen, Abweichungen in den einzelnen Messungen, die unter anderem durch anderweitige Auslastung des Computers auftreten können, zu glätten. So könnte man nicht mit einzelnen Messwerten, sondern mit den Durschschnittswerten vieler Messungen arbeiten.
+Nun möchten wir testen, wie sich die Laufzeit eines Algorithmus verhält, wenn wir ihn mehrmals hintereinander mit den gleichen Paramtern, also auf dem gleichen Text mit dem gleichen zu findenden Muster, ausführen. Dies kann beispielsweise dazu nützen, Abweichungen in den einzelnen Messungen, die unter anderem durch anderweitige Auslastung des Computers auftreten können, zu glätten. Im weiteren Verlauf der Auswertung kann man dann mit Durchschnittswerten anstelle einzelner Messwerte arbeiten.
 
 \begin{lstlisting}[breaklines=true,autogobble=true]
     ./aas-benchmark bndm,shift-and -t 100000000 -p 3 -n 10
 \end{lstlisting}
 
-Der Parameter \texttt{-n 10} gibt hierbei an, dass jede Messung zehnmal ausgeführt werden soll. Wie in Abbildung \ref{fig:runtime_bndm_shift_and} zu sehen, variiert die Laufzeit bei einzelnen, nacheinander durchgeführten Messungen.
+Der Parameter \texttt{-n 10} gibt hierbei an, dass jede Messung zehnmal ausgeführt werden soll. Wie in Abbildung \ref{fig:runtime_bndm_shift_and} zu sehen ist, variiert die Laufzeit bei einzelnen, nacheinander durchgeführten Messungen.
 
 \begin{figure}
     \includegraphics[width=\linewidth]{assets/graph_3.png}
