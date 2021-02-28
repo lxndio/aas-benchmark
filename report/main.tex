@@ -15,6 +15,7 @@
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage[font={small,it}]{caption}
+\usepackage{titling}
 
 \geometry{
     a4paper,
@@ -32,7 +33,15 @@
 \rhead{Alexander Korn}
 \rfoot{\thepage}
 
+\setlength{\droptitle}{-6em}
+
+\title{\Large \textbf{Übersicht über die Funktionalität von AaS-Benchmark mit Beispielen}}
+\author{Alexander Korn [\texttt{alexander.korn@tu-dortmund.de}]}
+\date{}
+
 \begin{document}
+
+\maketitle
 
 \section{Einleitung}
 
@@ -101,7 +110,8 @@ Jede Zeile steht für eine einzelne Ausführung des Algorithmus, der in der erst
 \lstinputlisting[caption=Beispiel des Ausgabeformates., captionpos=b, frame=single, breaklines=true, label=lst:output_format_example]{assets/output_format_example.csv}
 
 \begin{figure}[h]
-    \includegraphics[width=\linewidth]{assets/graph_1.png}
+    \centering
+    \includegraphics[width=0.85\linewidth]{assets/graph_1.png}
     \caption{Laufzeit des naiven Algorithmus.}
     \label{fig:runtime_naive}
 \end{figure}
@@ -129,7 +139,8 @@ Als nächsten schauen wir uns ein einfaches Beispiel an, bei dem die Laufzeit zw
 \end{lstlisting}
 
 \begin{figure}
-    \includegraphics[width=\linewidth]{assets/graph_2.png}
+    \centering
+    \includegraphics[width=0.85\linewidth]{assets/graph_2.png}
     \caption{Laufzeit des Horspool Algorithmus verglichen mit der des Shift-And Algorithmus.}
     \label{fig:runtime_horspool_shift_and}
 \end{figure}
@@ -149,14 +160,15 @@ Nun möchten wir testen, wie sich die Laufzeit eines Algorithmus verhält, wenn 
 Der Parameter \texttt{-n 10} gibt hierbei an, dass jede Messung zehnmal ausgeführt werden soll. Wie in Abbildung \ref{fig:runtime_bndm_shift_and} zu sehen ist, variiert die Laufzeit bei einzelnen, nacheinander durchgeführten Messungen.
 
 \begin{figure}
-    \includegraphics[width=\linewidth]{assets/graph_3.png}
-    \caption{Laufzeit des BNDM und Shift-And Algorithmus bei gleichen Parametern über mehrere Messungen, Durchschnitt jeweils in Grau.}
+    \centering
+    \includegraphics[width=0.85\linewidth]{assets/graph_3.png}
+    \caption{Laufzeit des BNDM und Shift-And Algorithmus bei gleichen Parametern über jeweils zehn Messungen.}
     \label{fig:runtime_bndm_shift_and}
 \end{figure}
 
 \subsection*{Laufzeit bei sich ändernder Textlänge}
 
-Im letzten Beispiel betrachten wir das Verhalten des Horspool Algorithmus bei sich ändernder Textlänge für verschiedene Musterlängen. So können wir beobachten, ob das Verhalten des Horspool Algorithmus bei steigender Musterlänge für verschiedene Textlängen jeweils gleich ist. Zur Erzeugung entsprechender Daten, könnte die folgende Befehlsfolge verwendet werden:
+Im letzten Beispiel betrachten (siehe Abbildung \ref{fig:runtime_horspool}) wir das Verhalten des Horspool Algorithmus bei sich ändernder Textlänge für verschiedene Musterlängen. So können wir beobachten, ob das Verhalten des Horspool Algorithmus bei steigender Musterlänge für verschiedene Textlängen jeweils gleich ist. Zur Erzeugung entsprechender Daten, könnte die folgende Befehlsfolge verwendet werden:
 
 \begin{lstlisting}[breaklines=true,autogobble=true]
     ./aas-benchmark horspool -t 10000000 -p 1..10 -n 10 >> output.csv
@@ -166,10 +178,17 @@ Im letzten Beispiel betrachten wir das Verhalten des Horspool Algorithmus bei si
 
 Dieses Beispiel zeigt außerdem die Möglichkeit, mehrere Ausführungen von AaS-Benchmark zu einer Ausgabe zu sammeln. Dies lässt sich dadurch realisieren, dass man bei jedem weiteren Befehl, der seine Ausgabe in eine gemeinsame Ausgabedatei schreibt, den Parameter \texttt{---noheader} anhängt, sodass lediglich die erste Ausführung des Tools eine Titelzeile für die CSV-Ausgabe in die Ausgabedatei schreibt.
 
-\begin{figure}
-    \includegraphics[width=\linewidth]{assets/graph_4.png}
+\section{Fazit}
+
+Anhand der hier gegebenen Beispiele lässt sich erkennen, dass AaS-Benchmark vielfältige Möglichkeiten zum Testen und Vergleichen verschiedener Pattern Matching Algorithmen unter Berücksichtigung unterschiedlicher Eingabeparameter bietet.
+
+Natürlich lässt sich AaS-Benchmark auch auf viele andere Weisen einsetzen. Der Umfang an Eingabeparametern bietet eine hohe Flexibilität für die Durchführung verschiedenster Versuche.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{assets/graph_4.png}
     \caption{Laufzeit des Horspool Algorithmus bei sich ändernder Textlänge für verschiedene Musterlängen.}
-    \label{fig:runtime_bndm_shift_and}
+    \label{fig:runtime_horspool}
 \end{figure}
 
 \end{document}
