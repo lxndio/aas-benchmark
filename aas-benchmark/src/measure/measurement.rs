@@ -1,5 +1,7 @@
 use std::time::Duration;
 
+use benchmark_lists::aslice::ASlice;
+
 use crate::cli::CLIParams;
 use crate::match_algorithm::TypedAlgorithm;
 use crate::measure::measurement_result::MeasurementResult;
@@ -48,8 +50,10 @@ impl Measurement {
                 | TypedAlgorithm::BWTAlgorithm(_)
                 | TypedAlgorithm::ApproximativeAlgorithm(_) => {
                     for pattern in self.patterns.iter() {
+                        let mut text: ASlice<u8> = ASlice::from(&self.text as &[u8]);
+
                         let measurements =
-                            measure_exeuctions(pattern, &self.text, algorithm_fn, &self.cli_params);
+                            measure_exeuctions(pattern, &mut text, algorithm_fn, &self.cli_params);
 
                         let preparation_durations = measurements.iter().map(|x| x.0).collect();
                         let algorithm_durations = measurements.iter().map(|x| x.1).collect();
@@ -132,7 +136,7 @@ impl Measurement {
 /// of the given functions and the number of matches.
 fn measure_exeuctions(
     pattern: &[u8],
-    text: &[u8],
+    text: &mut ASlice<u8>,
     f: &TypedAlgorithm,
     cli_params: &CLIParams,
 ) -> Vec<SingleMeasurement> {

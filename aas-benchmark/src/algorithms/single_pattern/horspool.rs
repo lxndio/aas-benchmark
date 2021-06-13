@@ -1,3 +1,5 @@
+use benchmark_lists::aslice::ASlice;
+
 fn horspool_shift(pattern: &[u8]) -> Vec<usize> {
     let mut shift = vec![pattern.len(); 256];
     let m = pattern.len();
@@ -37,7 +39,10 @@ pub fn horspool(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     None
 }
 
-pub fn horspool_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn horspool_all(pattern: &[u8], text: &mut ASlice<u8>) -> Vec<usize> {
+    // TODO remove this
+    let text: &[u8] = &text.to_vec();
+
     let mut res = Vec::new();
     let mut i0 = 0;
 

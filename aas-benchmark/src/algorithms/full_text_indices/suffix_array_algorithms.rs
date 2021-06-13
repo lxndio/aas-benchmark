@@ -1,6 +1,8 @@
 use std::cmp::{max, min, Ordering};
 use std::time::SystemTime;
 
+use benchmark_lists::aslice::ASlice;
+
 use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
 use crate::cli::CLIParams;
 use crate::match_algorithm::{
@@ -18,7 +20,12 @@ impl Measure for SuffixArrayAlgorithm {
     /// function and the execution time, i. e. the time it takes to execute
     /// the actual algorithm itself.
     #[cfg(not(tarpaulin_include))]
-    fn measure(&self, pattern: &[u8], text: &[u8], cli_params: &CLIParams) -> SingleMeasurement {
+    fn measure(
+        &self,
+        pattern: &[u8],
+        text: &mut ASlice<u8>,
+        cli_params: &CLIParams,
+    ) -> SingleMeasurement {
         // Add sentinel to text
         let mut text = text.iter().copied().collect::<Vec<u8>>();
         text.push(0);
@@ -35,7 +42,7 @@ impl Measure for SuffixArrayAlgorithm {
         // Measure time it takes to run the actual algorithm
         let before = SystemTime::now();
 
-        let matches = self(&pos, pattern, text).len();
+        let matches = self(&pos, pattern, &mut text).len();
 
         let algorithm_duration = before.elapsed();
 
@@ -56,7 +63,15 @@ impl Measure for BWTAlgorithm {
     /// function and the execution time, i. e. the time it takes to execute
     /// the actual algorithm itself.
     #[cfg(not(tarpaulin_include))]
-    fn measure(&self, pattern: &[u8], text: &[u8], cli_params: &CLIParams) -> SingleMeasurement {
+    fn measure(
+        &self,
+        pattern: &[u8],
+        text: &mut ASlice<u8>,
+        cli_params: &CLIParams,
+    ) -> SingleMeasurement {
+        // TODO remove this
+        let text: &[u8] = &text.to_vec();
+
         // Add sentinel to text
         let mut text = text.iter().copied().collect::<Vec<u8>>();
         text.push(0);
@@ -94,13 +109,13 @@ impl Measure for BWTAlgorithm {
 /// given suffix array including those suffixes which have a prefix equal
 /// to the sought pattern. Using that interval, it then extracts the beginning
 /// positions of the occurrences of the pattern in the text from the suffix array.
-pub fn match_pattern(pos: &[usize], pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn match_pattern(pos: &[usize], pattern: &[u8], text: &mut ASlice<u8>) -> Vec<usize> {
     // Define the binary search function as a local function
     // because it is only needed here
     fn binary_search(
         pos: &[usize],
         pattern: &[u8],
-        text: &[u8],
+        text: &mut ASlice<u8>,
         mut l: usize,
         mut r: usize,
     ) -> (usize, usize) {

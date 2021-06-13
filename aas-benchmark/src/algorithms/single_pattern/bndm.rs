@@ -1,3 +1,5 @@
+use benchmark_lists::aslice::ASlice;
+
 use crate::algorithms::single_pattern::shift_and::shift_and_single_masks;
 
 /// An implementation of the Backward Nondeterministic DAWG Matching
@@ -8,7 +10,10 @@ use crate::algorithms::single_pattern::shift_and::shift_and_single_masks;
 ///
 /// After generating the shift masks, this function calls the actual
 /// BNDM algorithm function.
-pub fn bndm(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn bndm(pattern: &[u8], text: &mut ASlice<u8>) -> Vec<usize> {
+    // TODO remove this
+    let text: &[u8] = &text.to_vec();
+
     let mut pattern_rev = pattern.to_vec();
     pattern_rev.reverse();
 

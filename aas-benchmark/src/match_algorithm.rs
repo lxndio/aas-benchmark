@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use benchmark_lists::aslice::ASlice;
+
 use crate::algorithms::approximative::error_tolerant_shift_and::error_tolerant_shift_and;
 use crate::algorithms::approximative::ukkonen::ukkonen;
 use crate::algorithms::full_text_indices::sais::fast;
@@ -31,7 +33,7 @@ lazy_static! {
         "et-shift-and" => TypedAlgorithm::ApproximativeAlgorithm(error_tolerant_shift_and),
         "mp-naive" => TypedAlgorithm::MultiplePatternAlgorithm(naive_multiple),
         "aho-corasick" => TypedAlgorithm::MultiplePatternAlgorithm(aho_corasick),
-        "bom" => TypedAlgorithm::SinglePatternAlgorithm(bom),
+        // "bom" => TypedAlgorithm::SinglePatternAlgorithm(bom),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -59,20 +61,20 @@ lazy_static! {
 }
 
 /// A single pattern algorithm.
-pub type SinglePatternAlgorithm = fn(&[u8], &[u8]) -> Vec<usize>;
+pub type SinglePatternAlgorithm = fn(&[u8], &mut ASlice<u8>) -> Vec<usize>;
 
 /// A multiple pattern algorithm.
-pub type MultiplePatternAlgorithm = fn(&[Vec<u8>], &[u8]) -> Vec<Vec<usize>>;
+pub type MultiplePatternAlgorithm = fn(&[Vec<u8>], &mut ASlice<u8>) -> Vec<Vec<usize>>;
 
 /// A suffix array algorithm tuple, containing the algorithm itself and
 /// the suffix array generation function to be used.
-pub type SuffixArrayAlgorithm = fn(&[usize], &[u8], &[u8]) -> Vec<usize>;
+pub type SuffixArrayAlgorithm = fn(&[usize], &[u8], &mut ASlice<u8>) -> Vec<usize>;
 
 /// A BWT algorithm.
 pub type BWTAlgorithm = fn(&[usize], &[usize], &[usize], &[u8]) -> Vec<usize>;
 
 /// An approximative algorithm.
-pub type ApproximativeAlgorithm = fn(&[u8], &[u8], usize) -> Vec<(usize, usize)>;
+pub type ApproximativeAlgorithm = fn(&[u8], &mut ASlice<u8>, usize) -> Vec<(usize, usize)>;
 
 /// A suffix array generation algorithm.
 pub type SuffixArrayGenAlgorithm = fn(&[u8]) -> Vec<usize>;

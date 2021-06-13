@@ -1,3 +1,5 @@
+use benchmark_lists::aslice::ASlice;
+
 /// Preparation function for the Shift-And Algorithm.
 ///
 /// For a given pattern, it returns a tuple containing:
@@ -40,7 +42,10 @@ fn shift_and_with_masks(
     res
 }
 
-pub fn shift_and(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn shift_and(pattern: &[u8], text: &mut ASlice<u8>) -> Vec<usize> {
+    // TODO remove this
+    let text: &[u8] = &text.to_vec();
+
     let mut res = Vec::new();
     let m = pattern.len();
     let (mask, ones, accept) = shift_and_single_masks(pattern);

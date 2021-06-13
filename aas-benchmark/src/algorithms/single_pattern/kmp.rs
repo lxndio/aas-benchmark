@@ -1,3 +1,5 @@
+use benchmark_lists::aslice::ASlice;
+
 use crate::algorithms::dfa::dfa_with_lps_delta;
 
 /// Computes the lps function used by the KMP algorithm.
@@ -68,7 +70,10 @@ pub fn kmp(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
 /// The `i0` value starts at 0 and is increased after each execution to
 /// start the next execution right after the current occurrence's position
 /// in text.
-pub fn kmp_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn kmp_all(pattern: &[u8], text: &mut ASlice<u8>) -> Vec<usize> {
+    // TODO remove this
+    let text: &[u8] = &text.to_vec();
+
     let mut res = Vec::new();
     let mut i0 = 0;
 
@@ -114,7 +119,10 @@ pub fn kmp_classic(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     None
 }
 
-pub fn kmp_classic_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn kmp_classic_all(pattern: &[u8], text: &mut ASlice<u8>) -> Vec<usize> {
+    // TODO remove this
+    let text: &[u8] = &text.to_vec();
+
     let mut res = Vec::new();
     let mut i0 = 0;
 

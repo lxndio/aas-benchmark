@@ -1,3 +1,5 @@
+use benchmark_lists::aslice::ASlice;
+
 use crate::algorithms::single_pattern::naive::naive_all;
 
 /// Returns occurrences of given patterns in a text.
@@ -7,7 +9,10 @@ use crate::algorithms::single_pattern::naive::naive_all;
 ///
 /// It uses a naive approach by simply calling the naive single pattern algorithm
 /// for each given pattern.
-pub fn naive_multiple(patterns: &[Vec<u8>], text: &[u8]) -> Vec<Vec<usize>> {
+pub fn naive_multiple(patterns: &[Vec<u8>], text: &mut ASlice<u8>) -> Vec<Vec<usize>> {
+    // TODO remove this
+    let text: &[u8] = &text.to_vec();
+
     let mut matches = Vec::new();
 
     for pattern in patterns {

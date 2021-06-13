@@ -4,6 +4,8 @@ pub mod measurement_result;
 
 use std::time::Duration;
 
+use benchmark_lists::aslice::ASlice;
+
 use self::measurement::SingleMeasurement;
 use crate::cli::CLIParams;
 
@@ -14,7 +16,12 @@ use crate::cli::CLIParams;
 /// require to measure a preparation and a matching function or generate
 /// some other data first of which the time should not be measured.
 pub trait Measure {
-    fn measure(&self, pattern: &[u8], text: &[u8], cli_params: &CLIParams) -> SingleMeasurement;
+    fn measure(
+        &self,
+        pattern: &[u8],
+        text: &mut ASlice<u8>,
+        cli_params: &CLIParams,
+    ) -> SingleMeasurement;
 }
 
 /// Trait for implementing a measurement that takes multiple patterns.
