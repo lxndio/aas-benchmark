@@ -10,17 +10,9 @@ fn d2_table(pattern: &[u8], shift: &[usize]) -> Vec<Vec<usize>> {
             if !pattern.contains(&i) && !pattern.contains(&j) {
                 d2[i as usize][j as usize] = 2 * m;
             } else if !pattern.contains(&i) && pattern.contains(&j) {
-                d2[i as usize][j as usize] = m + if shift[j as usize] != m {
-                    shift[j as usize]
-                } else {
-                    0
-                };
+                d2[i as usize][j as usize] = m + (shift[j as usize] % m);
             } else if pattern.contains(&i) && pattern[m - 1] != i {
-                d2[i as usize][j as usize] = if shift[i as usize] != m {
-                    shift[i as usize]
-                } else {
-                    0
-                };
+                d2[i as usize][j as usize] = shift[i as usize] % m;
             }
         }
     }

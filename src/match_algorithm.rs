@@ -11,11 +11,11 @@ use crate::algorithms::multiple_patterns::aho_corasick::aho_corasick;
 use crate::algorithms::multiple_patterns::naive::naive_multiple;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::bom::bom;
+use crate::algorithms::single_pattern::double_window::double_window;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
 use crate::algorithms::single_pattern::naive::naive_all;
 use crate::algorithms::single_pattern::shift_and::shift_and;
-use crate::algorithms::single_pattern::double_window::double_window;
 
 lazy_static! {
     /// List of existing algorithms and their internal names
