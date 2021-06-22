@@ -27,6 +27,7 @@ pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let mut res = Vec::new();
     let shift = horspool_shift(pattern);
     let d2 = d2_table(pattern, &shift);
+    let m1 = m - 1;
     let mut pos = m - 1;
 
     while pos < n - m {
@@ -35,12 +36,12 @@ pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
         if r == 0 {
             let mut j = 0;
 
-            while j < m && text[pos - m - 1 + j] == pattern[j] {
+            while j < m && text[pos - (m - 1) + j] == pattern[j] {
                 j += 1;
             }
 
             if j == m {
-                res.push(pos - m - 1);
+                res.push(pos - (m - 1));
             }
 
             pos += shift[text[pos] as usize];
