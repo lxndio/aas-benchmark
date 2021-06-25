@@ -1,4 +1,4 @@
-fn horspool_shift(pattern: &[u8]) -> Vec<usize> {
+pub fn horspool_shift(pattern: &[u8]) -> Vec<usize> {
     let mut shift = vec![pattern.len(); 256];
     let m = pattern.len();
 

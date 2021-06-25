@@ -11,6 +11,7 @@ use crate::algorithms::multiple_patterns::aho_corasick::aho_corasick;
 use crate::algorithms::multiple_patterns::naive::naive_multiple;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::bom::bom;
+use crate::algorithms::single_pattern::double_window::double_window;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
 use crate::algorithms::single_pattern::naive::naive_all;
@@ -32,6 +33,7 @@ lazy_static! {
         "mp-naive" => TypedAlgorithm::MultiplePatternAlgorithm(naive_multiple),
         "aho-corasick" => TypedAlgorithm::MultiplePatternAlgorithm(aho_corasick),
         "bom" => TypedAlgorithm::SinglePatternAlgorithm(bom),
+        "double-window" => TypedAlgorithm::SinglePatternAlgorithm(double_window),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -55,6 +57,7 @@ lazy_static! {
         "mp-naive" => "Naive Multiple Patterns",
         "aho-corasick" => "Aho-Corasick",
         "bom" => "BOM",
+        "double-window" => "Double Window",
     };
 }
 
