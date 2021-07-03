@@ -70,14 +70,11 @@ fn compute_shift_vector(pattern: &[u8]) -> Vec<usize> {
 fn compute_scan_order(m: usize, ws: usize) -> Vec<usize> {
     let mut scan_order = vec![0; ws];
     let mut i = 0;
-    let mut k;
 
-    for j in (0..m).rev() {
-        k = j;
-
-        while k < ws {
-            scan_order[i] = k;
-            k += m;
+    for mut j in (0..m).rev() {
+        while j < ws {
+            scan_order[i] = j;
+            j += m;
             i += 1;
         }
     }
