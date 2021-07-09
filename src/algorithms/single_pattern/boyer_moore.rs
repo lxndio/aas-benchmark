@@ -81,13 +81,14 @@ pub fn per(pattern: &[u8]) -> usize {
 }
 
 /// modified w_memoryless_suffix_search form "Algorithms on Strings, Chapter 3"
-pub fn weak_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
+pub fn weak_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let m = pattern.len();
     let n = text.len();
 
     let good_suff = good_suffixes(pattern);
-    let mut j = i0 + m - 1;
+    let mut j = m - 1;
 
+    let mut matches = Vec::new();
     while j < n {
         let mut i = (m - 1) as isize;
 
@@ -96,7 +97,7 @@ pub fn weak_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize>
         }
 
         if i < 0 {
-            return Some(j + 1 - pattern.len());
+            matches.push(j + 1 - pattern.len());
         }
 
         if i < 0 {
@@ -106,21 +107,50 @@ pub fn weak_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize>
         }
     }
 
-    None
+    matches
 }
 
 /// modified w_memoryless_suffix_search form "Algorithms on Strings, Chapter 3"
-pub fn weak_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
-    let mut res = Vec::new();
-    let mut i0 = 0;
+pub fn weak_memorizing_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+    let m = pattern.len();
+    let n = text.len();
 
-    while let Some(occ) = weak_boyer_moore(pattern, text, i0) {
-        res.push(occ);
+    let good_suff = good_suffixes(pattern);
+    let mut j = m - 1;
+    let mut shift: usize = 0;
+    let mut mem: usize = 0;
 
-        i0 = occ + 1;
+    let mut matches = Vec::new();
+
+
+
+
+    while j < n {
+        let mut i = (m - 1) as isize;
+
+        while i >= 0 && pattern[i as usize] == text[j + 1 + i as usize - m] {
+            if i as usize == m - shift && mem > 0 {
+                i = i - (mem as isize) - 1; // Jump
+            } else {
+                i -= 1;
+            }
+        }
+
+        if i < 0 {
+            matches.push(j + 1 - pattern.len());
+        }
+
+        if i < 0 {
+            shift = per(pattern);
+            mem = m - shift;
+        } else {
+            shift = good_suff[i as usize];
+            mem = min(m - shift, m - 1 - (i as usize));
+        }
+        j += shift;
     }
 
-    res
+    matches
 }
 
 /// modified turbo_suffix_search_good_suff form "Algorithms on Strings, Chapter 3"
