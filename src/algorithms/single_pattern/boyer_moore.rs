@@ -16,8 +16,12 @@ pub fn suffixes(pattern: &[u8]) -> Vec<usize> {
     suff[m - 1] = m;
 
     for i in (0..m - 1).rev() {
-        if i > g as usize && suff[i + m - 1 - f] != i - g as usize {
-            suff[i] = min(suff[i + m - 1 - f], i - g as usize);
+        if i as isize > g && suff[i + m - 1 - f] != (i as isize - g) as usize {
+            if g == -1 {
+                suff[i] = min(suff[i + m - 1 - f], i + 1);
+            } else {
+                suff[i] = min(suff[i + m - 1 - f], i - g as usize);
+            }
         } else {
             g = min(g, i as isize);
             f = i;
@@ -49,7 +53,7 @@ pub fn good_suffixes(pattern: &[u8]) -> Vec<usize> {
         if i == -1 || suff[i as usize] == (i + 1) as usize {
             while j < (m as isize - 1 - i) as usize {
                 good_suff[j] = (m as isize - 1 - i) as usize;
-                j = j + 1;
+                j += 1;
             }
         }
     }
@@ -63,7 +67,7 @@ pub fn good_suffixes(pattern: &[u8]) -> Vec<usize> {
 
 /// Calculated the smallest period of string
 pub fn per(pattern: &[u8]) -> usize {
-    if pattern.len() == 0 {
+    if pattern.is_empty() {
         panic!("Can't calculate period of an empty string");
     }
 
@@ -96,9 +100,9 @@ pub fn weak_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize>
         }
 
         if i < 0 {
-            j = j + per(pattern);
+            j += per(pattern);
         } else {
-            j = j + good_suff[i as usize];
+            j += good_suff[i as usize];
         }
     }
 
@@ -120,19 +124,22 @@ pub fn weak_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
 }
 
 /// modified turbo_suffix_search_good_suff form "Algorithms on Strings, Chapter 3"
-pub fn weak_turbo_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
+pub fn weak_turbo_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let m = pattern.len();
     let n = text.len();
 
     let good_suff = good_suffixes(pattern);
     let mut shift: usize = 0;
     let mut mem: usize = 0;
-    let mut j = i0 + m - 1;
+    let mut j = m - 1;
+
+    let mut matches = Vec::new();
 
     while j < n {
         let mut i = (m - 1) as isize;
-        while i >= 0 && pattern[i as usize] == text[j + 1 + (i as usize) - m] {
-            if (i as usize) == m - shift {
+
+        while i >= 0 && pattern[i as usize] == text[j + 1 + i as usize - m] {
+            if i as usize == m - shift {
                 i = i - (mem as isize) - 1; // Jump
             } else {
                 i -= 1;
@@ -140,8 +147,7 @@ pub fn weak_turbo_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<
         }
 
         if i < 0 {
-            // output condition
-            return Some(j + 1 - pattern.len());
+            matches.push(j + 1 - pattern.len());
         }
 
         if i < 0 {
@@ -153,32 +159,14 @@ pub fn weak_turbo_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<
                 shift = good_suff[i as usize];
                 mem = min(m - shift, m - 1 - (i as usize));
             } else {
-                if turbo < 0 {
-                    shift = m - 1 - (i as usize);
-                } else {
-                    shift = max((turbo as usize), m - 1 - (i as usize));
-                }
+                shift = max(turbo, (m as isize) - 1 - i) as usize;
                 mem = 0;
             }
         }
-        j = j + shift; // Shift
+        j += shift; // Shift
     }
 
-    None
-}
-
-/// modified turbo_suffix_search_good_suff form "Algorithms on Strings, Chapter 3"
-pub fn weak_turbo_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
-    let mut res = Vec::new();
-    let mut i0 = 0;
-
-    while let Some(occ) = weak_turbo_boyer_moore(pattern, text, i0) {
-        res.push(occ);
-
-        i0 = occ + 1;
-    }
-
-    res
+    matches
 }
 
 #[cfg(test)]
@@ -224,12 +212,30 @@ mod tests {
     }
 
     #[test]
+    fn test_suffixes_period_2() {
+        let pattern = b"GCGCGC";
+        let suff = suffixes(pattern);
+
+        assert_eq!(suff.len(), pattern.len());
+        assert_eq!(suff, vec![0, 2, 0, 4, 0, 6]);
+    }
+
+    #[test]
     fn test_good_suffixes_book_example() {
         let pattern = b"aaacababa";
         let good_suff = good_suffixes(pattern);
 
         assert_eq!(good_suff.len(), pattern.len());
         assert_eq!(good_suff, vec![8, 8, 8, 8, 8, 2, 8, 4, 1]);
+    }
+
+    #[test]
+    fn test_good_suffixes_period_2() {
+        let pattern = b"GCGCGC";
+        let good_suff = good_suffixes(pattern);
+
+        assert_eq!(good_suff.len(), pattern.len());
+        assert_eq!(good_suff, vec![2, 2, 4, 4, 6, 1]);
     }
 
     #[test]
@@ -265,6 +271,12 @@ mod tests {
     fn test_no_period() {
         let pattern = b"abcdef";
         assert_eq!(per(pattern), pattern.len());
+    }
+
+    #[test]
+    fn test_period_2() {
+        let pattern = b"GCGCGC";
+        assert_eq!(per(pattern), 2);
     }
 
     #[test]
