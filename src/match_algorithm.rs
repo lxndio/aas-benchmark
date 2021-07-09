@@ -11,7 +11,9 @@ use crate::algorithms::multiple_patterns::aho_corasick::aho_corasick;
 use crate::algorithms::multiple_patterns::naive::naive_multiple;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::bom::bom;
-use crate::algorithms::single_pattern::boyer_moore::weak_boyer_moore_all;
+use crate::algorithms::single_pattern::boyer_moore::{
+    weak_boyer_moore_all, weak_turbo_boyer_moore_all,
+};
 use crate::algorithms::single_pattern::double_window::double_window;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
@@ -25,6 +27,7 @@ lazy_static! {
         "horspool" => TypedAlgorithm::SinglePatternAlgorithm(horspool_all),
         "naive" => TypedAlgorithm::SinglePatternAlgorithm(naive_all),
         "wbm" => TypedAlgorithm::SinglePatternAlgorithm(weak_boyer_moore_all),
+        "wtbm" => TypedAlgorithm::SinglePatternAlgorithm(weak_turbo_boyer_moore_all),
         "kmp" => TypedAlgorithm::SinglePatternAlgorithm(kmp_all),
         "kmp-classic" => TypedAlgorithm::SinglePatternAlgorithm(kmp_classic_all),
         "shift-and" => TypedAlgorithm::SinglePatternAlgorithm(shift_and),
@@ -50,6 +53,7 @@ lazy_static! {
         "horspool" => "Horspool",
         "naive" => "Naive",
         "wbm" => "Weak Boyer Moore",
+        "wtbm" => "Weak Turbo Boyer Moore",
         "kmp" => "KMP",
         "kmp-classic" => "Classic KMP",
         "shift-and" => "Shift-And",

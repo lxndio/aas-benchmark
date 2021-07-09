@@ -1,4 +1,4 @@
-use std::cmp::min;
+use std::{cmp::max, cmp::min, usize};
 
 /// Calcualtes the table of suffixes of string x with length m
 /// According to "Algorithms on Strings, Chapter 3.3"
@@ -119,6 +119,68 @@ pub fn weak_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     res
 }
 
+/// modified turbo_suffix_search_good_suff form "Algorithms on Strings, Chapter 3"
+pub fn weak_turbo_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
+    let m = pattern.len();
+    let n = text.len();
+
+    let good_suff = good_suffixes(pattern);
+    let mut shift: usize = 0;
+    let mut mem: usize = 0;
+    let mut j = i0 + m - 1;
+
+    while j < n {
+        let mut i = (m - 1) as isize;
+        while i >= 0 && pattern[i as usize] == text[j + 1 + (i as usize) - m] {
+            if (i as usize) == m - shift {
+                i = i - (mem as isize) - 1; // Jump
+            } else {
+                i -= 1;
+            }
+        }
+
+        if i < 0 {
+            // output condition
+            return Some(j + 1 - pattern.len());
+        }
+
+        if i < 0 {
+            shift = per(pattern);
+            mem = m - shift;
+        } else {
+            let turbo: isize = (mem as isize) + 1 + i - (m as isize);
+            if turbo <= (good_suff[i as usize] as isize) {
+                shift = good_suff[i as usize];
+                mem = min(m - shift, m - 1 - (i as usize));
+            } else {
+                if turbo < 0 {
+                    shift = m - 1 - (i as usize);
+                } else {
+                    shift = max((turbo as usize), m - 1 - (i as usize));
+                }
+                mem = 0;
+            }
+        }
+        j = j + shift; // Shift
+    }
+
+    None
+}
+
+/// modified turbo_suffix_search_good_suff form "Algorithms on Strings, Chapter 3"
+pub fn weak_turbo_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+    let mut res = Vec::new();
+    let mut i0 = 0;
+
+    while let Some(occ) = weak_turbo_boyer_moore(pattern, text, i0) {
+        res.push(occ);
+
+        i0 = occ + 1;
+    }
+
+    res
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -228,5 +290,33 @@ mod tests {
         let matches = weak_boyer_moore_all(pattern, text);
 
         assert_eq!(matches, vec![0, 5, 8, 11]);
+    }
+
+    #[test]
+    fn test_weak_turbo_bm_good_suff_book_example() {
+        // Example from Algorithms on Strings chapter 3.5 Figure 3.14 (b)
+        let text = b"aaacabaaacabacaaacababa";
+        let pattern = b"aaacababa";
+        let matches = weak_turbo_boyer_moore_all(pattern, text);
+
+        assert_eq!(matches, vec![14]);
+    }
+
+    #[test]
+    fn test_weak_turbo_bm_good_suff_turbo_shift() {
+        let text = b"CGACCGCACCCGCTCCGTCG";
+        let pattern = b"TCACCCCACCC";
+        let matches = weak_turbo_boyer_moore_all(pattern, text);
+
+        assert_eq!(matches, vec![]);
+    }
+
+    #[test]
+    fn test_weak_turbo_bm_good_suff() {
+        let text = b"aaaabaaaabaaa";
+        let pattern = b"aaabaaa";
+        let matches = weak_turbo_boyer_moore_all(pattern, text);
+
+        assert_eq!(matches, vec![1, 6]);
     }
 }
