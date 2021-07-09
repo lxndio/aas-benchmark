@@ -12,39 +12,31 @@ pub fn suffixes(pattern: &[u8]) -> Vec<usize> {
 
     let mut suff = vec![0; m];
     let mut f = 0;
-    let mut g = m - 1;
+    let mut g = (m - 1) as isize;
     suff[m - 1] = m;
 
     for i in (0..m - 1).rev() {
-        if i > g && suff[i + m - 1 - f] != i - g {
-            suff[i] = min(suff[i + m - 1 - f], i - g);
+        if i > g as usize && suff[i + m - 1 - f] != i - g as usize {
+            suff[i] = min(suff[i + m - 1 - f], i - g as usize);
         } else {
-            g = min(g, i);
+            g = min(g, i as isize);
             f = i;
-            let mut negative: bool = false;
-            while pattern[g] == pattern[g + m - 1 - f] {
-                if g == 0 {
-                    // hotfix because we can't set g to negative value
-                    negative = true;
-                    break;
-                } else {
-                    g = g - 1;
-                }
+
+            while g >= 0 && pattern[g as usize] == pattern[g as usize + m - 1 - f] {
+                g -= 1;
             }
-            if negative {
-                suff[i] = f + 1;
-            } else {
-                suff[i] = f - g;
-            }
+
+            suff[i] = (f as isize - g) as usize;
         }
     }
-    return suff;
+
+    suff
 }
 
 pub fn good_suffixes(pattern: &[u8]) -> Vec<usize> {
     let m = pattern.len();
 
-    // return empty list if pattern is empty
+    // Return empty list if pattern is empty
     if m == 0 {
         return Vec::new();
     }
@@ -53,39 +45,34 @@ pub fn good_suffixes(pattern: &[u8]) -> Vec<usize> {
     let suff = suffixes(pattern);
     let mut j = 0;
 
-    for i in (0..m - 1).rev() {
-        if suff[i] == i + 1 {
-            while j < m - 1 - i {
-                good_suff[j] = m - 1 - i;
+    for i in (-1..m as isize - 1).rev() {
+        if i == -1 || suff[i as usize] == (i + 1) as usize {
+            while j < (m as isize - 1 - i) as usize {
+                good_suff[j] = (m as isize - 1 - i) as usize;
                 j = j + 1;
             }
         }
     }
-    // i == -1 case
-    while j < m {
-        good_suff[j] = m;
-        j = j + 1;
-    }
 
-    for i in (0..m - 1) {
+    for i in 0..m - 1 {
         good_suff[m - 1 - suff[i]] = m - 1 - i;
     }
 
-    return good_suff;
+    good_suff
 }
 
 /// Calculated the smallest period of string
 pub fn per(pattern: &[u8]) -> usize {
     if pattern.len() == 0 {
-        println!("Cant calculate period of an empty string");
-        return 0;
+        panic!("Can't calculate period of an empty string");
     }
 
     let period = good_suffixes(pattern)[0];
+
     if period > 0 {
-        return period;
+        period
     } else {
-        return pattern.len();
+        pattern.len()
     }
 }
 
@@ -98,28 +85,20 @@ pub fn weak_boyer_moore(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize>
     let mut j = i0 + m - 1;
 
     while j < n {
-        let mut i = m - 1;
-        let mut negative: bool = false;
+        let mut i = (m - 1) as isize;
 
-        while pattern[i] == text[j + 1 + i - m] {
-            if i == 0 {
-                // hotfix because we can't set i to negative value
-                negative = true;
-                break;
-            } else {
-                i = i - 1;
-            }
+        while i >= 0 && pattern[i as usize] == text[j + 1 + i as usize - m] {
+            i -= 1;
         }
 
-        if negative {
-            // output condition
-            return Some(j + 1 - pattern.len()); // return left start of occurance
+        if i < 0 {
+            return Some(j + 1 - pattern.len());
         }
 
-        if negative {
+        if i < 0 {
             j = j + per(pattern);
         } else {
-            j = j + good_suff[i];
+            j = j + good_suff[i as usize];
         }
     }
 
