@@ -295,7 +295,7 @@ impl CLIParams {
                 let file_name = String::from(matches.value_of("text_from_file").unwrap_or(""));
 
                 // TODO better error handling, probably using ok_or() above
-                if file_name != "" {
+                if file_name.is_empty() {
                     TextSource::FromFile(file_name)
                 } else {
                     TextSource::Error("The --textfromfile argument needs a valid parameter.")
@@ -306,7 +306,7 @@ impl CLIParams {
                     String::from(matches.value_of("text_from_file_binary").unwrap_or(""));
 
                 // TODO better error handling, probably using ok_or() above
-                if file_name != "" {
+                if file_name.is_empty() {
                     TextSource::FromFileBinary(file_name)
                 } else {
                     TextSource::Error("The --textfromfilebin argument needs a valid parameter.")

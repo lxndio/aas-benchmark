@@ -18,10 +18,7 @@ pub enum PatternSource {
 
 /// Decides how a pattern should be generated based on the given CLI arguments
 /// and calls the appropriate function.
-pub fn generate_patterns<'a>(
-    cli_params: &'a CLIParams,
-    text: &[u8],
-) -> Result<Vec<Vec<u8>>, String> {
+pub fn generate_patterns(cli_params: &'_ CLIParams, text: &[u8]) -> Result<Vec<Vec<u8>>, String> {
     match &cli_params.pattern_source {
         PatternSource::FromArgument(patterns) => {
             Ok(patterns.iter().map(|x| x.as_bytes().to_vec()).collect())
