@@ -18,7 +18,13 @@ impl Measure for ApproximativeAlgorithm {
 
         // Unwrapping the `maximum_error` CLI parameter is valid here
         // because it can't be None as checked in `cli::valid()`
-        let matches = self(pattern, text, cli_params.maximum_error.unwrap()).len();
+        let matches = self(
+            pattern,
+            text,
+            cli_params.maximum_error.unwrap(),
+            &cli_params.alphabet,
+        )
+        .len();
 
         let duration = before.elapsed();
 

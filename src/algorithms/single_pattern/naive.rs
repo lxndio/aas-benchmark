@@ -21,7 +21,7 @@ pub fn naive(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     None
 }
 
-pub fn naive_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn naive_all(pattern: &[u8], text: &[u8], _: &[u8]) -> Vec<usize> {
     let mut res = Vec::new();
     let mut i0 = 0;
 
@@ -43,7 +43,7 @@ mod tests {
         let text = b"gccttaacattattacgccta";
         let pattern = b"tta";
 
-        let mut matches = naive_all(pattern, text);
+        let mut matches = naive_all(pattern, text, &[]);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];

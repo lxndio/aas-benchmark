@@ -66,6 +66,12 @@ args:
         long: pr
         takes_value: true
         value_name: lengths
+    - alphabet:
+        help: Set the alphabet used by the algorithm(s) by supplying a comma-seperated list of characters (escape \\ and \,), e.g. `-a A,C,G,T`. If you also supply a text and pattern yourself, both of those must not contain any other characters. Defaults to 256 characters.
+        short: a
+        long: alphabet
+        takes_value: true
+        value_name: alphabet
     - suffix_array_algorithm:
         help: Specify how a suffix array should be generated (only used for `sa-` and `bwt-` algorithms), defaults to `sais`
         long: suffixarray

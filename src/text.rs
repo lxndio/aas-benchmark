@@ -4,6 +4,7 @@ use std::io::BufReader;
 
 use crate::cli::CLIParams;
 use crate::generate::gen_rand_bytes;
+use crate::utils::map_alphabet;
 
 #[derive(Debug, PartialEq)]
 pub enum TextSource {
@@ -16,7 +17,7 @@ pub enum TextSource {
 /// Decides how a text should be generated based on the given CLI arguments
 /// and calls the appropriate function.
 pub fn generate_text(cli_params: &CLIParams, seed: Option<u64>) -> Result<Vec<u8>, String> {
-    match &cli_params.text_source {
+    let text = match &cli_params.text_source {
         TextSource::RandomText(n) => Ok(gen_rand_bytes(*n, seed)),
         TextSource::FromFile(file_name) => match load_text_from_file(file_name) {
             Ok(text) => Ok(text),
@@ -24,6 +25,11 @@ pub fn generate_text(cli_params: &CLIParams, seed: Option<u64>) -> Result<Vec<u8
         },
         TextSource::FromFileBinary(file_name) => Ok(load_text_from_file_binary(file_name)),
         TextSource::Error(err) => Err(String::from(*err)),
+    };
+
+    match text {
+        Ok(text) => Ok(map_alphabet(&text, &cli_params.alphabet)),
+        err @ Err(_) => err,
     }
 }
 

@@ -20,6 +20,7 @@ mod pattern;
 mod range;
 #[cfg(not(tarpaulin_include))]
 mod text;
+mod utils;
 
 use std::error::Error;
 

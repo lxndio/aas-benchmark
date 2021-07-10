@@ -16,6 +16,8 @@ pub struct CLIParams {
     pub pattern_source: PatternSource,
     pub text_source: TextSource,
 
+    pub alphabet: Vec<u8>,
+
     pub suffix_array_algorithm: String,
     pub occ_block_size: usize,
     pub maximum_error: Option<usize>,
@@ -43,6 +45,20 @@ impl CLIParams {
             .value_of("suffix_array_algorithm")
             .unwrap_or("sais")
             .to_string();
+
+        let alphabet: Vec<u8> = if let Some(alphabet_chars) = matches.value_of("alphabet") {
+            alphabet_chars
+                .split(',')
+                .map(|x| match x {
+                    "\\\\" => b'\\',
+                    "\\," => b',',
+                    x => x.chars().next().unwrap() as u8,
+                })
+                .collect()
+        } else {
+            // Use all possible 8-bit characters (alphabet size 256)
+            (0..=255).collect()
+        };
 
         // Bool value parameters
         let no_header: bool = matches.is_present("no_header");
@@ -80,6 +96,8 @@ impl CLIParams {
 
             pattern_source: Self::set_pattern_source(&matches),
             text_source: Self::set_text_source(&matches),
+
+            alphabet,
 
             suffix_array_algorithm,
             occ_block_size,
@@ -295,7 +313,7 @@ impl CLIParams {
                 let file_name = String::from(matches.value_of("text_from_file").unwrap_or(""));
 
                 // TODO better error handling, probably using ok_or() above
-                if file_name.is_empty() {
+                if !file_name.is_empty() {
                     TextSource::FromFile(file_name)
                 } else {
                     TextSource::Error("The --textfromfile argument needs a valid parameter.")
@@ -306,7 +324,7 @@ impl CLIParams {
                     String::from(matches.value_of("text_from_file_binary").unwrap_or(""));
 
                 // TODO better error handling, probably using ok_or() above
-                if file_name.is_empty() {
+                if !file_name.is_empty() {
                     TextSource::FromFileBinary(file_name)
                 } else {
                     TextSource::Error("The --textfromfilebin argument needs a valid parameter.")

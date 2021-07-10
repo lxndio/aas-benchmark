@@ -4,7 +4,7 @@ use std::mem::swap;
 /// Returns occurrences of a pattern in a text given a maximum error.
 ///
 /// The runtime is `O(kn)` given a maximum error `k` and a text with length `n`.
-pub fn ukkonen(pattern: &[u8], text: &[u8], k: usize) -> Vec<(usize, usize)> {
+pub fn ukkonen(pattern: &[u8], text: &[u8], k: usize, _: &[u8]) -> Vec<(usize, usize)> {
     let m = pattern.len();
     let n = text.len();
 
@@ -63,7 +63,7 @@ mod tests {
         let pattern = b"abc";
         let k = 1;
 
-        let matches = ukkonen(pattern, text, k);
+        let matches = ukkonen(pattern, text, k, &[]);
 
         println!("{:?}", matches);
 

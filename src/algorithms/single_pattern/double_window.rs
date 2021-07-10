@@ -1,8 +1,8 @@
 use crate::algorithms::single_pattern::horspool::horspool_shift;
 
 // TODO Couldn't this table be implemented on the fly?
-fn d2_table(pattern: &[u8], shift: &[usize]) -> Vec<Vec<usize>> {
-    let mut d2 = vec![vec![0; 256]; 256];
+fn d2_table(pattern: &[u8], shift: &[usize], alphabet_len: usize) -> Vec<Vec<usize>> {
+    let mut d2 = vec![vec![0; alphabet_len]; alphabet_len];
     let m = pattern.len();
 
     for i in 0..=255 {
@@ -20,11 +20,12 @@ fn d2_table(pattern: &[u8], shift: &[usize]) -> Vec<Vec<usize>> {
     d2
 }
 
-pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn double_window(pattern: &[u8], text: &[u8], alphabet: &[u8]) -> Vec<usize> {
     let m = pattern.len();
     let n = text.len();
-    let shift = horspool_shift(pattern);
-    let d2 = d2_table(pattern, &shift);
+    let alphabet_len = alphabet.len();
+    let shift = horspool_shift(pattern, alphabet_len);
+    let d2 = d2_table(pattern, &shift, alphabet_len);
 
     let mut res = Vec::new();
     let mut pos = m - 1;
@@ -60,8 +61,9 @@ mod tests {
     fn test_double_window() {
         let text = b"gccttaacattattacgccta";
         let pattern = b"tta";
+        let alphabet = &['a' as u8, 'c' as u8, 'g' as u8, 't' as u8];
 
-        let mut matches = double_window(pattern, text);
+        let mut matches = double_window(pattern, text, alphabet);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];
@@ -73,8 +75,9 @@ mod tests {
     fn test_double_window2() {
         let text = b"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         let pattern = b"ipsum";
+        let alphabet = &['a' as u8, 'c' as u8, 'g' as u8, 't' as u8];
 
-        let mut matches = double_window(pattern, text);
+        let mut matches = double_window(pattern, text, alphabet);
         matches.sort_unstable();
 
         let matches_correct = vec![6, 274, 302, 570];

@@ -68,7 +68,7 @@ pub fn kmp(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
 /// The `i0` value starts at 0 and is increased after each execution to
 /// start the next execution right after the current occurrence's position
 /// in text.
-pub fn kmp_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn kmp_all(pattern: &[u8], text: &[u8], _: &[u8]) -> Vec<usize> {
     let mut res = Vec::new();
     let mut i0 = 0;
 
@@ -114,7 +114,7 @@ pub fn kmp_classic(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     None
 }
 
-pub fn kmp_classic_all(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn kmp_classic_all(pattern: &[u8], text: &[u8], _: &[u8]) -> Vec<usize> {
     let mut res = Vec::new();
     let mut i0 = 0;
 
@@ -136,7 +136,7 @@ mod tests {
         let text = b"gccttaacattattacgccta\0";
         let pattern = b"tta";
 
-        let mut matches = kmp_all(pattern, text);
+        let mut matches = kmp_all(pattern, text, &[]);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];
@@ -149,7 +149,7 @@ mod tests {
         let text = b"gccttaacattattacgccta\0";
         let pattern = b"tta";
 
-        let mut matches = kmp_classic_all(pattern, text);
+        let mut matches = kmp_classic_all(pattern, text, &[]);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];

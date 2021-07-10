@@ -5,12 +5,18 @@ use crate::algorithms::single_pattern::shift_and::shift_and_single_masks;
 /// This is a modified version of the Shift-And Algorithm, simulating multiple
 /// NFAs to account for the pattern being able to have a given edit distance
 /// from the patterns in the text (the error).
-pub fn error_tolerant_shift_and(pattern: &[u8], text: &[u8], k: usize) -> Vec<(usize, usize)> {
+pub fn error_tolerant_shift_and(
+    pattern: &[u8],
+    text: &[u8],
+    k: usize,
+    alphabet: &[u8],
+) -> Vec<(usize, usize)> {
     let m = pattern.len();
+    let alphabet_len = alphabet.len();
 
     let mut occurrences: Vec<(usize, usize)> = Vec::new();
     let mut active: Vec<usize> = vec![0; k + 1];
-    let (mask, ones, accept) = shift_and_single_masks(pattern);
+    let (mask, ones, accept) = shift_and_single_masks(pattern, alphabet_len);
 
     for (pos, c) in text.iter().enumerate() {
         // For each character in the text, we have to simulate multiple NFAs
@@ -57,8 +63,9 @@ mod tests {
         let text = b"dddddabcddd";
         let pattern = b"abc";
         let k = 1;
+        let alphabet = &['a' as u8, 'c' as u8, 'g' as u8, 't' as u8];
 
-        let matches = error_tolerant_shift_and(pattern, text, k);
+        let matches = error_tolerant_shift_and(pattern, text, k, alphabet);
 
         println!("{:?}", matches);
 

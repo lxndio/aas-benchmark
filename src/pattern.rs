@@ -5,6 +5,7 @@ use std::io::BufReader;
 use crate::cli::CLIParams;
 use crate::generate::{gen_rand_bytes, rand_pattern_from_bytes};
 use crate::range::Range;
+use crate::utils::map_alphabet;
 
 #[derive(Debug, PartialEq)]
 pub enum PatternSource {
@@ -19,7 +20,7 @@ pub enum PatternSource {
 /// Decides how a pattern should be generated based on the given CLI arguments
 /// and calls the appropriate function.
 pub fn generate_patterns(cli_params: &'_ CLIParams, text: &[u8]) -> Result<Vec<Vec<u8>>, String> {
-    match &cli_params.pattern_source {
+    let patterns = match &cli_params.pattern_source {
         PatternSource::FromArgument(patterns) => {
             Ok(patterns.iter().map(|x| x.as_bytes().to_vec()).collect())
         }
@@ -60,6 +61,15 @@ pub fn generate_patterns(cli_params: &'_ CLIParams, text: &[u8]) -> Result<Vec<V
             Ok(patterns)
         }
         PatternSource::Error(err) => Err(String::from(*err)),
+    };
+
+    // Map alphabet to maybe smaller alphabet
+    match patterns {
+        Ok(patterns) => Ok(patterns
+            .iter()
+            .map(|x| map_alphabet(x, &cli_params.alphabet))
+            .collect()),
+        err @ Err(_) => err,
     }
 }
 

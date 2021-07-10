@@ -7,11 +7,11 @@ use crate::algorithms::single_pattern::naive::naive_all;
 ///
 /// It uses a naive approach by simply calling the naive single pattern algorithm
 /// for each given pattern.
-pub fn naive_multiple(patterns: &[Vec<u8>], text: &[u8]) -> Vec<Vec<usize>> {
+pub fn naive_multiple(patterns: &[Vec<u8>], text: &[u8], _: &[u8]) -> Vec<Vec<usize>> {
     let mut matches = Vec::new();
 
     for pattern in patterns {
-        matches.push(naive_all(&pattern, text));
+        matches.push(naive_all(&pattern, text, &[]));
     }
 
     matches
@@ -31,7 +31,7 @@ mod tests {
             b"abc".to_vec(),
         ];
 
-        let matches = naive_multiple(&patterns, text);
+        let matches = naive_multiple(&patterns, text, &[]);
 
         let matches_correct = vec![vec![3, 9, 12], vec![7], vec![0, 16], vec![]];
 

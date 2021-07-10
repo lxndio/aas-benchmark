@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 /// The Backward Oracle Matching algorithm (BOM).
-pub fn bom(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn bom(pattern: &[u8], text: &[u8], _: &[u8]) -> Vec<usize> {
     let delta = bom_delta_table(pattern);
 
     bom_with_delta(text, &delta, pattern.len())
@@ -66,7 +66,7 @@ mod tests {
         let text = b"gccttaacattattacgccta";
         let pattern = b"tta";
 
-        let mut matches = bom(pattern, text);
+        let mut matches = bom(pattern, text, &[]);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];

@@ -223,7 +223,7 @@ impl ACNode {
 ///
 /// It uses the Aho-Corasick algorithm to first build a Trie with lps-links and
 /// then find the occurrences of the given patterns in the text.
-pub fn aho_corasick(patterns: &[Vec<u8>], text: &[u8]) -> Vec<Vec<usize>> {
+pub fn aho_corasick(patterns: &[Vec<u8>], text: &[u8], _: &[u8]) -> Vec<Vec<usize>> {
     let ac_trie = ACTrie::new(patterns);
 
     ac_trie.ac_with_automaton(patterns, text)
@@ -243,7 +243,7 @@ mod tests {
             b"abc".to_vec(),
         ];
 
-        let matches = aho_corasick(&patterns, text);
+        let matches = aho_corasick(&patterns, text, &[]);
 
         let matches_correct = vec![vec![3, 9, 12], vec![7], vec![0, 16], vec![]];
 

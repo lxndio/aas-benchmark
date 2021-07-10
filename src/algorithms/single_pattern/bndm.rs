@@ -8,11 +8,13 @@ use crate::algorithms::single_pattern::shift_and::shift_and_single_masks;
 ///
 /// After generating the shift masks, this function calls the actual
 /// BNDM algorithm function.
-pub fn bndm(pattern: &[u8], text: &[u8]) -> Vec<usize> {
+pub fn bndm(pattern: &[u8], text: &[u8], alphabet: &[u8]) -> Vec<usize> {
+    let alphabet_len = alphabet.len();
+
     let mut pattern_rev = pattern.to_vec();
     pattern_rev.reverse();
 
-    let (masks, _, accept) = shift_and_single_masks(&pattern_rev);
+    let (masks, _, accept) = shift_and_single_masks(&pattern_rev, alphabet_len);
 
     bndm_with_masks(text, &masks, accept, pattern.len())
 }
@@ -63,8 +65,9 @@ mod tests {
     fn test_bndm() {
         let text = b"gccttaacattattacgccta";
         let pattern = b"tta";
+        let alphabet = &['a' as u8, 'c' as u8, 'g' as u8, 't' as u8];
 
-        let mut matches = bndm(pattern, text);
+        let mut matches = bndm(pattern, text, alphabet);
         matches.sort_unstable();
 
         let matches_correct = vec![3, 9, 12];
