@@ -8,7 +8,7 @@ use crate::range::Range;
 
 #[derive(Debug, PartialEq)]
 pub enum PatternSource {
-    FromArgument(String),
+    FromArgument(Vec<String>),
     FromFile(String),
     FromText(Range),
     FromTextRandom(Range),
@@ -23,7 +23,9 @@ pub fn generate_patterns<'a>(
     text: &[u8],
 ) -> Result<Vec<Vec<u8>>, String> {
     match &cli_params.pattern_source {
-        PatternSource::FromArgument(pattern) => Ok(vec![pattern.as_bytes().to_vec()]),
+        PatternSource::FromArgument(patterns) => {
+            Ok(patterns.iter().map(|x| x.as_bytes().to_vec()).collect())
+        }
         PatternSource::FromFile(file_name) => match load_pattern_from_file(file_name) {
             Ok(pattern) => Ok(vec![pattern]),
             Err(err) => Err(err.to_string()),

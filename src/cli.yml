@@ -54,6 +54,7 @@ args:
         help: Set a UTF-8 string as a pattern
         long: pa
         takes_value: true
+        multiple: true
         value_name: pattern
     - pattern_from_file:
         help: Load a pattern from a file

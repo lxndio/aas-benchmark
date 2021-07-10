@@ -175,8 +175,8 @@ impl CLIParams {
         match only(&sources) {
             // Pattern from argument
             Some(0) => {
-                if let Some(pattern) = matches.value_of("pattern_from_argument") {
-                    PatternSource::FromArgument(pattern.to_string())
+                if let Some(patterns) = matches.values_of("pattern_from_argument") {
+                    PatternSource::FromArgument(patterns.map(|x| x.to_string()).collect())
                 } else {
                     PatternSource::Error(
                         "The --patternfromarg argument requires a valid, non-empty pattern.",
