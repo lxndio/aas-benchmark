@@ -54,10 +54,16 @@ args:
         help: Set a UTF-8 string as a pattern
         long: pa
         takes_value: true
+        multiple: true
         value_name: pattern
     - pattern_from_file:
         help: Load a pattern from a file
         long: pf
+        takes_value: true
+        value_name: file_name
+    - multiple_patterns_from_file:
+        help: Load multiple patterns from a file, one pattern per line.
+        long: pmf
         takes_value: true
         value_name: file_name
     - random_pattern:

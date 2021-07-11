@@ -159,6 +159,7 @@ impl CLIParams {
         let pattern_from_text: bool = matches.is_present("pattern_from_text");
         let random_pattern: bool = matches.is_present("random_pattern");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
+        let multiple_patterns_from_file: bool = matches.is_present("multiple_patterns_from_file");
 
         let sources = vec![
             pattern_from_argument,
@@ -166,6 +167,7 @@ impl CLIParams {
             pattern_from_text,
             random_pattern,
             random_pattern_from_text,
+            multiple_patterns_from_file,
         ];
 
         if none(&sources) {
@@ -175,8 +177,8 @@ impl CLIParams {
         match only(&sources) {
             // Pattern from argument
             Some(0) => {
-                if let Some(pattern) = matches.value_of("pattern_from_argument") {
-                    PatternSource::FromArgument(pattern.to_string())
+                if let Some(patterns) = matches.values_of("pattern_from_argument") {
+                    PatternSource::FromArgument(patterns.map(|x| x.to_string()).collect())
                 } else {
                     PatternSource::Error(
                         "The --patternfromarg argument requires a valid, non-empty pattern.",
@@ -186,9 +188,9 @@ impl CLIParams {
             // Pattern from file
             Some(1) => {
                 if let Some(file_name) = matches.value_of("pattern_from_file") {
-                    PatternSource::FromFile(file_name.to_string())
+                    PatternSource::FromFile(file_name.to_string(), false)
                 } else {
-                    PatternSource::Error("The --patternfromfile argument needs a valid parameter.")
+                    PatternSource::Error("The --pf argument needs a valid parameter.")
                 }
             }
             // Pattern from text
@@ -258,6 +260,14 @@ impl CLIParams {
                     PatternSource::Error("The -p argument needs to be a valid, non-empty range or a positive integer greater than 0.")
                 }
             }
+            // Multiple patterns from file
+            Some(5) => {
+                if let Some(file_name) = matches.value_of("multiple_patterns_from_file") {
+                    PatternSource::FromFile(file_name.to_string(), true)
+                } else {
+                    PatternSource::Error("The --pmf argument needs a valid parameter.")
+                }
+            }
             None => PatternSource::Error("You can only set one pattern source."),
             _ => PatternSource::Error("Internal error while processing the pattern source."),
         }
@@ -295,7 +305,7 @@ impl CLIParams {
                 let file_name = String::from(matches.value_of("text_from_file").unwrap_or(""));
 
                 // TODO better error handling, probably using ok_or() above
-                if file_name != "" {
+                if file_name.is_empty() {
                     TextSource::FromFile(file_name)
                 } else {
                     TextSource::Error("The --textfromfile argument needs a valid parameter.")
@@ -306,7 +316,7 @@ impl CLIParams {
                     String::from(matches.value_of("text_from_file_binary").unwrap_or(""));
 
                 // TODO better error handling, probably using ok_or() above
-                if file_name != "" {
+                if file_name.is_empty() {
                     TextSource::FromFileBinary(file_name)
                 } else {
                     TextSource::Error("The --textfromfilebin argument needs a valid parameter.")

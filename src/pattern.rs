@@ -8,8 +8,8 @@ use crate::range::Range;
 
 #[derive(Debug, PartialEq)]
 pub enum PatternSource {
-    FromArgument(String),
-    FromFile(String),
+    FromArgument(Vec<String>),
+    FromFile(String, bool),
     FromText(Range),
     FromTextRandom(Range),
     Random(Range),
@@ -18,14 +18,18 @@ pub enum PatternSource {
 
 /// Decides how a pattern should be generated based on the given CLI arguments
 /// and calls the appropriate function.
-pub fn generate_patterns<'a>(
-    cli_params: &'a CLIParams,
-    text: &[u8],
-) -> Result<Vec<Vec<u8>>, String> {
+#[cfg(not(tarpaulin_include))]
+pub fn generate_patterns(cli_params: &'_ CLIParams, text: &[u8]) -> Result<Vec<Vec<u8>>, String> {
     match &cli_params.pattern_source {
-        PatternSource::FromArgument(pattern) => Ok(vec![pattern.as_bytes().to_vec()]),
-        PatternSource::FromFile(file_name) => match load_pattern_from_file(file_name) {
+        PatternSource::FromArgument(patterns) => {
+            Ok(patterns.iter().map(|x| x.as_bytes().to_vec()).collect())
+        }
+        PatternSource::FromFile(file_name, false) => match load_pattern_from_file(file_name) {
             Ok(pattern) => Ok(vec![pattern]),
+            Err(err) => Err(err.to_string()),
+        },
+        PatternSource::FromFile(file_name, true) => match load_patterns_from_file(file_name) {
+            Ok(patterns) => Ok(patterns),
             Err(err) => Err(err.to_string()),
         },
         PatternSource::FromText(range) => {
@@ -64,7 +68,7 @@ pub fn generate_patterns<'a>(
     }
 }
 
-/// Loads pattern from a file
+/// Loads pattern from a file.
 fn load_pattern_from_file(file_name: &str) -> std::io::Result<Vec<u8>> {
     let file = File::open(file_name)?;
     let mut reader = BufReader::new(file);
@@ -74,4 +78,70 @@ fn load_pattern_from_file(file_name: &str) -> std::io::Result<Vec<u8>> {
     reader.read_to_end(&mut pattern)?;
 
     Ok(pattern)
+}
+
+/// Load patterns from a file, one pattern per line.
+fn load_patterns_from_file(file_name: &str) -> std::io::Result<Vec<Vec<u8>>> {
+    let file = File::open(file_name)?;
+    let reader = BufReader::new(file);
+
+    let mut patterns: Vec<Vec<u8>> = Vec::new();
+
+    for line in reader.lines() {
+        patterns.push(line?.chars().map(|c| c as u8).collect());
+    }
+
+    Ok(patterns)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::NamedTempFile;
+
+    #[test]
+    fn test_load_pattern_from_file() -> std::io::Result<()> {
+        let mut temp_file = NamedTempFile::new()?;
+        write!(temp_file, "gccttaacattattacgccta")?;
+        temp_file.flush()?;
+
+        let file_path = temp_file.into_temp_path();
+        let file_name = file_path.to_str().unwrap();
+
+        let pattern = load_pattern_from_file(file_name);
+        let pattern_correct = b"gccttaacattattacgccta".to_vec();
+
+        assert!(pattern.is_ok());
+        assert_eq!(pattern.unwrap(), pattern_correct);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_load_patterns_from_file() -> std::io::Result<()> {
+        let mut temp_file = NamedTempFile::new()?;
+        writeln!(temp_file, "gccttaacattattacgccta")?;
+        writeln!(temp_file, "tattacgccta")?;
+        writeln!(temp_file, "gccttaacgccta")?;
+        writeln!(temp_file, "gccc")?;
+        writeln!(temp_file, "gccttaacattattacgcctagccttaacattattacgccta")?;
+        temp_file.flush()?;
+
+        let file_path = temp_file.into_temp_path();
+        let file_name = file_path.to_str().unwrap();
+
+        let patterns = load_patterns_from_file(file_name);
+        let patterns_correct: Vec<Vec<u8>> = vec![
+            b"gccttaacattattacgccta".to_vec(),
+            b"tattacgccta".to_vec(),
+            b"gccttaacgccta".to_vec(),
+            b"gccc".to_vec(),
+            b"gccttaacattattacgcctagccttaacattattacgccta".to_vec(),
+        ];
+
+        assert!(patterns.is_ok());
+        assert_eq!(patterns.unwrap(), patterns_correct);
+
+        Ok(())
+    }
 }
