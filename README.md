@@ -98,8 +98,6 @@ This would load the content of the file `text.txt` as the text.
 
 Below, all possible arguments for specifying a pattern source are listed.
 
-For example, to generate a **p**attern **r**andomly chosen from **t**ext, you would use the argument `--prt`.
-
 | Pattern(s) from...         | Usage               | Parameters                           | Multiple patterns?                                                                          | Note |
 | -------------------------- | ------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------- | ---- |
 | ...fixed position in text  | `--pt a..b`         | Range `a..b`¹ of characters in text. | No.                                                                                         |      |
