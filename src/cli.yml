@@ -61,6 +61,11 @@ args:
         long: pf
         takes_value: true
         value_name: file_name
+    - multiple_patterns_from_file:
+        help: Load multiple patterns from a file, one pattern per line.
+        long: pmf
+        takes_value: true
+        value_name: file_name
     - random_pattern:
         help: Generate one or multiple random patterns with given length(s) (e.g. 10 for length 10 or 1..10 for length 1 to 10 or 1..10,2 for lengths 1 to 10 using step size 2)
         long: pr

@@ -159,6 +159,7 @@ impl CLIParams {
         let pattern_from_text: bool = matches.is_present("pattern_from_text");
         let random_pattern: bool = matches.is_present("random_pattern");
         let random_pattern_from_text: bool = matches.is_present("random_pattern_from_text");
+        let multiple_patterns_from_file: bool = matches.is_present("multiple_patterns_from_file");
 
         let sources = vec![
             pattern_from_argument,
@@ -166,6 +167,7 @@ impl CLIParams {
             pattern_from_text,
             random_pattern,
             random_pattern_from_text,
+            multiple_patterns_from_file,
         ];
 
         if none(&sources) {
@@ -186,9 +188,9 @@ impl CLIParams {
             // Pattern from file
             Some(1) => {
                 if let Some(file_name) = matches.value_of("pattern_from_file") {
-                    PatternSource::FromFile(file_name.to_string())
+                    PatternSource::FromFile(file_name.to_string(), false)
                 } else {
-                    PatternSource::Error("The --patternfromfile argument needs a valid parameter.")
+                    PatternSource::Error("The --pf argument needs a valid parameter.")
                 }
             }
             // Pattern from text
@@ -256,6 +258,14 @@ impl CLIParams {
                     PatternSource::FromTextRandom(random_pattern_from_text_length)
                 } else {
                     PatternSource::Error("The -p argument needs to be a valid, non-empty range or a positive integer greater than 0.")
+                }
+            }
+            // Multiple patterns from file
+            Some(5) => {
+                if let Some(file_name) = matches.value_of("multiple_patterns_from_file") {
+                    PatternSource::FromFile(file_name.to_string(), true)
+                } else {
+                    PatternSource::Error("The --pmf argument needs a valid parameter.")
                 }
             }
             None => PatternSource::Error("You can only set one pattern source."),
