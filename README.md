@@ -100,11 +100,11 @@ Below, all possible arguments for specifying a pattern source are listed.
 
 | Pattern(s) from...         | Usage               | Parameters                           | Multiple patterns?                                                                          | Note |
 | -------------------------- | ------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------- | ---- |
-| ...fixed position in text  | `--pt a..b`         | Range `a..b`¹ of characters in text. | No.                                                                                         |      |
-| ...random position in text | `--prt m` or `-p m` | Pattern length `m`.                  | Yes, supply a range for `m`¹ or use `--pmrt m1;m2;m3` with different lengths `m_i`.         |      |
+| ...fixed position in text  | `--pt a..b`         | Range¹ `a..b` of characters in text. | No.                                                                                         |      |
+| ...random position in text | `--prt m` or `-p m` | Pattern length `m`.                  | Yes, supply a range¹ for `m` or use `--pmrt m1;m2;m3` with different lengths `m_i`.         |      |
 | ...CLI argument            | `--pa pattern`      | Pattern as ASCII string `pattern`.   | Yes, use `--pa` multiple times or enter multiple patterns separated by spaces after `--pa`. |      |
 | ...file                    | `--pf pattern.txt`  | File `pattern.txt`                   | Yes, use `--pmf` and supply a file where each line contains one pattern.                    |      |
-| Randomly generated         | `--pr m`            | Pattern length `m`.                  | Yes, supply a range for `m`¹.                                                               |      |
+| Randomly generated         | `--pr m`            | Pattern length `m`.                  | Yes, supply a range¹ for `m`.                                                               |      |
 
 ¹ A range is written as `a..b` where `a` is the lower bound and `b` is the *exclusive* upper bound. You can also supply a step size `c` as in `a..b,c`.
 
