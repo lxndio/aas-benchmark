@@ -33,7 +33,7 @@ lazy_static! {
         "mp-naive" => TypedAlgorithm::MultiplePatternAlgorithm(naive_multiple),
         "aho-corasick" => TypedAlgorithm::MultiplePatternAlgorithm(aho_corasick),
         "bom" => TypedAlgorithm::SinglePatternAlgorithm(bom),
-        "double-window" => TypedAlgorithm::SinglePatternAlgorithm(double_window),
+        "dw" => TypedAlgorithm::SinglePatternAlgorithm(double_window),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -57,7 +57,7 @@ lazy_static! {
         "mp-naive" => "Naive Multiple Patterns",
         "aho-corasick" => "Aho-Corasick",
         "bom" => "BOM",
-        "double-window" => "Double Window",
+        "dw" => "Double Window",
     };
 }
 

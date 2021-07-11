@@ -6,29 +6,26 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
 
 ## Table of Contents
 
-- [Build Instructions](#Build-Instructions)
-  - [Steps](#Steps)
-- [Usage Instructions](#Usage-Instructions)
-  - [Specifying Algorithms](#Specifying-Algorithms)
-    - [Benchmark All Algorithms at Once](#Benchmark-All-Algorithms-at-Once)
-  - [Specifying a Number of Executions](#Specifying-a-Number-of-Executions)
-  - [Specifying a Text Source](#Specifying-a-Text-Source)
-    - [Random Generated Text](#Random-Generated-Text)
-    - [Text From File](#Text-From-File)
-  - [Specifying a Pattern Source](#Specifying-a-Pattern-Source)
-    - [Pattern From Fixed Position in Text](#Pattern-From-Fixed-Position-in-Text)
-    - [Pattern(s) From Random Position in Text](#Patterns-From-Random-Position-in-Text)
-    - [Pattern From Argument](#Pattern-From-Argument)
-    - [Pattern From File](#Pattern-From-File)
-    - [Random Pattern](#Random-Pattern)
-  - [Specifying a Seed](#Specifying-a-Seed)
-  - [Other Arguments](#Other-Arguments)
-  - [List of Algorithms](#List-of-Algorithms)
-    - [Single Pattern Algorithms](#Single-Pattern-Algorithms)
-    - [Algorithms Using a Suffix Array](#Algorithms-Using-a-Suffix-Array)
-    - [Suffix Array Generation Algorithms](#Suffix-Array-Generation-Algorithms)
-    - [Approximative Algorithms](#Approximative-Algorithms)
-  - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
+- [aas-benchmark](#aas-benchmark)
+  - [Table of Contents](#table-of-contents)
+  - [Build Instructions](#build-instructions)
+    - [Steps](#steps)
+  - [Usage Instructions](#usage-instructions)
+    - [Specifying Algorithms](#specifying-algorithms)
+      - [Benchmark All Algorithms at Once](#benchmark-all-algorithms-at-once)
+    - [Specifying a Number of Executions](#specifying-a-number-of-executions)
+    - [Specifying a Text Source](#specifying-a-text-source)
+      - [Random Generated Text](#random-generated-text)
+      - [Text From File](#text-from-file)
+    - [Specifying a Pattern Source](#specifying-a-pattern-source)
+    - [Specifying a Seed](#specifying-a-seed)
+    - [Other Arguments](#other-arguments)
+    - [List of Algorithms](#list-of-algorithms)
+      - [Single Pattern Algorithms](#single-pattern-algorithms)
+      - [Algorithms Using a Suffix Array](#algorithms-using-a-suffix-array)
+      - [Suffix Array Generation Algorithms](#suffix-array-generation-algorithms)
+      - [Approximative Algorithms](#approximative-algorithms)
+    - [List of Command-Line Arguments](#list-of-command-line-arguments)
 
 ## Build Instructions
 
@@ -99,68 +96,23 @@ This would load the content of the file `text.txt` as the text.
 
 ### Specifying a Pattern Source
 
-Below, all possible arguments for specifying a pattern source are listed. Note that the names of those arguments all follow the same naming convention:
-
-`--` + `p` + Random? + Source
-
-Random is denoted with `r`, if necessary. The source is denoted with another single letter as listed below.
+Below, all possible arguments for specifying a pattern source are listed.
 
 For example, to generate a **p**attern **r**andomly chosen from **t**ext, you would use the argument `--prt`.
 
-#### Pattern From Fixed Position in Text
+| Pattern(s) from...         | Usage               | Multiple patterns?                                                                                              | Note                                  |
+| -------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| ...fixed position in text  | `--pt a..b`         | No.                                                                                                             |                                       |
+| ...random position in text | `--prt m` or `-p m` | Yes, supply a range for `m`, e.g. `1..11` or `1..101,10` or use `--pmrt m1;m2;m3` with different lengths `m_i`. | The range's upper bound is exclusive. |
+| ...CLI argument            | `--pa pattern`      | Yes, use `--pa` multiple times or enter multiple patterns separated by spaces after `--pa`.                     |                                       |
+| ...file                    | `--pf pattern.txt`  | Yes, use `--pmf` and supply a file where each line contains one pattern.                                        |                                       |
+| Randomly generated         | `--pr m`            | Yes, supply a range for `m`, e.g. `1..11` or `1..101,10`.                                                       | The range's upper bound is exclusive. |
 
-To use a pattern from a fixed position in the given text, set the `--pt` argument:
+Note that the names of those arguments all follow the same naming convention:
 
-```
-aas-benchmark naive ... --pt 10..15
-```
+`--` + `p` + Multiple? (`m`) Random? (`r`) + Source
 
-This would take as the pattern the characters at positions 10 to 14 from the given text. Notice that the upper bound is exclusive.
-
-#### Pattern(s) From Random Position in Text
-
-To use a pattern from a random position in the given text, set the `-p` or `--prt` argument:
-
-```
-aas-benchmark naive ... -p 10
-aas-benchmark naive ... -p 1..11
-aas-benchmark naive ... -p 1..101,10
-```
-
-The first line would take a string of length 10 from a random position in the given text and set is a the pattern.
-
-The second line determines a random position in the given text and takes strings of length 1, length 2 up to length 10 (upper bound is exclusive) as patterns.
-
-The third line does the same as the second line with the difference that it has a step size of 10, so it would the strings of length 1, 11, 21, 31 and so on.
-
-#### Pattern From Argument
-
-You can also specify a pattern as a UTF-8 string by using the `--pa` argument:
-
-```
-aas-benchmark naive ... --pa abc
-```
-
-This command would set the pattern as `abc`.
-
-#### Pattern From File
-
-It is possible to load a pattern as a UTF-8 string from a file by using `--pf`:
-
-```
-aas-benchmark naive ... --pf pattern.txt
-```
-
-This would load the content of the file `pattern.txt` as the pattern.
-
-#### Random Pattern
-
-You can also use the `--pr` argument to generate a random pattern with a length of `m` bytes:
-
-```
-aas-benchmark naive ... --pr m
-```
-
+This may help you to remember the correct arguments.
 ### Specifying a Seed
 
 You can set a seed to make the generation of a random text and random patterns predictable using the `-s` or `--seed` argument:
@@ -173,9 +125,9 @@ aas-benchmark naive ... --seed 12345
 
 Here is a list of other arguments you can set:
 
-Argument         | Description                           |
----------------- | ------------------------------------- |
-`--noheader`     | Disables the header in the CSV output |
+| Argument     | Description                           |
+| ------------ | ------------------------------------- |
+| `--noheader` | Disables the header in the CSV output |
 
 ### List of Algorithms
 
@@ -183,20 +135,21 @@ Currently, these algorithms are supported:
 
 #### Single Pattern Algorithms
 
-Algorithm                                      | Command-line argument name            |
----------------------------------------------- | ------------------------------------- |
-Backward Nondeterministic DAWG Matching (BNDM) | `bndm`                                |
-Backward Oracle Matching (BOM)                 | `bom`                                 |
-Horspool                                       | `horspool`                            |
-Naive Approach                                 | `naive`                               |
-Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`                |
-Shift-And                                      | `shift-and`                           |
+| Algorithm                                      | Command-line argument name |
+| ---------------------------------------------- | -------------------------- |
+| Backward Nondeterministic DAWG Matching (BNDM) | `bndm`                     |
+| Backward Oracle Matching (BOM)                 | `bom`                      |
+| Horspool                                       | `horspool`                 |
+| Naive Approach                                 | `naive`                    |
+| Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`     |
+| Shift-And                                      | `shift-and`                |
+| Double Window Algorithm                        | `dw`                       |
 
 #### Algorithms Using a Suffix Array
 
-Algorithm        | Command-line argument name       |
----------------- | -------------------------------- |
-Pattern Matching | `sa-match`                       |
+| Algorithm        | Command-line argument name |
+| ---------------- | -------------------------- |
+| Pattern Matching | `sa-match`                 |
 
 See [Suffix Array Generation Algorithms](#Suffix-Array-Generation-Algorithms) for more information on how the suffix array is generated.
 
@@ -210,17 +163,17 @@ aas-benchmark sa-match ... --suffixarray sais
 
 Currently, these algorithms are available for suffix array generation:
 
-Algorithm      | Command-line argument name |
--------------- | -------------------------- |
-Naive approach | `naive`                    |
-SAIS           | `sais`                     |
+| Algorithm      | Command-line argument name |
+| -------------- | -------------------------- |
+| Naive approach | `naive`                    |
+| SAIS           | `sais`                     |
 
 #### Approximative Algorithms
 
-Algorithm                | Command-line argument name       |
------------------------- | -------------------------------- |
-Ukkonen's DP Algorithm   | `ukkonen`                        |
-Error Tolerant Shift-And | `et-shift-and`                   |
+| Algorithm                | Command-line argument name |
+| ------------------------ | -------------------------- |
+| Ukkonen's DP Algorithm   | `ukkonen`                  |
+| Error Tolerant Shift-And | `et-shift-and`             |
 
 For approximative algorithms you can set a maximum allowed error value using the `--maxerror` argument:
 
