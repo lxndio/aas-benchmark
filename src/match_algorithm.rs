@@ -9,6 +9,7 @@ use crate::algorithms::full_text_indices::suffix_array_algorithms::{
 };
 use crate::algorithms::multiple_patterns::aho_corasick::aho_corasick;
 use crate::algorithms::multiple_patterns::naive::naive_multiple;
+use crate::algorithms::single_pattern::blim::blim;
 use crate::algorithms::single_pattern::bndm::bndm;
 use crate::algorithms::single_pattern::bom::bom;
 use crate::algorithms::single_pattern::double_window::double_window;
@@ -34,6 +35,7 @@ lazy_static! {
         "aho-corasick" => TypedAlgorithm::MultiplePatternAlgorithm(aho_corasick),
         "bom" => TypedAlgorithm::SinglePatternAlgorithm(bom),
         "dw" => TypedAlgorithm::SinglePatternAlgorithm(double_window),
+        "blim" => TypedAlgorithm::SinglePatternAlgorithm(blim),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -58,6 +60,7 @@ lazy_static! {
         "aho-corasick" => "Aho-Corasick",
         "bom" => "BOM",
         "dw" => "Double Window",
+        "blim" => "BLIM",
     };
 }
 

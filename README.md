@@ -135,15 +135,16 @@ Currently, these algorithms are supported:
 
 #### Single Pattern Algorithms
 
-| Algorithm                                      | Command-line argument name |
-| ---------------------------------------------- | -------------------------- |
-| Backward Nondeterministic DAWG Matching (BNDM) | `bndm`                     |
-| Backward Oracle Matching (BOM)                 | `bom`                      |
-| Horspool                                       | `horspool`                 |
-| Naive Approach                                 | `naive`                    |
-| Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`     |
-| Shift-And                                      | `shift-and`                |
-| Double Window Algorithm                        | `dw`                       |
+| Algorithm                                       | Command-line argument name |
+| ----------------------------------------------- | -------------------------- |
+| Backward Nondeterministic DAWG Matching (BNDM)  | `bndm`                     |
+| Backward Oracle Matching (BOM)                  | `bom`                      |
+| Horspool                                        | `horspool`                 |
+| Naive Approach                                  | `naive`                    |
+| Knuth-Morris-Pratt (KMP)                        | `kmp` or `kmp-classic`     |
+| Shift-And                                       | `shift-and`                |
+| Double Window Algorithm                         | `dw`                       |
+| Bit-Parallel Length Independent Matching (BLIM) | `blim`                     |
 
 #### Algorithms Using a Suffix Array
 
