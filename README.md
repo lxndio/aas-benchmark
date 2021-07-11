@@ -6,29 +6,31 @@ A collection of pattern matching algorithms and a tool to benchmark the algorith
 
 ## Table of Contents
 
-- [Build Instructions](#Build-Instructions)
-  - [Steps](#Steps)
-- [Usage Instructions](#Usage-Instructions)
-  - [Specifying Algorithms](#Specifying-Algorithms)
-    - [Benchmark All Algorithms at Once](#Benchmark-All-Algorithms-at-Once)
-  - [Specifying a Number of Executions](#Specifying-a-Number-of-Executions)
-  - [Specifying a Text Source](#Specifying-a-Text-Source)
-    - [Random Generated Text](#Random-Generated-Text)
-    - [Text From File](#Text-From-File)
-  - [Specifying a Pattern Source](#Specifying-a-Pattern-Source)
-    - [Pattern From Fixed Position in Text](#Pattern-From-Fixed-Position-in-Text)
-    - [Pattern(s) From Random Position in Text](#Patterns-From-Random-Position-in-Text)
-    - [Pattern From Argument](#Pattern-From-Argument)
-    - [Pattern From File](#Pattern-From-File)
-    - [Random Pattern](#Random-Pattern)
-  - [Specifying a Seed](#Specifying-a-Seed)
-  - [Other Arguments](#Other-Arguments)
-  - [List of Algorithms](#List-of-Algorithms)
-    - [Single Pattern Algorithms](#Single-Pattern-Algorithms)
-    - [Algorithms Using a Suffix Array](#Algorithms-Using-a-Suffix-Array)
-    - [Suffix Array Generation Algorithms](#Suffix-Array-Generation-Algorithms)
-    - [Approximative Algorithms](#Approximative-Algorithms)
-  - [List of Command-Line Arguments](#List-of-Command-Line-Arguments)
+- [aas-benchmark](#aas-benchmark)
+  - [Table of Contents](#table-of-contents)
+  - [Build Instructions](#build-instructions)
+    - [Steps](#steps)
+  - [Usage Instructions](#usage-instructions)
+    - [Specifying Algorithms](#specifying-algorithms)
+      - [Benchmark All Algorithms at Once](#benchmark-all-algorithms-at-once)
+    - [Specifying a Number of Executions](#specifying-a-number-of-executions)
+    - [Specifying a Text Source](#specifying-a-text-source)
+      - [Random Generated Text](#random-generated-text)
+      - [Text From File](#text-from-file)
+    - [Specifying a Pattern Source](#specifying-a-pattern-source)
+      - [Pattern From Fixed Position in Text](#pattern-from-fixed-position-in-text)
+      - [Pattern(s) From Random Position in Text](#patterns-from-random-position-in-text)
+      - [Pattern From Argument](#pattern-from-argument)
+      - [Pattern From File](#pattern-from-file)
+      - [Random Pattern](#random-pattern)
+    - [Specifying a Seed](#specifying-a-seed)
+    - [Other Arguments](#other-arguments)
+    - [List of Algorithms](#list-of-algorithms)
+      - [Single Pattern Algorithms](#single-pattern-algorithms)
+      - [Algorithms Using a Suffix Array](#algorithms-using-a-suffix-array)
+      - [Suffix Array Generation Algorithms](#suffix-array-generation-algorithms)
+      - [Approximative Algorithms](#approximative-algorithms)
+    - [List of Command-Line Arguments](#list-of-command-line-arguments)
 
 ## Build Instructions
 
@@ -191,6 +193,7 @@ Horspool                                       | `horspool`                     
 Naive Approach                                 | `naive`                               |
 Knuth-Morris-Pratt (KMP)                       | `kmp` or `kmp-classic`                |
 Shift-And                                      | `shift-and`                           |
+Bit-Parallel Length Independent Matching (BLIM)| `blim`                                |
 
 #### Algorithms Using a Suffix Array
 
