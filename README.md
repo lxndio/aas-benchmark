@@ -100,13 +100,15 @@ Below, all possible arguments for specifying a pattern source are listed.
 
 For example, to generate a **p**attern **r**andomly chosen from **t**ext, you would use the argument `--prt`.
 
-| Pattern(s) from...         | Usage               | Multiple patterns?                                                                                              | Note                                  |
-| -------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| ...fixed position in text  | `--pt a..b`         | No.                                                                                                             |                                       |
-| ...random position in text | `--prt m` or `-p m` | Yes, supply a range for `m`, e.g. `1..11` or `1..101,10` or use `--pmrt m1;m2;m3` with different lengths `m_i`. | The range's upper bound is exclusive. |
-| ...CLI argument            | `--pa pattern`      | Yes, use `--pa` multiple times or enter multiple patterns separated by spaces after `--pa`.                     |                                       |
-| ...file                    | `--pf pattern.txt`  | Yes, use `--pmf` and supply a file where each line contains one pattern.                                        |                                       |
-| Randomly generated         | `--pr m`            | Yes, supply a range for `m`, e.g. `1..11` or `1..101,10`.                                                       | The range's upper bound is exclusive. |
+| Pattern(s) from...         | Usage               | Parameters                           | Multiple patterns?                                                                          | Note |
+| -------------------------- | ------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------- | ---- |
+| ...fixed position in text  | `--pt a..b`         | Range `a..b`¹ of characters in text. | No.                                                                                         |      |
+| ...random position in text | `--prt m` or `-p m` | Pattern length `m`.                  | Yes, supply a range for `m`¹ or use `--pmrt m1;m2;m3` with different lengths `m_i`.         |      |
+| ...CLI argument            | `--pa pattern`      | Pattern as ASCII string `pattern`.   | Yes, use `--pa` multiple times or enter multiple patterns separated by spaces after `--pa`. |      |
+| ...file                    | `--pf pattern.txt`  | File `pattern.txt`                   | Yes, use `--pmf` and supply a file where each line contains one pattern.                    |      |
+| Randomly generated         | `--pr m`            | Pattern length `m`.                  | Yes, supply a range for `m`¹.                                                               |      |
+
+¹ A range is written as `a..b` where `a` is the lower bound and `b` is the *exclusive* upper bound. You can also supply a step size `c` as in `a..b,c`.
 
 Note that the names of those arguments all follow the same naming convention:
 
