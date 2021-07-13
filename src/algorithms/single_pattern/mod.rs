@@ -2,6 +2,7 @@ pub mod all;
 pub mod blim;
 pub mod bndm;
 pub mod bom;
+pub mod boyer_moore;
 pub mod double_window;
 pub mod horspool;
 pub mod kmp;
