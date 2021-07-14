@@ -1,3 +1,7 @@
+#[allow(unused)]
+use crate::count_comparisons::COMPARISONS;
+use crate::eq;
+
 use crate::algorithms::single_pattern::horspool::horspool_shift;
 
 // TODO Couldn't this table be implemented on the fly?
@@ -35,7 +39,7 @@ pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
         if r == 0 {
             let mut j = 0;
 
-            while j < m && text[pos - (m - 1) + j] == pattern[j] {
+            while j < m && eq!(text[pos - (m - 1) + j], pattern[j]) {
                 j += 1;
             }
 
