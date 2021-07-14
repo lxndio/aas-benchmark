@@ -1,6 +1,6 @@
-use crate::compares;
 #[allow(unused)]
 use crate::count_comparisons::COMPARISONS;
+use crate::eqs;
 
 /// The naive algorithm approach uses a simple loop to look for an occurrence
 /// of a `pattern` in a `text`.
@@ -17,7 +17,7 @@ pub fn naive(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let n = text.len();
 
     for i in i0..(n - m + 1) {
-        if compares!(&text[i..i + m], pattern) {
+        if eqs!(&text[i..i + m], pattern) {
             return Some(i);
         }
     }
