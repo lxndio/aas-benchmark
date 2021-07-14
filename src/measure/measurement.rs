@@ -5,11 +5,12 @@ use crate::match_algorithm::TypedAlgorithm;
 use crate::measure::measurement_result::MeasurementResult;
 use crate::measure::{Measure, MultiplePatternMeasure};
 
-/// A single measurement containing an optional preparation runtime,
-/// a mandatory execution runtime (of the actual pattern matching algorithm
-/// itself) and the number of matches, i. e. how often the pattern has been
-/// found in the text.
-pub type SingleMeasurement = (Option<Duration>, Duration, usize);
+pub struct SingleMeasurement {
+    preparation: Option<Duration>,
+    execution: Duration,
+    comparisons: usize,
+    matches: usize,
+}
 
 pub struct Measurement {
     algorithms: Vec<(String, TypedAlgorithm)>,
@@ -17,6 +18,22 @@ pub struct Measurement {
     patterns: Vec<Vec<u8>>,
     cli_params: CLIParams,
     measurement_results: Vec<MeasurementResult>,
+}
+
+impl SingleMeasurement {
+    pub fn new(
+        preparation: Option<Duration>,
+        execution: Duration,
+        comparisons: usize,
+        matches: usize,
+    ) -> Self {
+        Self {
+            preparation,
+            execution,
+            comparisons,
+            matches,
+        }
+    }
 }
 
 impl Measurement {
@@ -51,17 +68,21 @@ impl Measurement {
                         let measurements =
                             measure_exeuctions(pattern, &self.text, algorithm_fn, &self.cli_params);
 
-                        let preparation_durations = measurements.iter().map(|x| x.0).collect();
-                        let algorithm_durations = measurements.iter().map(|x| x.1).collect();
-                        let matches = measurements.get(0).unwrap().2;
+                        let preparation_durations =
+                            measurements.iter().map(|x| x.preparation).collect();
+                        let algorithm_durations =
+                            measurements.iter().map(|x| x.execution).collect();
+                        let comparisons = measurements.get(0).unwrap().comparisons;
+                        let matches = measurements.get(0).unwrap().matches;
 
                         measurement_results.push(MeasurementResult::new(
                             algorithm,
                             self.text.len(),
                             pattern.len(),
-                            matches,
                             preparation_durations,
                             algorithm_durations,
+                            comparisons,
+                            matches,
                         ));
                     }
                 }
@@ -72,9 +93,11 @@ impl Measurement {
                         .map(|_| f.measure(&self.patterns, &self.text, &self.cli_params))
                         .collect::<Vec<_>>();
 
-                    let preparation_durations = measurements.iter().map(|x| x.0).collect();
-                    let algorithm_durations = measurements.iter().map(|x| x.1).collect();
-                    let matches = measurements.get(0).unwrap().2;
+                    let preparation_durations =
+                        measurements.iter().map(|x| x.preparation).collect();
+                    let algorithm_durations = measurements.iter().map(|x| x.execution).collect();
+                    let comparisons = measurements.get(0).unwrap().comparisons;
+                    let matches = measurements.get(0).unwrap().matches;
 
                     measurement_results.push(MeasurementResult::new(
                         algorithm,
@@ -82,9 +105,10 @@ impl Measurement {
                         // TODO does 0 make sense when benchmarking multiple pattern at once?
                         // Or rather use -1 or something like that?
                         0,
-                        matches,
                         preparation_durations,
                         algorithm_durations,
+                        comparisons,
+                        matches,
                     ));
                 }
             }

@@ -9,6 +9,7 @@ extern crate regex;
 mod algorithms;
 #[cfg(not(tarpaulin_include))]
 mod cli;
+mod count_comparisons;
 #[cfg(not(tarpaulin_include))]
 mod generate;
 #[cfg(not(tarpaulin_include))]

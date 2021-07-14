@@ -3,6 +3,7 @@ use std::time::SystemTime;
 
 use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
 use crate::cli::CLIParams;
+use crate::count_comparisons::{comparison_counter, reset_comparison_counter};
 use crate::match_algorithm::{
     match_suffix_array_gen_algorithm, BWTAlgorithm, SuffixArrayAlgorithm,
 };
@@ -25,6 +26,7 @@ impl Measure for SuffixArrayAlgorithm {
         let text = text.as_slice();
 
         // Measure time it takes to generate the suffix array
+        reset_comparison_counter();
         let before = SystemTime::now();
 
         let pos =
@@ -38,10 +40,12 @@ impl Measure for SuffixArrayAlgorithm {
         let matches = self(&pos, pattern, text).len();
 
         let algorithm_duration = before.elapsed();
+        let comparisons = comparison_counter();
 
-        (
+        SingleMeasurement::new(
             Some(preparation_duration.expect("Could not measure preparation time.")),
             algorithm_duration.expect("Could not measure time."),
+            comparisons,
             matches,
         )
     }
@@ -63,6 +67,7 @@ impl Measure for BWTAlgorithm {
         let text = text.as_slice();
 
         // Measure time it takes to generate the suffix array
+        reset_comparison_counter();
         let before = SystemTime::now();
 
         let pos =
@@ -79,10 +84,12 @@ impl Measure for BWTAlgorithm {
         let matches = self(&pos, &occ_vec, &less_vec, pattern).len();
 
         let algorithm_duration = before.elapsed();
+        let comparisons = comparison_counter();
 
-        (
+        SingleMeasurement::new(
             Some(preparation_duration.expect("Could not measure preparation time.")),
             algorithm_duration.expect("Could not measure time."),
+            comparisons,
             matches,
         )
     }

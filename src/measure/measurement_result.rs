@@ -16,12 +16,11 @@ pub struct MeasurementResult {
     text_length: usize,
     pattern_length: usize,
 
-    matches: usize,
-
     preparation_durations: Vec<Option<Duration>>,
     algorithm_durations: Vec<Duration>,
-    //avg_preparation_duration: f64,
     avg_algorithm_duration: f64,
+    comparisons: usize,
+    matches: usize,
 }
 
 impl MeasurementResult {
@@ -34,9 +33,10 @@ impl MeasurementResult {
         algorithm: &str,
         text_length: usize,
         pattern_length: usize,
-        matches: usize,
         preparation_durations: Vec<Option<Duration>>,
         algorithm_durations: Vec<Duration>,
+        comparisons: usize,
+        matches: usize,
     ) -> Self {
         let mut new = Self {
             algorithm_name: String::from(algorithm_name(algorithm)),
@@ -44,12 +44,11 @@ impl MeasurementResult {
             text_length,
             pattern_length,
 
-            matches,
-
             preparation_durations,
             algorithm_durations,
-            //avg_preparation_duration: 0f64,
             avg_algorithm_duration: 0f64,
+            comparisons,
+            matches,
         };
 
         //new.avg_preparation_duration = calculate_avg_duration(&new.preparation_durations);
@@ -82,6 +81,7 @@ impl MeasurementResult {
                 self.pattern_length,
                 execution,
                 self.matches,
+                self.comparisons,
                 preparation_time_ms,
                 algorithm_time_ms,
             ))?;
