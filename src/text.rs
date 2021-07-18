@@ -15,9 +15,13 @@ pub enum TextSource {
 
 /// Decides how a text should be generated based on the given CLI arguments
 /// and calls the appropriate function.
-pub fn generate_text(cli_params: &CLIParams, seed: Option<u64>) -> Result<Vec<u8>, String> {
+pub fn generate_text(cli_params: &CLIParams) -> Result<Vec<u8>, String> {
     match &cli_params.text_source {
-        TextSource::RandomText(n) => Ok(gen_rand_bytes(*n, seed)),
+        TextSource::RandomText(n) => Ok(gen_rand_bytes(
+            *n,
+            cli_params.seed,
+            cli_params.alphabet_size,
+        )),
         TextSource::FromFile(file_name) => match load_text_from_file(file_name) {
             Ok(text) => Ok(text),
             Err(err) => Err(err.to_string()),

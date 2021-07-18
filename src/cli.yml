@@ -24,6 +24,12 @@ args:
         long: seed
         takes_value: true
         value_name: seed
+    - alphabet_size:
+        help: Set how many different characters the randomly generated text should contain
+        short: a
+        long: alphabet
+        takes_value: true
+        value_name: alphabet_size
     - text_from_file:
         help: Load a text from a file
         long: tf

@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Only continue if all given parameters are valid, all unwraps are safe
     // here because of the checks done in cli_params.valid()
     if cli_params.valid() {
-        let text = generate_text(&cli_params, cli_params.seed);
+        let text = generate_text(&cli_params);
 
         if let Ok(text) = &text {
             let patterns = generate_patterns(&cli_params, text);

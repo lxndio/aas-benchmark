@@ -59,7 +59,11 @@ pub fn generate_patterns(cli_params: &'_ CLIParams, text: &[u8]) -> Result<Vec<V
             let mut patterns = Vec::new();
 
             for length in range.iter() {
-                patterns.push(gen_rand_bytes(length, cli_params.seed));
+                patterns.push(gen_rand_bytes(
+                    length,
+                    cli_params.seed,
+                    cli_params.alphabet_size,
+                ));
             }
 
             Ok(patterns)
