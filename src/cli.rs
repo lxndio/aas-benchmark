@@ -12,6 +12,7 @@ pub struct CLIParams {
 
     pub executions: usize,
     pub seed: Option<u64>,
+    pub alphabet_size: u8,
 
     pub pattern_source: PatternSource,
     pub text_source: TextSource,
@@ -58,6 +59,11 @@ impl CLIParams {
             .unwrap_or("-1") // -1 so that parse fails if the argument is not set, resulting in seed being None
             .parse()
             .ok();
+        let alphabet_size: u8 = matches
+            .value_of("alphabet_size")
+            .unwrap_or("254")
+            .parse()
+            .unwrap_or(0);
         let occ_block_size = matches
             .value_of("occ_block_size")
             .unwrap_or("1")
@@ -77,6 +83,7 @@ impl CLIParams {
 
             executions,
             seed,
+            alphabet_size,
 
             pattern_source: Self::set_pattern_source(&matches),
             text_source: Self::set_text_source(&matches),
@@ -117,6 +124,10 @@ impl CLIParams {
         }
 
         // Number value parameters
+        if self.alphabet_size < 1 || self.alphabet_size > 254 {
+            println!("The -a argument needs to be a positive integer between 1 and 254.\n");
+            valid = false;
+        }
         if self.executions == 0 {
             println!("The -n argument needs to be a positive integer greater than 0.\n");
             valid = false;
