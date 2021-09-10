@@ -1,4 +1,5 @@
 use std::time::Duration;
+use std::collections::HashMap;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::TypedAlgorithm;
@@ -8,8 +9,8 @@ use crate::measure::{Measure, MultiplePatternMeasure};
 pub struct SingleMeasurement {
     preparation: Option<Duration>,
     execution: Duration,
-    comparisons: usize,
     matches: usize,
+    special_fields: Option<HashMap<String, usize>>,
 }
 
 pub struct Measurement {
@@ -24,14 +25,14 @@ impl SingleMeasurement {
     pub fn new(
         preparation: Option<Duration>,
         execution: Duration,
-        comparisons: usize,
         matches: usize,
+        special_fields: Option<HashMap<String, usize>>,
     ) -> Self {
         Self {
             preparation,
             execution,
-            comparisons,
             matches,
+            special_fields,
         }
     }
 }

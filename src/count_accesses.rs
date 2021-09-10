@@ -21,3 +21,11 @@ macro_rules! get {
         $a[$b]
     };
 }
+
+pub fn reset_text_access_counter() {
+    *TEXT_ACCESSES.lock().unwrap() = 0;
+}
+
+pub fn text_access_counter() -> usize {
+    *TEXT_ACCESSES.lock().unwrap()
+}

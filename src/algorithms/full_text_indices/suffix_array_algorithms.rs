@@ -4,6 +4,7 @@ use std::time::SystemTime;
 use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
 use crate::cli::CLIParams;
 use crate::count_comparisons::{comparison_counter, reset_comparison_counter};
+use crate::count_accesses::{text_access_counter, reset_text_access_counter};
 use crate::match_algorithm::{
     match_suffix_array_gen_algorithm, BWTAlgorithm, SuffixArrayAlgorithm,
 };
@@ -27,6 +28,7 @@ impl Measure for SuffixArrayAlgorithm {
 
         // Measure time it takes to generate the suffix array
         reset_comparison_counter();
+        reset_text_access_counter();
         let before = SystemTime::now();
 
         let pos =
@@ -41,12 +43,16 @@ impl Measure for SuffixArrayAlgorithm {
 
         let algorithm_duration = before.elapsed();
         let comparisons = comparison_counter();
+        let text_accesses = text_access_counter();
 
         SingleMeasurement::new(
             Some(preparation_duration.expect("Could not measure preparation time.")),
             algorithm_duration.expect("Could not measure time."),
-            comparisons,
             matches,
+            hashmap! {
+                "comparisons" => comparisons,
+                "text_accesses" => text_accesses,
+            },
         )
     }
 }
@@ -68,6 +74,7 @@ impl Measure for BWTAlgorithm {
 
         // Measure time it takes to generate the suffix array
         reset_comparison_counter();
+        reset_text_access_counter();
         let before = SystemTime::now();
 
         let pos =
@@ -85,12 +92,16 @@ impl Measure for BWTAlgorithm {
 
         let algorithm_duration = before.elapsed();
         let comparisons = comparison_counter();
+        let text_accesses = text_access_counter();
 
         SingleMeasurement::new(
             Some(preparation_duration.expect("Could not measure preparation time.")),
             algorithm_duration.expect("Could not measure time."),
-            comparisons,
             matches,
+            hashmap! {
+                "comparisons" => comparisons,
+                "text_accesses" => text_accesses,
+            },
         )
     }
 }

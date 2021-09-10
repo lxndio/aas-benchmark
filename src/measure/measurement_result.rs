@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::io;
 use std::time::Duration;
+use std::collections::HashMap;
 
 use csv::WriterBuilder;
 
@@ -19,8 +20,8 @@ pub struct MeasurementResult {
     preparation_durations: Vec<Option<Duration>>,
     algorithm_durations: Vec<Duration>,
     avg_algorithm_duration: f64,
-    comparisons: usize,
     matches: usize,
+    special_fields: Option<HashMap<String, usize>>,
 }
 
 impl MeasurementResult {
@@ -37,6 +38,7 @@ impl MeasurementResult {
         algorithm_durations: Vec<Duration>,
         comparisons: usize,
         matches: usize,
+        special_fields: Option<HashMap<String, usize>>,
     ) -> Self {
         let mut new = Self {
             algorithm_name: String::from(algorithm_name(algorithm)),
@@ -47,8 +49,8 @@ impl MeasurementResult {
             preparation_durations,
             algorithm_durations,
             avg_algorithm_duration: 0f64,
-            comparisons,
             matches,
+            special_fields,
         };
 
         //new.avg_preparation_duration = calculate_avg_duration(&new.preparation_durations);
@@ -81,9 +83,9 @@ impl MeasurementResult {
                 self.pattern_length,
                 execution,
                 self.matches,
-                self.comparisons,
                 preparation_time_ms,
                 algorithm_time_ms,
+                self.special_fields,
             ))?;
         }
 

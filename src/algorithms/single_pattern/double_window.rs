@@ -1,6 +1,6 @@
+use crate::count_accesses::TEXT_ACCESSES;
 #[allow(unused)]
 use crate::count_comparisons::COMPARISONS;
-use crate::count_accesses::TEXT_ACCESSES;
 use crate::eq;
 use crate::get;
 
