@@ -2,10 +2,14 @@ name: AaS Benchmark
 version: "0.4.3"
 about: A tool to benchmark pattern matching algorithms.
 args:
-    - ALGORITHMS:
-        help: Set the algorithm(s) to be benchmarked, set multiple algorithms comma-seperated
+    - algorithms:
+        help: Set the algorithm(s) to be benchmarked
+        short: a
+        long: algorithms
         required: true
-        index: 1
+        takes_value: true
+        multiple: true
+        value_name: algorithms
     - executions:
         help: Set how often the algorithm(s) are being executed, defaults to 1
         short: n
@@ -26,7 +30,6 @@ args:
         value_name: seed
     - alphabet_size:
         help: Set how many different characters the randomly generated text should contain
-        short: a
         long: alphabet
         takes_value: true
         value_name: alphabet_size

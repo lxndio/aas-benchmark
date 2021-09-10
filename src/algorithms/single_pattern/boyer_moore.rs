@@ -122,9 +122,6 @@ pub fn weak_memorizing_boyer_moore_all(pattern: &[u8], text: &[u8]) -> Vec<usize
 
     let mut matches = Vec::new();
 
-
-
-
     while j < n {
         let mut i = (m - 1) as isize;
 
