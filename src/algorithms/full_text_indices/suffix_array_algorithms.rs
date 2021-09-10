@@ -3,8 +3,8 @@ use std::time::SystemTime;
 
 use crate::algorithms::full_text_indices::suffix_array::{bwt, less, occ};
 use crate::cli::CLIParams;
+use crate::count_accesses::{reset_text_access_counter, text_access_counter};
 use crate::count_comparisons::{comparison_counter, reset_comparison_counter};
-use crate::count_accesses::{text_access_counter, reset_text_access_counter};
 use crate::match_algorithm::{
     match_suffix_array_gen_algorithm, BWTAlgorithm, SuffixArrayAlgorithm,
 };

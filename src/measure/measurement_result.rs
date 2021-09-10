@@ -1,7 +1,7 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::io;
 use std::time::Duration;
-use std::collections::HashMap;
 
 use csv::WriterBuilder;
 

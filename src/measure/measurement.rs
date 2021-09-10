@@ -1,5 +1,5 @@
-use std::time::Duration;
 use std::collections::HashMap;
+use std::time::Duration;
 
 use crate::cli::CLIParams;
 use crate::match_algorithm::TypedAlgorithm;
