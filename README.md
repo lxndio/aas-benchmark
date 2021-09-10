@@ -106,7 +106,7 @@ Below, all possible arguments for specifying a pattern source are listed.
 | ...file                    | `--pf pattern.txt`  | File `pattern.txt`                   | Yes, use `--pmf` and supply a file where each line contains one pattern.                    |      |
 | Randomly generated         | `--pr m`            | Pattern length `m`.                  | Yes, supply a range¹ for `m`.                                                               |      |
 
-¹ A range is written as `a..b` where `a` is the lower bound and `b` is the *exclusive* upper bound. You can also supply a step size `c` as in `a..b,c`.
+¹ A range is written as `a..b` where `a` is the lower bound and `b` is the *inclusive* upper bound. You can also supply a step size `c` as in `a..b,c`.
 
 Note that the names of those arguments all follow the same naming convention:
 
