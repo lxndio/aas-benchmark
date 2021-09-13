@@ -49,10 +49,6 @@ pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
         }
     }
 
-    // if pattern.iter().all(|item| text[n-m..n].contains(item)) {
-    // res.push(123);
-    // }
-
     res
 }
 
