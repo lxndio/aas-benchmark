@@ -122,4 +122,18 @@ mod tests {
 
         assert_eq!(matches, matches_correct);
     }
+
+    #[test]
+    fn test_blim_edge_case_end() {
+        let text =
+            b"gccttaacattatcattattacgcctagccttaacattatttacgcctagccttaacattattacgcctagctcctcga";
+        let pattern = b"gctcctcga";
+
+        let mut matches = blim(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![70];
+
+        assert_eq!(matches, matches_correct);
+    }
 }
