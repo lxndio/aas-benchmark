@@ -29,8 +29,8 @@ pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let mut res = Vec::new();
     let mut pos = m - 1;
 
-    while pos < n - m {
-        let r = d2[text[pos] as usize][text[pos + m] as usize];
+    while pos < n {
+        let r = d2[text[pos] as usize][*text.get(pos + m).unwrap_or(&pattern[0]) as usize];
 
         if r == 0 {
             let mut j = 0;
@@ -48,6 +48,10 @@ pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
             pos += r;
         }
     }
+
+    // if pattern.iter().all(|item| text[n-m..n].contains(item)) {
+    // res.push(123);
+    // }
 
     res
 }
@@ -78,6 +82,19 @@ mod tests {
         matches.sort_unstable();
 
         let matches_correct = vec![6, 274, 302, 570];
+
+        assert_eq!(matches, matches_correct);
+    }
+
+    #[test]
+    fn test_double_window_edge_case_end() {
+        let text = b"gccttaacattattacgcctagccttaacattattacgcctagctcctcga";
+        let pattern = b"gctcctcga";
+
+        let mut matches = double_window(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![42];
 
         assert_eq!(matches, matches_correct);
     }
