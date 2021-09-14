@@ -1,24 +1,43 @@
 use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
 
 /// Generates a byte vector containing random bytes.
 ///
 /// Can take a u64 as a seed for random generation.
-pub fn gen_rand_bytes(n: usize, seed: Option<u64>, alphabet_size: u8) -> Vec<u8> {
+/// Takes either an alphabet size or an alphabet for generation.
+pub fn gen_rand_bytes(
+    n: usize,
+    seed: Option<u64>,
+    alphabet_size: Option<u8>,
+    alphabet: Option<&Vec<u8>>,
+) -> Vec<u8> {
     match seed {
         Some(seed) => {
             let mut rng: StdRng = SeedableRng::seed_from_u64(seed);
 
-            (0..n)
-                .map(|_| rng.gen_range(1, alphabet_size + 1))
-                .collect()
+            if let Some(alphabet_size) = alphabet_size {
+                (0..n)
+                    .map(|_| rng.gen_range(1, alphabet_size + 1))
+                    .collect()
+            } else if let Some(alphabet) = alphabet {
+                alphabet.choose_multiple(&mut rng, n).copied().collect()
+            } else {
+                Vec::new() // TODO Handle error correctly
+            }
         }
         None => {
             let mut rng = rand::thread_rng();
 
-            (0..n)
-                .map(|_| rng.gen_range(1, alphabet_size + 1))
-                .collect()
+            if let Some(alphabet_size) = alphabet_size {
+                (0..n)
+                    .map(|_| rng.gen_range(1, alphabet_size + 1))
+                    .collect()
+            } else if let Some(alphabet) = alphabet {
+                alphabet.choose_multiple(&mut rng, n).copied().collect()
+            } else {
+                Vec::new() // TODO Handle error correctly
+            }
         }
     }
 }

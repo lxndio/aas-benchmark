@@ -20,7 +20,8 @@ pub fn generate_text(cli_params: &CLIParams) -> Result<Vec<u8>, String> {
         TextSource::RandomText(n) => Ok(gen_rand_bytes(
             *n,
             cli_params.seed,
-            cli_params.alphabet_size,
+            Some(cli_params.alphabet_size),
+            None,
         )),
         TextSource::FromFile(file_name) => match load_text_from_file(file_name) {
             Ok(text) => Ok(text),

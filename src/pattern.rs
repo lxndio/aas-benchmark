@@ -58,12 +58,23 @@ pub fn generate_patterns(cli_params: &'_ CLIParams, text: &[u8]) -> Result<Vec<V
         PatternSource::Random(range) => {
             let mut patterns = Vec::new();
 
+            // Generate a list of characters used in the text
+            let chars: &mut [usize] = &mut [0; 256];
+
+            for c in text.iter() {
+                chars[*c as usize] += 1;
+            }
+
+            let chars: Vec<u8> = chars
+                .iter()
+                .enumerate()
+                .filter(|(_, v)| **v > 0)
+                .map(|(i, _)| i as u8)
+                .collect();
+
+            // Generate random patterns
             for length in range.iter() {
-                patterns.push(gen_rand_bytes(
-                    length,
-                    cli_params.seed,
-                    cli_params.alphabet_size,
-                ));
+                patterns.push(gen_rand_bytes(length, cli_params.seed, None, Some(&chars)));
             }
 
             Ok(patterns)
