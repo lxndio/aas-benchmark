@@ -128,7 +128,7 @@ impl FromStr for Range {
                 .parse::<usize>()
                 .map_err(|_| ParseRangeError)?;
 
-            Ok(Range::new(single, single + 1, 1))
+            Ok(Range::new(single, single, 1))
         } else {
             Err(ParseRangeError)
         }

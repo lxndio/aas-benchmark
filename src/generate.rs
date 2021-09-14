@@ -21,7 +21,10 @@ pub fn gen_rand_bytes(
                     .map(|_| rng.gen_range(1, alphabet_size + 1))
                     .collect()
             } else if let Some(alphabet) = alphabet {
-                alphabet.choose_multiple(&mut rng, n).copied().collect()
+                (0..n)
+                    .map(|_| alphabet.choose(&mut rng).unwrap())
+                    .copied()
+                    .collect()
             } else {
                 Vec::new() // TODO Handle error correctly
             }
@@ -34,7 +37,10 @@ pub fn gen_rand_bytes(
                     .map(|_| rng.gen_range(1, alphabet_size + 1))
                     .collect()
             } else if let Some(alphabet) = alphabet {
-                alphabet.choose_multiple(&mut rng, n).copied().collect()
+                (0..n)
+                    .map(|_| alphabet.choose(&mut rng).unwrap())
+                    .copied()
+                    .collect()
             } else {
                 Vec::new() // TODO Handle error correctly
             }
