@@ -100,6 +100,42 @@ macro_rules! neqs {
     };
 }
 
+#[cfg(feature = "countcomparisons")]
+#[macro_export]
+macro_rules! get {
+    ($a:expr, $b:expr) => {{
+        *COMPARISONS.lock().unwrap() += 1;
+
+        $a[$b]
+    }};
+}
+
+#[cfg(not(feature = "countcomparisons"))]
+#[macro_export]
+macro_rules! get {
+    ($a:expr, $b:expr) => {
+        $a[$b]
+    };
+}
+
+#[cfg(feature = "countcomparisons")]
+#[macro_export]
+macro_rules! try_get {
+    ($a:expr, $b:expr) => {{
+        *COMPARISONS.lock().unwrap() += 1;
+
+        $a.get($b)
+    }};
+}
+
+#[cfg(not(feature = "countcomparisons"))]
+#[macro_export]
+macro_rules! try_get {
+    ($a:expr, $b:expr) => {
+        $a.get($b)
+    };
+}
+
 pub fn reset_comparison_counter() {
     *COMPARISONS.lock().unwrap() = 0;
 }
