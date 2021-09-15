@@ -12,6 +12,7 @@ pub struct CLIParams {
 
     pub executions: usize,
     pub seed: Option<u64>,
+    pub alphabet_size: u8,
 
     pub pattern_source: PatternSource,
     pub text_source: TextSource,
@@ -28,26 +29,23 @@ impl CLIParams {
         let clap_yaml = load_yaml!("cli.yml");
         let matches = App::from_yaml(clap_yaml).get_matches();
 
-        // String value parameters
-        let algorithms: Vec<String> = String::from(
-            matches
-                .value_of("ALGORITHMS")
-                .unwrap_or("NonexistentAlgorithm"),
-        )
-        .split(',')
-        .collect::<Vec<&str>>()
-        .iter()
-        .map(|algorithm| String::from(*algorithm))
-        .collect();
+        // === String value parameters ===
+        // For algorithms, unwrap is safe as it is a required parameter
+        // whose existance is checked by the CLI argument parser.
+        let algorithms: Vec<String> = matches
+            .values_of("algorithms")
+            .unwrap()
+            .map(|x| x.to_string())
+            .collect();
         let suffix_array_algorithm = matches
             .value_of("suffix_array_algorithm")
             .unwrap_or("sais")
             .to_string();
 
-        // Bool value parameters
+        // === Bool value parameters ===
         let no_header: bool = matches.is_present("no_header");
 
-        // Number value parameters
+        // === Number value parameters ===
         let executions: usize = matches
             .value_of("executions")
             .unwrap_or("1") // 1 so that if parameter is not given, the default of one execution is used
@@ -58,6 +56,11 @@ impl CLIParams {
             .unwrap_or("-1") // -1 so that parse fails if the argument is not set, resulting in seed being None
             .parse()
             .ok();
+        let alphabet_size: u8 = matches
+            .value_of("alphabet_size")
+            .unwrap_or("254")
+            .parse()
+            .unwrap_or(0);
         let occ_block_size = matches
             .value_of("occ_block_size")
             .unwrap_or("1")
@@ -77,6 +80,7 @@ impl CLIParams {
 
             executions,
             seed,
+            alphabet_size,
 
             pattern_source: Self::set_pattern_source(&matches),
             text_source: Self::set_text_source(&matches),
@@ -117,6 +121,10 @@ impl CLIParams {
         }
 
         // Number value parameters
+        if self.alphabet_size < 1 || self.alphabet_size > 254 {
+            println!("The -a argument needs to be a positive integer between 1 and 254.\n");
+            valid = false;
+        }
         if self.executions == 0 {
             println!("The -n argument needs to be a positive integer greater than 0.\n");
             valid = false;
