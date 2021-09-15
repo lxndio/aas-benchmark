@@ -29,26 +29,23 @@ impl CLIParams {
         let clap_yaml = load_yaml!("cli.yml");
         let matches = App::from_yaml(clap_yaml).get_matches();
 
-        // String value parameters
-        let algorithms: Vec<String> = String::from(
-            matches
-                .value_of("ALGORITHMS")
-                .unwrap_or("NonexistentAlgorithm"),
-        )
-        .split(',')
-        .collect::<Vec<&str>>()
-        .iter()
-        .map(|algorithm| String::from(*algorithm))
-        .collect();
+        // === String value parameters ===
+        // For algorithms, unwrap is safe as it is a required parameter
+        // whose existance is checked by the CLI argument parser.
+        let algorithms: Vec<String> = matches
+            .values_of("algorithms")
+            .unwrap()
+            .map(|x| x.to_string())
+            .collect();
         let suffix_array_algorithm = matches
             .value_of("suffix_array_algorithm")
             .unwrap_or("sais")
             .to_string();
 
-        // Bool value parameters
+        // === Bool value parameters ===
         let no_header: bool = matches.is_present("no_header");
 
-        // Number value parameters
+        // === Number value parameters ===
         let executions: usize = matches
             .value_of("executions")
             .unwrap_or("1") // 1 so that if parameter is not given, the default of one execution is used

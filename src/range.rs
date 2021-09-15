@@ -6,7 +6,7 @@ use regex::Regex;
 /// A struct to represent a range starting and ending at specific values
 /// and increasing by a given step size.
 ///
-/// The `end` value is exclusive.
+/// The `end` value is inclusive.
 ///
 /// Can be represented as a string `start..end,step_size` with the `,step_size`
 /// part being option and can be parsed from a `Str` using `FromStr`.
@@ -27,15 +27,12 @@ impl Range {
     }
 
     pub fn is_empty(&self) -> bool {
-        self.start >= self.end
+        self.start > self.end
     }
 
     /// Returns `start` if it is the only value in the `Range`.
-    ///
-    /// A `Range` contains only one value if the `end` value is one greater
-    /// than the `start` value because the `end` value is exclusive.
     pub fn single(&self) -> Option<usize> {
-        if self.end == self.start + 1 {
+        if self.end == self.start {
             Some(self.start)
         } else {
             None
@@ -131,7 +128,7 @@ impl FromStr for Range {
                 .parse::<usize>()
                 .map_err(|_| ParseRangeError)?;
 
-            Ok(Range::new(single, single + 1, 1))
+            Ok(Range::new(single, single, 1))
         } else {
             Err(ParseRangeError)
         }
@@ -165,7 +162,7 @@ impl Iterator for RangeIterator {
         self.curr = self.next;
         self.next = new_next;
 
-        if self.curr < self.end {
+        if self.curr <= self.end {
             Some(self.curr)
         } else {
             None
@@ -192,26 +189,26 @@ mod tests {
 
     #[test]
     fn test_range_is_empty() {
-        let empty_range1 = Range::new(0, 0, 0);
-        let empty_range2 = Range::new(5, 5, 5);
-        let empty_range3 = Range::new(10, 5, 5);
+        let empty_range1 = Range::new(5, 4, 5);
+        let empty_range2 = Range::new(10, 5, 5);
 
         let nonempty_range1 = Range::new(0, 5, 2);
         let nonempty_range2 = Range::new(5, 10, 0);
+        let nonempty_range3 = Range::new(5, 5, 1);
 
         assert_eq!(empty_range1.is_empty(), true);
         assert_eq!(empty_range2.is_empty(), true);
-        assert_eq!(empty_range3.is_empty(), true);
 
         assert_eq!(nonempty_range1.is_empty(), false);
         assert_eq!(nonempty_range2.is_empty(), false);
+        assert_eq!(nonempty_range3.is_empty(), false);
     }
 
     #[test]
     fn test_range_is_single() {
-        let single_range = Range::new(1, 2, 1);
+        let single_range = Range::new(1, 1, 1);
 
-        let nonsingle_range = Range::new(1, 5, 1);
+        let nonsingle_range = Range::new(1, 2, 1);
 
         assert_eq!(single_range.single(), Some(1));
 
@@ -225,11 +222,11 @@ mod tests {
 
         assert_eq!(
             range_single_step.iter().collect::<Vec<usize>>(),
-            vec![5, 6, 7, 8, 9]
+            vec![5, 6, 7, 8, 9, 10]
         );
         assert_eq!(
             range_multiple_step.iter().collect::<Vec<usize>>(),
-            vec![5, 10, 15, 20, 25, 30, 35, 40, 45]
+            vec![5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
         );
     }
 

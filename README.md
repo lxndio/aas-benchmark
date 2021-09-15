@@ -49,11 +49,11 @@ This part of the README will explain in further detail how to use aas-benchmark 
 
 ### Specifying Algorithms
 
-The tool requires one parameter which specifies the algorithm or algorithms that you want to benchmark. You can either set a single algorithm or multiple algorithms by giving a comma-seperated list. Notice that there mustn't be spaces around the commas.
+The tool requires the parameter `-a` which specifies the algorithm or algorithms that you want to benchmark. You can either set a single or multiple algorithms.
 
 ```
-aas-benchmark naive ...
-aas-benchmark naive,horspool,kmp ...
+aas-benchmark -a naive ...
+aas-benchmark -a naive horspool kmp ...
 ```
 
 #### Benchmark All Algorithms at Once
@@ -61,7 +61,7 @@ aas-benchmark naive,horspool,kmp ...
 There is also a shortcut to benchmark all algorithms at once:
 
 ```
-aas-benchmark all ...
+aas-benchmark -a all ...
 ```
 
 ### Specifying a Number of Executions
@@ -106,7 +106,7 @@ Below, all possible arguments for specifying a pattern source are listed.
 | ...file                    | `--pf pattern.txt`  | File `pattern.txt`                   | Yes, use `--pmf` and supply a file where each line contains one pattern.                    |      |
 | Randomly generated         | `--pr m`            | Pattern length `m`.                  | Yes, supply a range¹ for `m`.                                                               |      |
 
-¹ A range is written as `a..b` where `a` is the lower bound and `b` is the *exclusive* upper bound. You can also supply a step size `c` as in `a..b,c`.
+¹ A range is written as `a..b` where `a` is the lower bound and `b` is the *inclusive* upper bound. You can also supply a step size `c` as in `a..b,c`.
 
 Note that the names of those arguments all follow the same naming convention:
 
@@ -125,9 +125,10 @@ aas-benchmark naive ... --seed 12345
 
 Here is a list of other arguments you can set:
 
-| Argument     | Description                           |
-| ------------ | ------------------------------------- |
-| `--noheader` | Disables the header in the CSV output |
+| Argument       | Description                                                          |
+| -------------- | -------------------------------------------------------------------- |
+| `--noheader`   | Disables the header in the CSV output                                |
+| `--alphabet n` | Set the alphabet size of randomly generated text and patterns to `n` |
 
 ### List of Algorithms
 
