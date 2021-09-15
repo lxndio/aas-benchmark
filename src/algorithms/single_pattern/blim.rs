@@ -1,3 +1,6 @@
+use crate::count_comparisons::COMPARISONS;
+use crate::get;
+
 const WORD_SIZE: usize = usize::BITS as usize;
 
 fn compute_mask_matrix(pattern: &[u8]) -> Vec<Vec<usize>> {
@@ -58,10 +61,10 @@ pub fn blim(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let mut flag;
 
     while i < n {
-        flag = mask[text[i + scan_order[0]] as usize][scan_order[0]];
+        flag = mask[get![text, i + scan_order[0]] as usize][scan_order[0]];
 
         for j in 1..ws {
-            flag &= mask[text[i + scan_order[j]] as usize][scan_order[j]];
+            flag &= mask[get![text, i + scan_order[j]] as usize][scan_order[j]];
 
             if flag == 0 {
                 break;
@@ -77,7 +80,7 @@ pub fn blim(pattern: &[u8], text: &[u8]) -> Vec<usize> {
         }
 
         if i + ws < n {
-            i += shift[text[i + ws] as usize];
+            i += shift[get![text, i + ws] as usize];
         } else {
             break;
         }
