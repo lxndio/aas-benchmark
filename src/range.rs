@@ -179,7 +179,7 @@ macro_rules! range {
         Range::new($left, $right, $step_size)
     };
     ($single:literal) => {
-        Range::new($single, $single + 1, 1)
+        Range::new($single, $single, 1)
     };
 }
 
