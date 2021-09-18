@@ -50,13 +50,13 @@ fn compute_scan_order(m: usize, ws: usize) -> Vec<usize> {
 pub fn blim(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let m = pattern.len();
     let n = text.len();
+    let mut ws = min(WORD_SIZE + m - 1, n);
     let mask = compute_mask_matrix(pattern);
     let shift = compute_shift_vector(pattern);
-    let mut scan_order = compute_scan_order(m, min(WORD_SIZE + m - 1, n));
+    let mut scan_order = compute_scan_order(m, ws);
 
     let mut res = Vec::new();
     let mut i = 0;
-    let mut ws = min(WORD_SIZE + m - 1, n);
     let mut flag;
 
     while i < n {
