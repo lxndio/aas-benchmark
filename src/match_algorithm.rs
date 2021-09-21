@@ -16,6 +16,7 @@ use crate::algorithms::single_pattern::boyer_moore::{
     weak_boyer_moore_all, weak_memorizing_boyer_moore_all, weak_turbo_boyer_moore_all,
 };
 use crate::algorithms::single_pattern::double_window::double_window;
+use crate::algorithms::single_pattern::double_window::double_window_alt;
 use crate::algorithms::single_pattern::horspool::horspool_all;
 use crate::algorithms::single_pattern::kmp::{kmp_all, kmp_classic_all};
 use crate::algorithms::single_pattern::naive::naive_all;
@@ -42,6 +43,7 @@ lazy_static! {
         "bom" => TypedAlgorithm::SinglePatternAlgorithm(bom),
         "dw" => TypedAlgorithm::SinglePatternAlgorithm(double_window),
         "blim" => TypedAlgorithm::SinglePatternAlgorithm(blim),
+        "dw-alt" => TypedAlgorithm::SinglePatternAlgorithm(double_window_alt),
     };
 
     /// List of suffix array generation algorithms and their internal names
@@ -70,6 +72,7 @@ lazy_static! {
         "bom" => "BOM",
         "dw" => "Double Window",
         "blim" => "BLIM",
+        "dw-alt" => "Alt. Double Window",
     };
 }
 

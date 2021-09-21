@@ -1,3 +1,5 @@
+use std::cmp:min;
+
 use crate::count_comparisons::COMPARISONS;
 use crate::get;
 
@@ -51,13 +53,13 @@ fn compute_scan_order(m: usize, ws: usize) -> Vec<usize> {
 pub fn blim(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let m = pattern.len();
     let n = text.len();
+    let mut ws = min(WORD_SIZE + m - 1, n);
     let mask = compute_mask_matrix(pattern);
     let shift = compute_shift_vector(pattern);
-    let mut scan_order = compute_scan_order(m, WORD_SIZE + m - 1);
+    let mut scan_order = compute_scan_order(m, ws);
 
     let mut res = Vec::new();
     let mut i = 0;
-    let mut ws = WORD_SIZE + m - 1;
     let mut flag;
 
     while i < n {
@@ -72,7 +74,7 @@ pub fn blim(pattern: &[u8], text: &[u8]) -> Vec<usize> {
         }
 
         if flag != 0 {
-            for j in 0..std::cmp::min(WORD_SIZE, n - i) {
+            for j in 0..min(WORD_SIZE, n - i) {
                 if flag & (1 << j) != 0 {
                     res.push(i + j);
                 }
@@ -136,6 +138,19 @@ mod tests {
         matches.sort_unstable();
 
         let matches_correct = vec![70];
+
+        assert_eq!(matches, matches_correct);
+    }
+
+    #[test]
+    fn test_blim_edge_short_text() {
+        let text = b"ggctcctcgaatcattattacgccgctcctcgaaa";
+        let pattern = b"gctcctcga";
+
+        let mut matches = blim(pattern, text);
+        matches.sort_unstable();
+
+        let matches_correct = vec![1, 24];
 
         assert_eq!(matches, matches_correct);
     }
