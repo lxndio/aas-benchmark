@@ -1,6 +1,6 @@
 #[allow(unused)]
 use crate::count_comparisons::COMPARISONS;
-use crate::{eq, get, try_get};
+use crate::{eq, eqs, get, try_get};
 
 use crate::algorithms::single_pattern::horspool::horspool_shift;
 
@@ -50,7 +50,7 @@ pub fn double_window(pattern: &[u8], text: &[u8]) -> Vec<usize> {
             d2[get!(text, pos) as usize][*try_get!(text, pos + m).unwrap_or(&pattern[0]) as usize];
 
         if r == 0 {
-            if &text[pos - (m - 1)..pos + 1] == pattern {
+            if eqs!(&text[pos - (m - 1)..pos + 1], pattern) {
                 res.push(pos - (m - 1));
             }
 
@@ -93,9 +93,10 @@ pub fn double_window_alt(pattern: &[u8], text: &[u8]) -> Vec<usize> {
     let mut pos = m - 1;
 
     while pos < n {
-        let r = d2[text[pos] as usize][*text.get(pos + m).unwrap_or(&pattern[0]) as usize];
+        let r =
+            d2[get!(text, pos) as usize][*try_get!(text, pos + m).unwrap_or(&pattern[0]) as usize];
 
-        if pattern[m - 1] == text[pos] && &text[pos - (m - 1)..pos + 1] == pattern {
+        if eq!(pattern[m - 1], text[pos]) && eqs!(&text[pos - (m - 1)..pos + 1], pattern) {
             res.push(pos - (m - 1));
         }
 

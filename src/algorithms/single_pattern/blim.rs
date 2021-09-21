@@ -1,4 +1,4 @@
-use std::cmp:min;
+use std::cmp::min;
 
 use crate::count_comparisons::COMPARISONS;
 use crate::get;
