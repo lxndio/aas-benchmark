@@ -23,7 +23,7 @@ pub fn horspool(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let p_last = pattern[m - 1];
 
     loop {
-        let mut t_last = get![text, last];
+        let mut t_last = *try_get![text, last].unwrap_or(&0);
         while last < n && t_last != p_last {
             last += shift[t_last as usize];
             t_last = *try_get![text, last].unwrap_or(&0);
