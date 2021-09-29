@@ -1,6 +1,6 @@
 #[allow(unused)]
 use crate::count_comparisons::COMPARISONS;
-use crate::{eqs, get, neq};
+use crate::{eqs, get, neq, try_get};
 
 pub fn horspool_shift(pattern: &[u8]) -> Vec<usize> {
     let mut shift = vec![pattern.len(); 256];
@@ -23,9 +23,15 @@ pub fn horspool(pattern: &[u8], text: &[u8], i0: usize) -> Option<usize> {
     let p_last = pattern[m - 1];
 
     loop {
-        while last < n && neq!(text[last], p_last) {
-            last += shift[get![text, last] as usize];
+        let mut t_last = get![text, last];
+        while last < n && t_last != p_last {
+            last += shift[t_last as usize];
+            t_last = *try_get![text, last].unwrap_or(&0);
         }
+
+        // while last < n && neq!(text[last], p_last) {
+        // last += shift[get![text, last] as usize];
+        // }
 
         if last >= n {
             break;
